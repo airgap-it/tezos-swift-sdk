@@ -1,0 +1,24 @@
+//
+//  StringWrapper.swift
+//  
+//
+//  Created by Julia Samol on 09.06.22.
+//
+
+import Foundation
+
+public protocol StringWrapper {
+    static var regex: String { get }
+    
+    var value: String { get }
+    
+    init(_ value: String) throws
+}
+
+// MARK: Defaults
+
+public extension StringWrapper {
+    static func isValid(value: String) -> Bool {
+        value.range(of: Self.regex, options: .regularExpression) != nil
+    }
+}
