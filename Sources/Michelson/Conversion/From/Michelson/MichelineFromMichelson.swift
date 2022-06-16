@@ -9,8 +9,8 @@ import Foundation
 
 // MARK: From Michelson
 
-public extension Micheline {
-    init(from michelson: Michelson) throws {
+extension Micheline: ConvertibleFromMichelson {
+    public init(from michelson: Michelson) throws {
         switch michelson {
         case .data(let data):
             try self.init(from: data)
@@ -20,11 +20,11 @@ public extension Micheline {
     }
 }
 
-// MARK: From Michelson.Data
+// MARK: From MichelsonData
 
-public extension Micheline {
+extension Micheline: ConvertibleFromMichelsonData {
     
-    init(from data: Michelson.Data) throws {
+    public init(from data: Michelson.Data) throws {
         switch data {
         case .int(let content):
             self = .literal(.integer(try .init(content.value)))
@@ -81,11 +81,11 @@ public extension Micheline {
     }
 }
 
-// MARK: From Michelson.Instruction
+// MARK: From MichelsonInstruction
 
-public extension Micheline {
+extension Micheline: ConvertibleFromMichelsonInstruction {
     
-    init(from instruction: Michelson.Instruction) throws {
+    public init(from instruction: Michelson.Instruction) throws {
         switch instruction {
         case .sequence(let content):
             self = .sequence(try content.instructions.map({ try Micheline(from: $0 )}))
@@ -405,9 +405,9 @@ public extension Micheline {
 
 // MARK: From Michelson.Type
 
-public extension Micheline {
+extension Micheline: ConvertibleFromMichelsonType {
     
-    init(from type: Michelson.`Type`) throws {
+    public init(from type: Michelson.`Type`) throws {
         switch type {
         case .parameter(let content):
             self = .prim(try .init(
@@ -514,11 +514,11 @@ public extension Micheline {
     }
 }
 
-// MARK: From Michelson.ComparableType
+// MARK: From MichelsonComparableType
 
-public extension Micheline {
+extension Micheline: ConvertibleFromMichelsonComparableType {
     
-    init(from comparableType: Michelson.ComparableType) throws {
+    public init(from comparableType: Michelson.ComparableType) throws {
         switch comparableType {
         case .unit(let content):
             self = .prim(try .init(from: content))

@@ -9,6 +9,7 @@ import Foundation
 import TezosCore
 
 extension Michelson {
+    typealias _Type = `Type`
     
     public indirect enum `Type`: Hashable {
         public typealias `Protocol` = MichelsonTypeProtocol
@@ -46,6 +47,14 @@ extension Michelson {
             public static let name: String = "parameter"
             public static let tag: [UInt8] = [0]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 1,
+                      (try? args[0].asType()) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument (<type>).")
+                }
+            }
+            
             public let type: `Type`
             public let metadata: Metadata
             
@@ -55,9 +64,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 1 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(type: try args[0].asType(), metadata: .init(from: annots))
             }
@@ -73,6 +80,14 @@ extension Michelson {
             public static let name: String = "storage"
             public static let tag: [UInt8] = [1]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 1,
+                      (try? args[0].asType()) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument (<type>).")
+                }
+            }
+            
             public let type: `Type`
             public let metadata: Metadata
             
@@ -82,9 +97,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 1 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(type: try args[0].asType(), metadata: .init(from: annots))
             }
@@ -100,6 +113,14 @@ extension Michelson {
             public static let name: String = "code"
             public static let tag: [UInt8] = [2]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 1,
+                      (try? args[0].asInstruction()) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument (<instruction>).")
+                }
+            }
+            
             public let code: Instruction
             public let metadata: Metadata
             
@@ -109,9 +130,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 1 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(code: try args[0].asInstruction(), metadata: .init(from: annots))
             }
@@ -127,6 +146,14 @@ extension Michelson {
             public static let name: String = "option"
             public static let tag: [UInt8] = [99]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 1,
+                      (try? args[0].asType()) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument (<type>).")
+                }
+            }
+            
             public let type: `Type`
             public let metadata: Metadata
             
@@ -136,9 +163,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 1 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(type: try args[0].asType(), metadata: .init(from: annots))
             }
@@ -162,6 +187,14 @@ extension Michelson {
             public static let name: String = "list"
             public static let tag: [UInt8] = [95]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 1,
+                      (try? args[0].asType()) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument (<type>).")
+                }
+            }
+            
             public let type: `Type`
             public let metadata: Metadata
             
@@ -171,9 +204,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 1 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(type: try args[0].asType(), metadata: .init(from: annots))
             }
@@ -189,6 +220,14 @@ extension Michelson {
             public static let name: String = "set"
             public static let tag: [UInt8] = [102]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 1,
+                      (try? args[0].asType()) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument (<type>).")
+                }
+            }
+            
             public let type: ComparableType
             public let metadata: Metadata
             
@@ -198,9 +237,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 1 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(type: try args[0].asComparableType(), metadata: .init(from: annots))
             }
@@ -216,6 +253,12 @@ extension Michelson {
             public static let name: String = "operation"
             public static let tag: [UInt8] = [109]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 0 else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
+                }
+            }
+            
             public let metadata: Metadata
             
             public init(metadata: Metadata = .init()) {
@@ -223,9 +266,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 0 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(metadata: .init(from: annots))
             }
@@ -241,6 +282,14 @@ extension Michelson {
             public static let name: String = "contract"
             public static let tag: [UInt8] = [90]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 1,
+                      (try? args[0].asType()) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument (<type>).")
+                }
+            }
+            
             public let type: `Type`
             public let metadata: Metadata
             
@@ -250,9 +299,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 1 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(type: try args[0].asType(), metadata: .init(from: annots))
             }
@@ -268,6 +315,14 @@ extension Michelson {
             public static let name: String = "ticket"
             public static let tag: [UInt8] = [135]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 1,
+                      (try? args[0].asComparableType()) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument (<comparable_type>).")
+                }
+            }
+            
             public let type: ComparableType
             public let metadata: Metadata
             
@@ -277,9 +332,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 1 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(type: try args[0].asComparableType(), metadata: .init(from: annots))
             }
@@ -294,6 +347,16 @@ extension Michelson {
             
             public static let name: String = "pair"
             public static let tag: [UInt8] = [101]
+            
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count >= 2,
+                      (try? args.asTypeSequence()) != nil,
+                      (try? args.asComparableTypeSequence()) == nil
+                else {
+                    
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have at least 2 arguments (<type>, <type>, ...).")
+                }
+            }
             
             public let types: [`Type`]
             public let metadata: Metadata
@@ -312,6 +375,8 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
+                try Self.validateArgs(args)
+                
                 try self.init(types: try args.asTypeSequence(), metadata: .init(from: annots))
             }
             
@@ -330,6 +395,17 @@ extension Michelson {
             public static let name: String = "or"
             public static let tag: [UInt8] = [100]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 2,
+                      (try? args[0].asType()) != nil,
+                      (try? args[1].asType()) != nil,
+                      (try? args[0].asComparableType()) == nil,
+                      (try? args[1].asComparableType()) == nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 2 arguments (<type>, <type>).")
+                }
+            }
+            
             public let lhs: `Type`
             public let rhs: `Type`
             public let metadata: Metadata
@@ -341,9 +417,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 2 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 2 arguments.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(
                     lhs: try args[0].asType(),
@@ -367,6 +441,15 @@ extension Michelson {
             public static let name: String = "lambda"
             public static let tag: [UInt8] = [94]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 2,
+                      (try? args[0].asType()) != nil,
+                      (try? args[1].asType()) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 2 arguments (<type>, <type>).")
+                }
+            }
+            
             public let parameterType: `Type`
             public let returnType: `Type`
             public let metadata: Metadata
@@ -378,9 +461,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 2 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 2 arguments.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(
                     parameterType: try args[0].asType(),
@@ -400,23 +481,30 @@ extension Michelson {
             public static let name: String = "map"
             public static let tag: [UInt8] = [96]
             
-            public let keyType: `Type`
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 2,
+                      (try? args[0].asComparableType()) != nil,
+                      (try? args[1].asType()) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 2 arguments (<comparable_type>, <type>).")
+                }
+            }
+            
+            public let keyType: ComparableType
             public let valueType: `Type`
             public let metadata: Metadata
             
-            public init(keyType: `Type`, valueType: `Type`, metadata: Metadata = .init()) {
+            public init(keyType: ComparableType, valueType: `Type`, metadata: Metadata = .init()) {
                 self.keyType = keyType
                 self.valueType = valueType
                 self.metadata = metadata
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 2 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 2 arguments.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(
-                    keyType: try args[0].asType(),
+                    keyType: try args[0].asComparableType(),
                     valueType: try args[1].asType(),
                     metadata: .init(from: annots)
                 )
@@ -433,23 +521,30 @@ extension Michelson {
             public static let name: String = "big_map"
             public static let tag: [UInt8] = [97]
             
-            public let keyType: `Type`
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 2,
+                      (try? args[0].asComparableType()) != nil,
+                      (try? args[1].asType()) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 2 arguments (<comparable_type>, <type>).")
+                }
+            }
+            
+            public let keyType: ComparableType
             public let valueType: `Type`
             public let metadata: Metadata
             
-            public init(keyType: `Type`, valueType: `Type`, metadata: Metadata = .init()) {
+            public init(keyType: ComparableType, valueType: `Type`, metadata: Metadata = .init()) {
                 self.keyType = keyType
                 self.valueType = valueType
                 self.metadata = metadata
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 2 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 2 arguments.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(
-                    keyType: try args[0].asType(),
+                    keyType: try args[0].asComparableType(),
                     valueType: try args[1].asType(),
                     metadata: .init(from: annots)
                 )
@@ -466,6 +561,12 @@ extension Michelson {
             public static let name: String = "bls12_381_g1"
             public static let tag: [UInt8] = [128]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 0 else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
+                }
+            }
+            
             public let metadata: Metadata
             
             public init(metadata: Metadata = .init()) {
@@ -473,9 +574,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 0 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(metadata: .init(from: annots))
             }
@@ -491,6 +590,12 @@ extension Michelson {
             public static let name: String = "bls12_381_g2"
             public static let tag: [UInt8] = [129]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 0 else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
+                }
+            }
+            
             public let metadata: Metadata
             
             public init(metadata: Metadata = .init()) {
@@ -498,9 +603,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 0 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(metadata: .init(from: annots))
             }
@@ -516,6 +619,12 @@ extension Michelson {
             public static let name: String = "bls12_381_fr"
             public static let tag: [UInt8] = [130]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 0 else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
+                }
+            }
+            
             public let metadata: Metadata
             
             public init(metadata: Metadata = .init()) {
@@ -523,9 +632,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 0 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(metadata: .init(from: annots))
             }
@@ -541,6 +648,14 @@ extension Michelson {
             public static let name: String = "sapling_transaction"
             public static let tag: [UInt8] = [132]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 1,
+                      (try? args[0].tryAs(Data.NaturalNumberConstant.self)) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument (<natural_number_constant>).")
+                }
+            }
+            
             public let memoSize: Data.NaturalNumberConstant
             public let metadata: Metadata
             
@@ -554,9 +669,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 1 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(
                     memoSize: try args[0].tryAs(Data.NaturalNumberConstant.self),
@@ -575,6 +688,14 @@ extension Michelson {
             public static let name: String = "sapling_state"
             public static let tag: [UInt8] = [131]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 1,
+                      (try? args[0].tryAs(Data.NaturalNumberConstant.self)) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument (<natural_number_constant>).")
+                }
+            }
+            
             public let memoSize: Data.NaturalNumberConstant
             public let metadata: Metadata
             
@@ -588,9 +709,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 1 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(
                     memoSize: try args[0].tryAs(Data.NaturalNumberConstant.self),
@@ -609,6 +728,12 @@ extension Michelson {
             public static let name: String = "chest"
             public static let tag: [UInt8] = [141]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 0 else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
+                }
+            }
+            
             public let metadata: Metadata
             
             public init(metadata: Metadata = .init()) {
@@ -616,9 +741,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 0 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(metadata: .init(from: annots))
             }
@@ -634,6 +757,12 @@ extension Michelson {
             public static let name: String = "chest_key"
             public static let tag: [UInt8] = [142]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 0 else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
+                }
+            }
+            
             public let metadata: Metadata
             
             public init(metadata: Metadata = .init()) {
@@ -641,9 +770,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 0 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(metadata: .init(from: annots))
             }

@@ -12,13 +12,13 @@ public protocol StringWrapper {
     
     var value: String { get }
     
-    init(_ value: String) throws
+    init<S: StringProtocol>(_ value: S) throws
 }
 
 // MARK: Defaults
 
 public extension StringWrapper {
-    static func isValid(value: String) -> Bool {
+    static func isValid<S: StringProtocol>(value: S) -> Bool {
         value.range(of: Self.regex, options: .regularExpression) != nil
     }
 }

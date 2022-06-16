@@ -1,5 +1,5 @@
 //
-//  String.swift
+//  StringUtils.swift
 //  
 //
 //  Created by Julia Samol on 09.06.22.

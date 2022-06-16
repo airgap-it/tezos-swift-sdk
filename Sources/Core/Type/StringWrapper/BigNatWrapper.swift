@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import BigInt
 
 public protocol BigNatWrapper: StringWrapper {}
 
@@ -19,4 +20,18 @@ public extension BigNatWrapper {
     init(_ value: UInt) {
         try! self.init(String(value))
     }
+}
+
+// MARK: Inheritance
+
+extension BigUInt: BigNatWrapper {
+    public init<S: StringProtocol>(_ value: S) throws {
+        guard let value = BigUInt(value, radix: 10) else {
+            throw TezosError.invalidValue("Invalid BigUInt value (\(value).")
+        }
+        
+        self = value
+    }
+    
+    public var value: String { description }
 }

@@ -10,9 +10,9 @@ import TezosCore
 
 // MARK: From Micheline
 
-public extension Michelson {
+extension Michelson: ConvertibleFromMicheline {
     
-    init(from micheline: Micheline) throws {
+    public init(from micheline: Micheline) throws {
         switch micheline {
         case .literal(let literal):
             try self.init(from: literal)
@@ -24,11 +24,11 @@ public extension Michelson {
     }
 }
 
-// MARK: From Micheline.Literal
+// MARK: From MichelineLiteral
 
-public extension Michelson {
+extension Michelson: ConvertibleFromMichelineLiteral {
     
-    init(from literal: Micheline.Literal) throws {
+    public init(from literal: Micheline.Literal) throws {
         switch literal {
         case .integer(let content):
             self = .data(.int(try .init(content.value)))
@@ -40,30 +40,39 @@ public extension Michelson {
     }
 }
 
-// MARK: From Micheline.PrimitiveApplication
+// MARK: From MichelinePrimitiveApplication
 
-public extension Michelson {
+extension Michelson: ConvertibleFromMichelinePrimitiveApplication {
     
-    init(from primitiveApplication: Micheline.PrimitiveApplication) throws {
-        guard let prim = Self.recognizePrim(primitiveApplication.prim) else {
+    public init(from primitiveApplication: Micheline.PrimitiveApplication) throws {
+        let prims = Self.recognizePrim(primitiveApplication.prim)
+        
+        guard !prims.isEmpty else {
             throw TezosError.invalidValue("Unrecognized Micheline primitive application: \(primitiveApplication.prim).")
         }
         
         let args = try primitiveApplication.args.map { try Michelson(from: $0) }
         let annots = primitiveApplication.annots.compactMap { Self.annotation(from: $0) }
-        guard let michelson = try prim.init(args: args, annots: annots) as? MichelsonProtocol else {
+        
+        let resolvedPrim = Self.resolvePrim(from: prims, forArgs: args)
+        
+        guard let michelson = try resolvedPrim?.init(args: args, annots: annots) as? MichelsonProtocol else {
             throw TezosError.invalidValue("Unrecognized Micheline primitive application: \(primitiveApplication.prim).")
         }
         
         self = michelson.asMichelson()
     }
+    
+    private static func resolvePrim(from prims: [Prim.Type], forArgs args: [Michelson]) -> Prim.Type? {
+        prims.first(where: { (try? $0.validateArgs(args)) != nil })
+    }
 }
 
-// MARK: From Micheline.Sequence
+// MARK: From MichelineSequence
 
-public extension Michelson {
+extension Michelson: ConvertibleFromMichelineSequence {
     
-    init(from sequence: Micheline.Sequence) throws {
+    public init(from sequence: Micheline.Sequence) throws {
         if let eltSequence = try? sequence.asEltSequence() {
             self.init(from: eltSequence)
         } else if let michelsonSequence = try? sequence.asMichelsonSequence() {
@@ -106,10 +115,6 @@ private extension Array where Element == Micheline {
 }
 
 private extension Michelson {
-    
-    static func recognizePrim(_ prim: String) -> Prim.Type? {
-        allPrims.first(where: { $0.name == prim })
-    }
     
     static func annotation(from string: String) -> Annotation? {
         (try? TypeAnnotation(value: string)) ??

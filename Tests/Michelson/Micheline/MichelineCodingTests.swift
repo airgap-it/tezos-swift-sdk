@@ -1,5 +1,5 @@
 //
-//  MichelineCodableTests.swift
+//  MichelineCodingTests.swift
 //  
 //
 //  Created by Julia Samol on 13.06.22.
@@ -11,7 +11,7 @@ import TezosTestUtils
 @testable import TezosCore
 @testable import TezosMichelson
 
-class MichelineCodableTests: XCTestCase {
+class MichelineCodingTests: XCTestCase {
     private var jsonEncoder: JSONEncoder!
     private var jsonDecoder: JSONDecoder!
     

@@ -52,12 +52,12 @@ extension Micheline {
         public struct Integer: BigIntWrapper, Hashable, Codable {
             public let value: Swift.String
             
-            public init(_ value: Swift.String) throws {
+            public init<S: StringProtocol>(_ value: S) throws {
                 guard Self.isValid(value: value) else {
                     throw TezosError.invalidValue("Invalid Micheline integer literal value.")
                 }
                 
-                self.value = value
+                self.value = Swift.String(value)
             }
             
             // MARK: Codable
@@ -74,12 +74,12 @@ extension Micheline {
             
             public let value: Swift.String
             
-            public init(_ value: Swift.String) throws {
+            public init<S: StringProtocol>(_ value: S) throws {
                 guard Self.isValid(value: value) else {
                     throw TezosError.invalidValue("Invalid Micheline string literal value.")
                 }
                 
-                self.value = value
+                self.value = Swift.String(value)
             }
             
             // MARK: Codable
@@ -96,12 +96,12 @@ extension Micheline {
             
             public let value: Swift.String
             
-            public init(_ value: Swift.String) throws {
+            public init<S: StringProtocol>(_ value: S) throws {
                 guard Self.isValid(value: value) else {
                     throw TezosError.invalidValue("Invalid Micheline bytes literal value.")
                 }
                 
-                self.value = value
+                self.value = Swift.String(value)
             }
             
             public init(_ value: [UInt8]) {

@@ -29,16 +29,6 @@ extension Micheline {
             self.annots = annots
         }
         
-        public init<T : Michelson.Prim>(prim: T.Type, args: [Micheline] = [], annots: [String] = []) throws {
-            guard Self.areAnnotsValid(annots) else {
-                throw TezosError.invalidValue("Invalid Micheline annot values (\(annots)).")
-            }
-            
-            self.prim = prim.name
-            self.args = args
-            self.annots = annots
-        }
-        
         // MARK: Codable
         
         public init(from decoder: Decoder) throws {
@@ -71,6 +61,28 @@ extension Micheline {
             case args
             case annots
         }
+    }
+}
+
+// MARK: Convinience Constructors
+
+public extension Micheline.PrimitiveApplication {
+    init(prim: String, args: [ConvertibleToMicheline], annots: [String] = []) throws {
+        try self.init(prim: prim, args: args.map({ $0.toMicheline() }), annots: annots)
+    }
+    
+    init<T : Michelson.Prim>(prim: T.Type, args: [Micheline] = [], annots: [String]) throws {
+        try self.init(prim: prim.name, args: args, annots: annots)
+    }
+    
+    init<T : Michelson.Prim>(prim: T.Type, args: [Micheline] = []) {
+        self.prim = prim.name
+        self.args = args
+        self.annots = []
+    }
+    
+    init<T : Michelson.Prim>(prim: T.Type, args: [ConvertibleToMicheline]) {
+        self.init(prim: prim, args: args.map({ $0.toMicheline() }))
     }
 }
 
