@@ -35,6 +35,8 @@ public protocol MichelsonPrimProtocol {
     static var name: String { get }
     static var tag: [UInt8] { get }
     
+    static func validateArgs(_ args: [Michelson]) throws
+    
     init(args: [Michelson], annots: [Michelson.Annotation]) throws
 }
 

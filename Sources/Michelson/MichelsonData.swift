@@ -32,80 +32,80 @@ extension Michelson {
         // MARK: IntConstant
         
         public struct IntConstant: `Protocol`, BigIntWrapper, Hashable {
+            public func asData() -> Data {
+                .int(self)
+            }
+            
             public let value: String
             
-            public init(_ value: String) throws {
+            public init<S: StringProtocol>(_ value: S) throws {
                 guard Self.isValid(value: value) else {
                     throw TezosError.invalidValue("Invalid Michelson IntConstant value.")
                 }
                 
-                self.value = value
-            }
-            
-            public func asData() -> Data {
-                .int(self)
+                self.value = String(value)
             }
         }
         
         // MARK: NaturalNumberConstant
         
         public struct NaturalNumberConstant: `Protocol`, BigNatWrapper, Hashable {
+            public func asData() -> Data {
+                .nat(self)
+            }
+            
             public let value: String
             
-            public init(_ value: String) throws {
+            public init<S: StringProtocol>(_ value: S) throws {
                 guard Self.isValid(value: value) else {
                     throw TezosError.invalidValue("Invalid Michelson NaturalNumberConstant value.")
                 }
                 
-                self.value = value
-            }
-            
-            public func asData() -> Data {
-                .nat(self)
+                self.value = String(value)
             }
         }
         
         // MARK: StringConstant
         
         public struct StringConstant: `Protocol`, StringWrapper, Hashable {
+            public func asData() -> Data {
+                .string(self)
+            }
+            
             public static let regex: String = #"^(\"|\r|\n|\t|\b|\\|[^\"\\])*$"#
             
             public let value: String
             
-            public init(_ value: String) throws {
+            public init<S: StringProtocol>(_ value: S) throws {
                 guard Self.isValid(value: value) else {
                     throw TezosError.invalidValue("Invalid Michelson StringConstant value.")
                 }
                 
-                self.value = value
-            }
-            
-            public func asData() -> Data {
-                .string(self)
+                self.value = String(value)
             }
         }
         
         // MARK: ByteSequenceConstant
         
         public struct ByteSequenceConstant: `Protocol`, BytesWrapper, Hashable {
+            public func asData() -> Data {
+                .bytes(self)
+            }
+            
             public static let regex: String = HexString.regex(withPrefix: .required)
             
             public let value: String
             
-            public init(_ value: String) throws {
+            public init<S: StringProtocol>(_ value: S) throws {
                 guard Self.isValid(value: value) else {
                     throw TezosError.invalidValue("Invalid Michelson ByteSequenceConstant value.")
                 }
                 
-                self.value = value
+                self.value = String(value)
             }
             
             public init(_ value: [UInt8]) {
                 self.value = String(HexString(from: value), withPrefix: true)
-            }
-            
-            public func asData() -> Data {
-                .bytes(self)
             }
         }
         
@@ -119,10 +119,14 @@ extension Michelson {
             public static let name: String = "Unit"
             public static let tag: [UInt8] = [11]
             
-            public init(args: [Michelson], annots: [Annotation]) throws {
+            public static func validateArgs(_ args: [Michelson]) throws {
                 guard args.count == 0 else {
                     throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
                 }
+            }
+            
+            public init(args: [Michelson], annots: [Annotation]) throws {
+                try Self.validateArgs(args)
             }
         }
         
@@ -136,10 +140,14 @@ extension Michelson {
             public static let name: String = "True"
             public static let tag: [UInt8] = [10]
             
-            public init(args: [Michelson], annots: [Annotation]) throws {
+            public static func validateArgs(_ args: [Michelson]) throws {
                 guard args.count == 0 else {
                     throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
                 }
+            }
+            
+            public init(args: [Michelson], annots: [Annotation]) throws {
+                try Self.validateArgs(args)
             }
         }
         
@@ -153,10 +161,14 @@ extension Michelson {
             public static let name: String = "False"
             public static let tag: [UInt8] = [3]
             
-            public init(args: [Michelson], annots: [Annotation]) throws {
+            public static func validateArgs(_ args: [Michelson]) throws {
                 guard args.count == 0 else {
                     throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
                 }
+            }
+            
+            public init(args: [Michelson], annots: [Annotation]) throws {
+                try Self.validateArgs(args)
             }
         }
         
@@ -169,6 +181,15 @@ extension Michelson {
             
             public static let name: String = "Pair"
             public static let tag: [UInt8] = [7]
+            
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count >= 2,
+                      (try? args.asDataSequence()) != nil
+                else {
+                    
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have at least 2 arguments (<data>, <data>, ...).")
+                }
+            }
             
             public let values: [Data]
             
@@ -197,7 +218,15 @@ extension Michelson {
             }
             
             public static let name: String = "Left"
-            public static let tag: [UInt8] = [7]
+            public static let tag: [UInt8] = [5]
+            
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 1,
+                      (try? args[0].asData()) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument (<data>).")
+                }
+            }
             
             public let value: Data
             
@@ -206,9 +235,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 1 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(value: try args[0].asData())
             }
@@ -224,6 +251,14 @@ extension Michelson {
             public static let name: String = "Right"
             public static let tag: [UInt8] = [8]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 1,
+                      (try? args[0].asData()) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument (<data>).")
+                }
+            }
+            
             public let value: Data
             
             public init(value: Data) {
@@ -231,9 +266,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 1 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(value: try args[0].asData())
             }
@@ -249,6 +282,14 @@ extension Michelson {
             public static let name: String = "Some"
             public static let tag: [UInt8] = [9]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 1,
+                      (try? args[0].asData()) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument (<data>).")
+                }
+            }
+            
             public let value: Data
             
             public init(value: Data) {
@@ -256,9 +297,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 1 else {
-                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 1 argument.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(value: try args[0].asData())
             }
@@ -274,10 +313,14 @@ extension Michelson {
             public static let name: String = "None"
             public static let tag: [UInt8] = [6]
             
-            public init(args: [Michelson], annots: [Annotation]) throws {
+            public static func validateArgs(_ args: [Michelson]) throws {
                 guard args.count == 0 else {
                     throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")
                 }
+            }
+            
+            public init(args: [Michelson], annots: [Annotation]) throws {
+                try Self.validateArgs(args)
             }
         }
         
@@ -323,6 +366,14 @@ extension Michelson {
             public static let name: String = "Elt"
             public static let tag: [UInt8] = [4]
             
+            public static func validateArgs(_ args: [Michelson]) throws {
+                guard args.count == 2,
+                      (try? args[0].asData()) != nil
+                else {
+                    throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 2 argument (<data>, <data>).")
+                }
+            }
+            
             public let key: Data
             public let value: Data
             
@@ -332,9 +383,7 @@ extension Michelson {
             }
             
             public init(args: [Michelson], annots: [Annotation]) throws {
-                guard args.count == 2 else {
-                    throw TezosError.invalidValue("Expected Michelson Elt to have 2 arguments.")
-                }
+                try Self.validateArgs(args)
                 
                 self.init(key: try args[0].asData(), value: try args[1].asData())
             }

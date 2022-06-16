@@ -48,7 +48,7 @@ public indirect enum Micheline: Hashable, Codable {
     }
 }
 
-// MARK: Extensions
+// MARK: Utility Extensions
 
 private extension KeyedDecodingContainer {
     func containsAny(_ keys: Key...) -> Bool {
