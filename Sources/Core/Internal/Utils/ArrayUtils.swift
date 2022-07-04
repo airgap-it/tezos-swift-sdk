@@ -53,6 +53,18 @@ public extension Array {
     }
 }
 
+// MARK: Element == UInt8 [Non-mutating]
+
+public extension Array where Element == UInt8 {
+    func padEnd(targetSize: Int, fillWith fillValue: UInt8 = 0) -> [Element] {
+        guard count < targetSize else {
+            return self
+        }
+        
+        return self + [UInt8](repeating: fillValue, count: targetSize - count)
+    }
+}
+
 // MARK: Private
 
 private extension Array {

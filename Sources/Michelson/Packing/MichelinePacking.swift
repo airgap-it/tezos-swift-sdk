@@ -169,7 +169,13 @@ private func postUnpackSequenceData(_ value: Micheline, usingSchema schema: Mich
 }
 
 private func postUnpackAddressData(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
-    try postUnpackBytesToString(value, usingSchema: schema) { try Address(from: $0).base58 }
+    try postUnpackBytesToString(value, usingSchema: schema) {
+        var bytes = $0
+        let address = try Address(fromConsuming: &bytes)
+        let entrypoint = try String(fromConsuming: &bytes)
+        
+        return combineAddress(address, with: entrypoint)
+    }
 }
 
 private func postUnpackPairData(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
@@ -425,6 +431,14 @@ private func postUnpack(_ values: [Micheline], usingSchema schema: Micheline) th
     try values.map { try postUnpack($0, usingSchema: schema) }
 }
 
+private func combineAddress(_ address: Address, with entrypoint: String) -> String {
+    guard !entrypoint.isEmpty else {
+        return address.base58
+    }
+    
+    return "\(address.base58)\(Michelson.ComparableType.Address.entrypointSeparator)\(entrypoint)"
+}
+
 // MARK: Utility Functions: Pack
 
 private func prePack(_ value: Micheline, usingSchema schema: Micheline) throws -> Micheline {
@@ -501,7 +515,13 @@ private func prePackSequenceData(_ value: Micheline, usingSchema schema: Micheli
 }
 
 private func prePackAddressData(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
-    try prePackStringToBytes(value, usingSchema: schema) { try Address(base58: $0).encodeToBytes() }
+    try prePackStringToBytes(value, usingSchema: schema) {
+        let (address, entrypoint) = splitAddress($0)
+        let addressBytes = try Address(base58: address).encodeToBytes()
+        let entrypointBytes = try entrypoint?.encodeToBytes() ?? []
+        
+        return addressBytes + entrypointBytes
+    }
 }
 
 private func prePackPairData(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
@@ -753,6 +773,21 @@ private func prePack(_ values: [Micheline], usingSchemas schemas: [Micheline]) t
 
 private func prePack(_ values: [Micheline], usingSchema schema: Micheline) throws -> [Micheline] {
     try values.map { try prePack($0, usingSchema: schema) }
+}
+
+private func splitAddress(_ address: String) -> (String, String?) {
+    let split = address.split(separator: Michelson.ComparableType.Address.entrypointSeparator, maxSplits: 2, omittingEmptySubsequences: false)
+    
+    let address = String(split[0])
+    let entrypoint: String? = {
+        if let entrypoint = split[safe: 1] {
+            return String(entrypoint)
+        } else {
+            return nil
+        }
+    }()
+    
+    return (address, entrypoint)
 }
 
 // MARK: Errors
