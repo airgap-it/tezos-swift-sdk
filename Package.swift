@@ -12,6 +12,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(name: "TezosCore", targets: ["TezosCore"]),
         .library(name: "TezosMichelson", targets: ["TezosMichelson"]),
+        .library(name: "TezosOperation", targets: ["TezosOperation"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -30,6 +31,10 @@ let package = Package(
             name: "TezosMichelson",
             dependencies: ["TezosCore"],
             path: "Sources/Michelson"),
+        .target(
+            name: "TezosOperation",
+            dependencies: ["TezosCore", "TezosMichelson"],
+            path: "Sources/Operation"),
         
         // Tests
         .target(
