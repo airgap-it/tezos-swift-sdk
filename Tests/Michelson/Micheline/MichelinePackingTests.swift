@@ -1659,7 +1659,7 @@ class MichelinePackingTests: XCTestCase {
         [
             ("00", nil),
             ("00020000000f0743075e036c036c0200000002034f", .prim(
-                try! .init(
+                .init(
                     prim: Michelson._Type.Lambda.self,
                     args: [
                         .prim(try! .init(prim: "unit")),
@@ -1668,7 +1668,7 @@ class MichelinePackingTests: XCTestCase {
                 )
             )),
             ("050743075e036c036c0200000002034f", .prim(
-                try! .init(
+                .init(
                     prim: Michelson._Type.Lambda.self,
                     args: [
                         .prim(try! .init(prim: "unit")),
@@ -1685,7 +1685,7 @@ class MichelinePackingTests: XCTestCase {
                 .integer(.init(1))
             )),
             ("0500aff8aff1ce5f", .prim(
-                try! .init(
+                .init(
                     prim: Michelson.ComparableType.Option.self,
                     args: [
                         .prim(try! .init(prim: "unit"))
@@ -1693,7 +1693,7 @@ class MichelinePackingTests: XCTestCase {
                 )
             )),
             ("050041", .prim(
-                try! .init(
+                .init(
                     prim: Michelson.ComparableType.Option.self,
                     args: [
                         .prim(try! .init(prim: "unit"))
@@ -1701,7 +1701,7 @@ class MichelinePackingTests: XCTestCase {
                 )
             )),
             ("0500aff8aff1ce5f", .prim(
-                try! .init(
+                .init(
                     prim: Michelson.ComparableType.Pair.self,
                     args: [
                         .prim(try! .init(prim: "unit")),
@@ -1710,7 +1710,7 @@ class MichelinePackingTests: XCTestCase {
                 )
             )),
             ("050041", .prim(
-                try! .init(
+                .init(
                     prim: Michelson.ComparableType.Pair.self,
                     args: [
                         .prim(try! .init(prim: "unit")),
