@@ -133,14 +133,42 @@ extension Address.Implicit: BytesCodable {
 // MARK: OriginatedAddress
 
 extension Address.Originated: BytesCodable {
+    fileprivate static let targetSize = 21
+    fileprivate static let paddingValue: UInt8 = 0
+    
     public init(fromConsuming bytes: inout [UInt8]) throws {
+        let kind = ContractHash.self
+        guard bytes.isPadded(forKind: kind) else {
+            throw TezosError.invalidValue("Bytes `\(bytes)` are not valid Tezos originated address bytes.")
+        }
+        
         self = .contract(try .init(fromConsuming: &bytes))
+        bytes.consumePadding(forKind: kind)
     }
     
     public func encodeToBytes() throws -> [UInt8] {
         switch self {
         case .contract(let contractHash):
-            return try contractHash.encodeToBytes()
+            return try contractHash.encodeToBytes().padEnd(targetSize: Self.targetSize)
         }
     }
+}
+
+private extension Array where Element == UInt8 {
+    func isPadded<T: EncodedValue>(forKind kind: T.Type) -> Bool {
+        guard count >= Address.Originated.targetSize else {
+            return false
+        }
+        
+        let upperBound = Swift.min(kind.bytesLength + kind.paddingLength, count)
+        return self[kind.bytesLength..<upperBound].allSatisfy { $0 == Address.Originated.paddingValue }
+    }
+    
+    mutating func consumePadding<T: EncodedValue>(forKind kind: T.Type) {
+        let _ = consumeSubrange(0..<kind.paddingLength)
+    }
+}
+
+private extension EncodedValue {
+    static var paddingLength: Int { Address.Originated.targetSize - Self.bytesLength }
 }

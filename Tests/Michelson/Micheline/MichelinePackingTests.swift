@@ -382,6 +382,18 @@ class MichelinePackingTests: XCTestCase {
                 ]
             ),
             .init(
+                packed: "050a0000001601541e2bf7dc4401328be301227d204d5dc233b67600",
+                valuesWithSchemas: [
+                    (try! .init("KT1GFYUFQRT4RsNbtG2NU23woUyMp5tx9gx2"), .prim(try! .init(prim: "address")))
+                ]
+            ),
+            .init(
+                packed: "050a0000002001541e2bf7dc4401328be301227d204d5dc233b67600656e747279706f696e74",
+                valuesWithSchemas: [
+                    (try! .init("KT1GFYUFQRT4RsNbtG2NU23woUyMp5tx9gx2%entrypoint"), .prim(try! .init(prim: "address")))
+                ]
+            ),
+            .init(
                 packed: "050a00000004ef6a66af",
                 valuesWithSchemas: [
                     (try! .init("NetXy3eo3jtuwuc"), .prim(try! .init(prim: "chain_id")))
