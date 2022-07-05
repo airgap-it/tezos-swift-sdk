@@ -93,7 +93,7 @@ extension Micheline.Sequence {
     
 }
 
-// MARK: Utility Functions: Unpack
+// MARK: Utilities: Unpack
 
 private func postUnpack(_ value: Micheline, usingSchema schema: Micheline) throws -> Micheline {
     if case let .prim(schema) = schema {
@@ -292,12 +292,7 @@ private func postUnpackSignatureData(_ value: Micheline, usingSchema schema: Mic
 
 private func postUnpackTimestampData(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
     try postUnpackIntToString(value, usingSchema: schema) {
-        let date = Date(timeIntervalSince1970: TimeInterval($0) / 1000.0)
-        
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions.insert(.withFractionalSeconds)
-        
-        return formatter.string(from: date)
+        Timestamp.millis(Int64($0)).toRFC3339()
     }
 }
 
@@ -439,7 +434,7 @@ private func combineAddress(_ address: Address, with entrypoint: String) -> Stri
     return "\(address.base58)\(Michelson.ComparableType.Address.entrypointSeparator)\(entrypoint)"
 }
 
-// MARK: Utility Functions: Pack
+// MARK: Utilities: Pack
 
 private func prePack(_ value: Micheline, usingSchema schema: Micheline) throws -> Micheline {
     if case let .prim(schema) = schema {
@@ -638,14 +633,7 @@ private func prePackSignatureData(_ value: Micheline, usingSchema schema: Michel
 
 private func prePackTimestampData(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
     try prePackStringToInt(value, usingSchema: schema) {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions.insert(.withFractionalSeconds)
-        
-        guard let date = formatter.date(from: $0) else {
-            throw TezosError.invalidValue("Invalid ISO8601 date.")
-        }
-        
-        return Int((date.timeIntervalSince1970 * 1000.0).rounded())
+        Int(Timestamp.rfc3339($0).toMillis())
     }
 }
 

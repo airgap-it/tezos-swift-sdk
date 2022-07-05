@@ -38,10 +38,10 @@ extension Operation {
         public struct SeedNonceRevelation: `Protocol`, Hashable {
             public static let tag: [UInt8] = [1]
             
-            public let level: Int
+            public let level: Int32
             public let nonce: HexString
             
-            public init(level: Int, nonce: HexString) {
+            public init(level: Int32, nonce: HexString) {
                 self.level = level
                 self.nonce = nonce
             }
@@ -95,10 +95,10 @@ extension Operation {
             public static let tag: [UInt8] = [5]
             
             public let source: Address.Implicit
-            public let period: Int
+            public let period: Int32
             public let proposals: [ProtocolHash]
             
-            public init(source: Address.Implicit, period: Int, proposals: [ProtocolHash]) {
+            public init(source: Address.Implicit, period: Int32, proposals: [ProtocolHash]) {
                 self.source = source
                 self.period = period
                 self.proposals = proposals
@@ -111,9 +111,16 @@ extension Operation {
             public static let tag: [UInt8] = [6]
             
             public let source: Address.Implicit
-            public let period: Int
+            public let period: Int32
             public let proposal: ProtocolHash
             public let ballot: Kind
+            
+            public init(source: Address.Implicit, period: Int32, proposal: ProtocolHash, ballot: Kind) {
+                self.source = source
+                self.period = period
+                self.proposal = proposal
+                self.ballot = ballot
+            }
             
             public enum Kind: BytesTag {
                 case yay
@@ -165,14 +172,14 @@ extension Operation {
             public static let tag: [UInt8] = [20]
             
             public let slot: UInt16
-            public let level: Int
-            public let round: Int
+            public let level: Int32
+            public let round: Int32
             public let blockPayloadHash: BlockPayloadHash
             
             public init(
                 slot: UInt16,
-                level: Int,
-                round: Int,
+                level: Int32,
+                round: Int32,
                 blockPayloadHash: BlockPayloadHash
             ) {
                 self.slot = slot
@@ -188,14 +195,14 @@ extension Operation {
             public static let tag: [UInt8] = [21]
             
             public let slot: UInt16
-            public let level: Int
-            public let round: Int
+            public let level: Int32
+            public let round: Int32
             public let blockPayloadHash: BlockPayloadHash
             
             public init(
                 slot: UInt16,
-                level: Int,
-                round: Int,
+                level: Int32,
+                round: Int32,
                 blockPayloadHash: BlockPayloadHash
             ) {
                 self.slot = slot
@@ -401,8 +408,8 @@ public protocol OperationContentProtocol {
 
 public protocol OperationConsensusContentProtocol {
     var slot: UInt16 { get }
-    var level: Int { get }
-    var round: Int { get }
+    var level: Int32 { get }
+    var round: Int32 { get }
     var blockPayloadHash: BlockPayloadHash { get }
 }
 
