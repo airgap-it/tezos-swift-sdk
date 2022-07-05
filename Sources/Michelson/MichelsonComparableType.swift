@@ -418,6 +418,8 @@ extension Michelson {
             public static let name: Swift.String = "address"
             public static let tag: [UInt8] = [110]
             
+            public static let entrypointSeparator: Character = "%"
+            
             public static func validateArgs(_ args: [Michelson]) throws {
                 guard args.count == 0 else {
                     throw TezosError.invalidValue("Expected Michelson \(Self.name) to have 0 arguments.")

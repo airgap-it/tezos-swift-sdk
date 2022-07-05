@@ -8,7 +8,8 @@
 import Foundation
 
 public extension String {
-    init(fromConsuming bytes: inout [UInt8], count: Int) throws {
+    init(fromConsuming bytes: inout [UInt8], count: Int? = nil) throws {
+        let count = count ?? bytes.count
         guard let string = String(bytes: bytes.consumeSubrange(0..<count), encoding: .utf8) else {
             throw TezosError.invalidValue("Invalid encoded String value.")
         }
