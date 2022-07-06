@@ -33,9 +33,9 @@ extension FromForgedConsuming {
 public typealias Forgeable = FromForged & ToForged
 typealias ForgeableConsuming = FromForgedConsuming & ToForged
 
-// MARK: Operation
+// MARK: TezosOperation
 
-extension Operation: Forgeable {
+extension TezosOperation: Forgeable {
     public init(fromForged bytes: [UInt8]) throws {
         self = .unsigned(try .init(fromForged: bytes))
     }
@@ -50,7 +50,7 @@ extension Operation: Forgeable {
     }
 }
 
-extension Operation.Unsigned: ForgeableConsuming {
+extension TezosOperation.Unsigned: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         let branch = try BlockHash(fromConsuming: &bytes)
         let content = try unforgeContent(from: &bytes)
@@ -66,7 +66,7 @@ extension Operation.Unsigned: ForgeableConsuming {
     }
 }
 
-extension Operation.Signed: ToForged {
+extension TezosOperation.Signed: ToForged {
     public func forge() throws -> [UInt8] {
         let branchBytes = try branch.encodeToBytes()
         let contentsBytes = try forgeContent(content)
@@ -75,9 +75,9 @@ extension Operation.Signed: ToForged {
     }
 }
 
-// MARK: Operation.Content
+// MARK: TezosOperation.Content
 
-extension Operation.Content: ForgeableConsuming {
+extension TezosOperation.Content: ForgeableConsuming {
     
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         guard let kind = Self.resolveKind(from: bytes) else {
@@ -94,12 +94,12 @@ extension Operation.Content: ForgeableConsuming {
 
 // MARK: SeedNonceRevelation
 
-extension Operation.Content.SeedNonceRevelation: ForgeableConsuming {
+extension TezosOperation.Content.SeedNonceRevelation: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.seedNonceRevelation, bytes: &bytes)
         
         let level = try Int32(fromConsuming: &bytes)
-        let nonce = try HexString(fromConsuming: &bytes)
+        let nonce = try HexString(fromConsuming: &bytes, count: 32)
         
         self.init(level: level, nonce: nonce)
     }
@@ -114,17 +114,17 @@ extension Operation.Content.SeedNonceRevelation: ForgeableConsuming {
 
 // MARK: DoubleEndorsementEvidence
 
-extension Operation.Content.DoubleEndorsementEvidence: ForgeableConsuming {
+extension TezosOperation.Content.DoubleEndorsementEvidence: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.doubleEndorsementEvidence, bytes: &bytes)
         
         let op1Length = try Int32(fromConsuming: &bytes)
         var op1Bytes = bytes.consumeSubrange(0..<Int(op1Length))
-        let op1 = try Operation.InlinedEndorsement(fromConsuming: &op1Bytes)
+        let op1 = try TezosOperation.InlinedEndorsement(fromConsuming: &op1Bytes)
         
         let op2Length = try Int32(fromConsuming: &bytes)
         var op2Bytes = bytes.consumeSubrange(0..<Int(op2Length))
-        let op2 = try Operation.InlinedEndorsement(fromConsuming: &op2Bytes)
+        let op2 = try TezosOperation.InlinedEndorsement(fromConsuming: &op2Bytes)
         
         self.init(op1: op1, op2: op2)
     }
@@ -142,17 +142,17 @@ extension Operation.Content.DoubleEndorsementEvidence: ForgeableConsuming {
 
 // MARK: DoubleBakingEvidence
 
-extension Operation.Content.DoubleBakingEvidence: ForgeableConsuming {
+extension TezosOperation.Content.DoubleBakingEvidence: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.doubleBakingEvidence, bytes: &bytes)
         
         let bh1Length = try Int32(fromConsuming: &bytes)
         var bh1Bytes = bytes.consumeSubrange(0..<Int(bh1Length))
-        let bh1 = try Operation.BlockHeader(fromConsuming: &bh1Bytes)
+        let bh1 = try TezosOperation.BlockHeader(fromConsuming: &bh1Bytes)
         
         let bh2Length = try Int32(fromConsuming: &bytes)
         var bh2Bytes = bytes.consumeSubrange(0..<Int(bh2Length))
-        let bh2 = try Operation.BlockHeader(fromConsuming: &bh2Bytes)
+        let bh2 = try TezosOperation.BlockHeader(fromConsuming: &bh2Bytes)
         
         self.init(bh1: bh1, bh2: bh2)
     }
@@ -170,7 +170,7 @@ extension Operation.Content.DoubleBakingEvidence: ForgeableConsuming {
 
 // MARK: ActivateAccount
 
-extension Operation.Content.ActivateAccount: ForgeableConsuming {
+extension TezosOperation.Content.ActivateAccount: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.activateAccount, bytes: &bytes)
         
@@ -190,7 +190,7 @@ extension Operation.Content.ActivateAccount: ForgeableConsuming {
 
 // MARK: Proposals
 
-extension Operation.Content.Proposals: ForgeableConsuming {
+extension TezosOperation.Content.Proposals: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.proposals, bytes: &bytes)
         
@@ -217,7 +217,7 @@ extension Operation.Content.Proposals: ForgeableConsuming {
 
 // MARK: Ballot
 
-extension Operation.Content.Ballot: ForgeableConsuming {
+extension TezosOperation.Content.Ballot: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.ballot, bytes: &bytes)
         
@@ -243,17 +243,17 @@ extension Operation.Content.Ballot: ForgeableConsuming {
 
 // MARK: DoublePreendorsementEvidence
 
-extension Operation.Content.DoublePreendorsementEvidence: ForgeableConsuming {
+extension TezosOperation.Content.DoublePreendorsementEvidence: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.doublePreendorsementEvidence, bytes: &bytes)
         
         let op1Length = try Int32(fromConsuming: &bytes)
         var op1Bytes = bytes.consumeSubrange(0..<Int(op1Length))
-        let op1 = try Operation.InlinedPreendorsement(fromConsuming: &op1Bytes)
+        let op1 = try TezosOperation.InlinedPreendorsement(fromConsuming: &op1Bytes)
         
         let op2Length = try Int32(fromConsuming: &bytes)
         var op2Bytes = bytes.consumeSubrange(0..<Int(op2Length))
-        let op2 = try Operation.InlinedPreendorsement(fromConsuming: &op2Bytes)
+        let op2 = try TezosOperation.InlinedPreendorsement(fromConsuming: &op2Bytes)
         
         self.init(op1: op1, op2: op2)
     }
@@ -271,7 +271,7 @@ extension Operation.Content.DoublePreendorsementEvidence: ForgeableConsuming {
 
 // MARK: FailingNoop
 
-extension Operation.Content.FailingNoop: ForgeableConsuming {
+extension TezosOperation.Content.FailingNoop: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.failingNoop, bytes: &bytes)
         
@@ -291,7 +291,7 @@ extension Operation.Content.FailingNoop: ForgeableConsuming {
 
 // MARK: Preendorsement
 
-extension Operation.Content.Preendorsement: ForgeableConsuming {
+extension TezosOperation.Content.Preendorsement: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.preendorsement, bytes: &bytes)
         
@@ -308,7 +308,7 @@ extension Operation.Content.Preendorsement: ForgeableConsuming {
 
 // MARK: Endorsement
 
-extension Operation.Content.Endorsement: ForgeableConsuming {
+extension TezosOperation.Content.Endorsement: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.endorsement, bytes: &bytes)
         
@@ -325,7 +325,7 @@ extension Operation.Content.Endorsement: ForgeableConsuming {
 
 // MARK: Reveal
 
-extension Operation.Content.Reveal: ForgeableConsuming {
+extension TezosOperation.Content.Reveal: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.reveal, bytes: &bytes)
         
@@ -352,7 +352,7 @@ extension Operation.Content.Reveal: ForgeableConsuming {
 
 // MARK: Transaction
 
-extension Operation.Content.Transaction: ForgeableConsuming {
+extension TezosOperation.Content.Transaction: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.transaction, bytes: &bytes)
         
@@ -361,7 +361,7 @@ extension Operation.Content.Transaction: ForgeableConsuming {
         let destination = try Address(fromConsuming: &bytes)
         
         let parametersPresence = Bool(fromConsuming: &bytes) ?? false
-        let parameters = parametersPresence ? try Operation.Parameters(fromConsuming: &bytes) : nil
+        let parameters = parametersPresence ? try TezosOperation.Parameters(fromConsuming: &bytes) : nil
             
         self.init(
             source: source,
@@ -389,7 +389,7 @@ extension Operation.Content.Transaction: ForgeableConsuming {
 
 // MARK: Origination
 
-extension Operation.Content.Origination: ForgeableConsuming {
+extension TezosOperation.Content.Origination: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.origination, bytes: &bytes)
         
@@ -399,7 +399,7 @@ extension Operation.Content.Origination: ForgeableConsuming {
         let delegatePresence = Bool(fromConsuming: &bytes) ?? false
         let delegate = delegatePresence ? try Address.Implicit(fromConsuming: &bytes) : nil
         
-        let script = try Operation.Script(fromConsuming: &bytes)
+        let script = try TezosOperation.Script(fromConsuming: &bytes)
             
         self.init(
             source: source,
@@ -428,7 +428,7 @@ extension Operation.Content.Origination: ForgeableConsuming {
 
 // MARK: Delegation
 
-extension Operation.Content.Delegation: ForgeableConsuming {
+extension TezosOperation.Content.Delegation: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.delegation, bytes: &bytes)
         
@@ -459,7 +459,7 @@ extension Operation.Content.Delegation: ForgeableConsuming {
 
 // MARK: RegisterGlobalConstant
 
-extension Operation.Content.RegisterGlobalConstant: ForgeableConsuming {
+extension TezosOperation.Content.RegisterGlobalConstant: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.registerGlobalConstant, bytes: &bytes)
         
@@ -491,7 +491,7 @@ extension Operation.Content.RegisterGlobalConstant: ForgeableConsuming {
 
 // MARK: SetDepositsLimit
 
-extension Operation.Content.SetDepositsLimit: ForgeableConsuming {
+extension TezosOperation.Content.SetDepositsLimit: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         try assertConsumingKind(.setDepositsLimit, bytes: &bytes)
         
@@ -522,12 +522,12 @@ extension Operation.Content.SetDepositsLimit: ForgeableConsuming {
 
 // MARK: Utilities: Unforge
 
-private func unforgeContent(from bytes: inout [UInt8], unforged: [Operation.Content] = []) throws -> [Operation.Content] {
+private func unforgeContent(from bytes: inout [UInt8], unforged: [TezosOperation.Content] = []) throws -> [TezosOperation.Content] {
     guard !bytes.isEmpty else {
         return unforged
     }
     
-    let content = try Operation.Content(fromForgedConsuming: &bytes)
+    let content = try TezosOperation.Content(fromForgedConsuming: &bytes)
     return try unforgeContent(from: &bytes, unforged: unforged + [content])
 }
 
@@ -554,8 +554,8 @@ private func unforgeManagerOperation(
     return (source, fee, counter, gasLimit, storageLimit)
 }
 
-private func assertConsumingKind(_ kind: Operation.Content.Kind, bytes: inout [UInt8]) throws {
-    guard Operation.Content.resolveKind(from: bytes) == kind else {
+private func assertConsumingKind(_ kind: TezosOperation.Content.Kind, bytes: inout [UInt8]) throws {
+    guard TezosOperation.Content.resolveKind(from: bytes) == kind else {
         throw TezosError.invalidValue("Invalid tag, encoded value is not \(kind).")
     }
     
@@ -564,11 +564,11 @@ private func assertConsumingKind(_ kind: Operation.Content.Kind, bytes: inout [U
 
 // MARK: Utilities: Forge
 
-private func forgeContent(_ content: [Operation.Content]) throws -> [UInt8] {
+private func forgeContent(_ content: [TezosOperation.Content]) throws -> [UInt8] {
     try content.reduce([]) { acc, next in acc + (try next.forge()) }
 }
 
-private func forgeConsensusOperation(_ operation: Operation.Content.Consensus) throws -> [UInt8] {
+private func forgeConsensusOperation(_ operation: TezosOperation.Content.Consensus) throws -> [UInt8] {
     let slotBytes = try operation.slot.encodeToBytes()
     let levelBytes = try operation.level.encodeToBytes()
     let roundBytes = try operation.round.encodeToBytes()
@@ -577,7 +577,7 @@ private func forgeConsensusOperation(_ operation: Operation.Content.Consensus) t
     return slotBytes + levelBytes + roundBytes + blockPayloadHashBytes
 }
 
-private func forgeManagerOperation(_ operation: Operation.Content.Manager) throws -> [UInt8] {
+private func forgeManagerOperation(_ operation: TezosOperation.Content.Manager) throws -> [UInt8] {
     let sourceBytes = try operation.source.encodeToBytes()
     let feeBytes = try operation.fee.encodeToBytes()
     let counterBytes = operation.counter.encodeToBytes()
@@ -589,13 +589,13 @@ private func forgeManagerOperation(_ operation: Operation.Content.Manager) throw
 
 // MARK: Utility Extensions
 
-private extension Operation.Content {
+private extension TezosOperation.Content {
     static func resolveKind(from bytes: [UInt8]) -> Kind? {
         Kind.allCases.first(where: { bytes.starts(with: $0.rawValue.tag) })
     }
 }
 
-private extension Operation.Content {
+private extension TezosOperation.Content {
     func asForgeable() -> Forgeable {
         switch self {
         case .seedNonceRevelation(let seedNonceRevelation):
@@ -634,10 +634,10 @@ private extension Operation.Content {
     }
 }
 
-private extension Operation.InlinedEndorsement {
+private extension TezosOperation.InlinedEndorsement {
     init(fromConsuming bytes: inout [UInt8]) throws {
         let branch = try BlockHash(fromConsuming: &bytes)
-        let operations = try Operation.Content.Endorsement(fromForgedConsuming: &bytes)
+        let operations = try TezosOperation.Content.Endorsement(fromForgedConsuming: &bytes)
         let signature = try Signature(fromConsuming: &bytes)
         
         self.init(branch: branch, operations: operations, signature: signature)
@@ -652,10 +652,10 @@ private extension Operation.InlinedEndorsement {
     }
 }
 
-private extension Operation.InlinedPreendorsement {
+private extension TezosOperation.InlinedPreendorsement {
     init(fromConsuming bytes: inout [UInt8]) throws {
         let branch = try BlockHash(fromConsuming: &bytes)
-        let operations = try Operation.Content.Preendorsement(fromForgedConsuming: &bytes)
+        let operations = try TezosOperation.Content.Preendorsement(fromForgedConsuming: &bytes)
         let signature = try Signature(fromConsuming: &bytes)
         
         self.init(branch: branch, operations: operations, signature: signature)
@@ -670,7 +670,7 @@ private extension Operation.InlinedPreendorsement {
     }
 }
 
-private extension Operation.BlockHeader {
+private extension TezosOperation.BlockHeader {
     init(fromConsuming bytes: inout [UInt8]) throws {
         let level = try Int32(fromConsuming: &bytes)
         let proto = try UInt8(fromConsuming: &bytes)
@@ -689,7 +689,7 @@ private extension Operation.BlockHeader {
         let context = try ContextHash(fromConsuming: &bytes)
         let payloadHash = try BlockPayloadHash(fromConsuming: &bytes)
         let payloadRound = try Int32(fromConsuming: &bytes)
-        let proofOfWorkNonce = try HexString(fromConsuming: &bytes)
+        let proofOfWorkNonce = try HexString(fromConsuming: &bytes, count: 8)
 
         let seedNonceHashPresence = Bool(fromConsuming: &bytes) ?? false
         let seedNonceHash = seedNonceHashPresence ? try NonceHash(fromConsuming: &bytes) : nil
@@ -761,9 +761,9 @@ private extension Operation.BlockHeader {
     }
 }
 
-private extension Operation.Parameters {
+private extension TezosOperation.Parameters {
     init(fromConsuming bytes: inout [UInt8]) throws {
-        let entrypoint = try Operation.Entrypoint(fromConsuming: &bytes)
+        let entrypoint = try TezosOperation.Entrypoint(fromConsuming: &bytes)
         
         let valueLength = try Int32(fromConsuming: &bytes)
         var valueBytes = bytes.consumeSubrange(0..<Int(valueLength))
@@ -782,7 +782,7 @@ private extension Operation.Parameters {
     }
 }
 
-private extension Operation.Entrypoint {
+private extension TezosOperation.Entrypoint {
     init(fromConsuming bytes: inout [UInt8]) throws {
         guard let tag = Tag.allCases.first(where: { bytes.starts(with: $0.rawValue) }) else {
             throw TezosError.invalidValue("Invalid encoded OperationContent value.")
@@ -812,7 +812,7 @@ private extension Operation.Entrypoint {
     }
 }
 
-private extension Operation.Script {
+private extension TezosOperation.Script {
     init(fromConsuming bytes: inout [UInt8]) throws {
         let codeLength = try Int32(fromConsuming: &bytes)
         var codeBytes = bytes.consumeSubrange(0..<Int(codeLength))
@@ -836,7 +836,7 @@ private extension Operation.Script {
     }
 }
 
-private extension Operation.Content.Ballot.Kind {
+private extension TezosOperation.Content.Ballot.Kind {
     init?(fromConsuming bytes: inout [UInt8]) {
         guard let kind = Self.allCases.first(where: { bytes.starts(with: $0.value) }) else {
             return nil

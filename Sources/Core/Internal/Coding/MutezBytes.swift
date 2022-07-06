@@ -10,12 +10,12 @@ import BigInt
 
 extension Mutez: BytesCodable {
     public init(fromConsuming bytes: inout [UInt8]) throws {
-        let bigInt = try BigInt(fromConsuming: &bytes)
-        try self.init(Int64(bigInt))
+        let bigUInt = try BigUInt(fromConsuming: &bytes)
+        try self.init(Int64(bigUInt))
     }
     
     public func encodeToBytes() throws -> [UInt8] {
-        let bigInt = BigInt(value)
-        return bigInt.encodeToBytes()
+        let bigUInt = BigUInt(value)
+        return bigUInt.encodeToBytes()
     }
 }

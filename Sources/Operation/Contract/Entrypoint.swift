@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Operation {
+extension TezosOperation {
     
     public enum Entrypoint: Hashable {
         case `default`

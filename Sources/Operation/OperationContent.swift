@@ -9,7 +9,7 @@ import Foundation
 import TezosCore
 import TezosMichelson
 
-extension Operation {
+extension TezosOperation {
     
     public enum Content: Hashable {
         public typealias `Protocol` = OperationContentProtocol
@@ -143,7 +143,7 @@ extension Operation {
                 self.nonce = nonce
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .seedNonceRevelation(self)
             }
         }
@@ -161,7 +161,7 @@ extension Operation {
                 self.op2 = op2
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .doubleEndorsementEvidence(self)
             }
         }
@@ -179,7 +179,7 @@ extension Operation {
                 self.bh2 = bh2
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .doubleBakingEvidence(self)
             }
         }
@@ -197,7 +197,7 @@ extension Operation {
                 self.secret = secret
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .activateAccount(self)
             }
         }
@@ -217,7 +217,7 @@ extension Operation {
                 self.proposals = proposals
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .proposals(self)
             }
         }
@@ -256,7 +256,7 @@ extension Operation {
                 }
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .ballot(self)
             }
         }
@@ -274,7 +274,7 @@ extension Operation {
                 self.op2 = op2
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .doublePreendorsementEvidence(self)
             }
         }
@@ -290,7 +290,7 @@ extension Operation {
                 self.arbitrary = arbitrary
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .failingNoop(self)
             }
         }
@@ -317,7 +317,7 @@ extension Operation {
                 self.blockPayloadHash = blockPayloadHash
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .preendorsement(self)
             }
         }
@@ -344,7 +344,7 @@ extension Operation {
                 self.blockPayloadHash = blockPayloadHash
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .endorsement(self)
             }
         }
@@ -377,7 +377,7 @@ extension Operation {
                 self.publicKey = publicKey
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .reveal(self)
             }
         }
@@ -416,7 +416,7 @@ extension Operation {
                 self.parameters = parameters
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .transaction(self)
             }
         }
@@ -455,7 +455,7 @@ extension Operation {
                 self.script = script
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .origination(self)
             }
         }
@@ -488,7 +488,7 @@ extension Operation {
                 self.delegate = delegate
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .delegation(self)
             }
         }
@@ -521,7 +521,7 @@ extension Operation {
                 self.value = value
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .registerGlobalConstant(self)
             }
         }
@@ -554,7 +554,7 @@ extension Operation {
                 self.limit = limit
             }
             
-            public func asContent() -> Operation.Content {
+            public func asContent() -> TezosOperation.Content {
                 .setDepositsLimit(self)
             }
         }
@@ -566,7 +566,7 @@ extension Operation {
 public protocol OperationContentProtocol {
     static var tag: [UInt8] { get }
     
-    func asContent() -> Operation.Content
+    func asContent() -> TezosOperation.Content
 }
 
 public protocol OperationConsensusContentProtocol {

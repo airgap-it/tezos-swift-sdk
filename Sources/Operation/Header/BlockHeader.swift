@@ -8,7 +8,7 @@
 import Foundation
 import TezosCore
 
-extension Operation {
+extension TezosOperation {
     public typealias ShellBlockHeader = ShellBlockHeaderProtocol
     public typealias ProtocolBlockHeader = ProtocolBlockHeaderProtocol
     
