@@ -8,7 +8,7 @@
 import Foundation
 import TezosCore
 
-public enum Operation: OperationProtocol, Hashable {
+public enum Operation: Hashable {
     public typealias `Protocol` = OperationProtocol
     
     case unsigned(Unsigned)
@@ -46,6 +46,10 @@ public enum Operation: OperationProtocol, Hashable {
     public struct Unsigned: `Protocol`, Hashable {
         public let branch: BlockHash
         public let content: [Content]
+        
+        public func asOperation() -> Operation {
+            .unsigned(self)
+        }
     }
     
     // MARK: Signed
@@ -54,6 +58,10 @@ public enum Operation: OperationProtocol, Hashable {
         public let branch: BlockHash
         public let content: [Content]
         public let signature: Signature
+        
+        public func asOperation() -> Operation {
+            .signed(self)
+        }
     }
 }
 
@@ -62,4 +70,6 @@ public enum Operation: OperationProtocol, Hashable {
 public protocol OperationProtocol {
     var branch: BlockHash { get }
     var content: [Operation.Content] { get }
+    
+    func asOperation() -> Operation
 }

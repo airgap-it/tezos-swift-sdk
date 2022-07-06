@@ -7,30 +7,66 @@
 
 import Foundation
 import TezosCore
+import TezosMichelson
 
-// MARK: Operation
+// MARK: Protocol
 
-extension Operation {
-    init(fromForged bytes: [UInt8]) throws {
-        self = .unsigned(try .init(fromForged: bytes))
-    }
+public protocol ToForged {
+    func forge() throws -> [UInt8]
 }
 
-extension Operation.Unsigned {
+public protocol FromForged {
+    init(fromForged bytes: [UInt8]) throws
+}
+
+protocol FromForgedConsuming: FromForged {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws
+}
+
+extension FromForgedConsuming {
     public init(fromForged bytes: [UInt8]) throws {
         var bytes = bytes
         try self.init(fromForgedConsuming: &bytes)
     }
+}
+
+public typealias Forgeable = FromForged & ToForged
+typealias ForgeableConsuming = FromForgedConsuming & ToForged
+
+// MARK: Operation
+
+extension Operation: Forgeable {
+    public init(fromForged bytes: [UInt8]) throws {
+        self = .unsigned(try .init(fromForged: bytes))
+    }
     
+    public func forge() throws -> [UInt8] {
+        switch self {
+        case .unsigned(let unsigned):
+            return try unsigned.forge()
+        case .signed(let signed):
+            return try signed.forge()
+        }
+    }
+}
+
+extension Operation.Unsigned: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         let branch = try BlockHash(fromConsuming: &bytes)
         let content = try unforgeContent(from: &bytes)
         
         self.init(branch: branch, content: content)
     }
+    
+    public func forge() throws -> [UInt8] {
+        let branchBytes = try branch.encodeToBytes()
+        let contentsBytes = try forgeContent(content)
+        
+        return branchBytes + contentsBytes
+    }
 }
 
-extension Operation.`Protocol` {
+extension Operation.Signed: ToForged {
     public func forge() throws -> [UInt8] {
         let branchBytes = try branch.encodeToBytes()
         let contentsBytes = try forgeContent(content)
@@ -41,55 +77,33 @@ extension Operation.`Protocol` {
 
 // MARK: Operation.Content
 
-extension Operation.Content {
-    public init(fromForged bytes: [UInt8]) throws {
-        var bytes = bytes
-        try self.init(fromForgedConsuming: &bytes)
-    }
+extension Operation.Content: ForgeableConsuming {
     
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
-        throw fatalError("TODO: implement")
+        guard let kind = Self.resolveKind(from: bytes) else {
+            throw TezosError.invalidValue("Invalid encoded Operation.Content value.")
+        }
+        
+        self = try kind.rawValue.init(fromForgedConsuming: &bytes).asContent()
     }
     
     public func forge() throws -> [UInt8] {
-        switch self {
-        case .seedNonceRevelation(let seedNonceRevelation):
-            return try seedNonceRevelation.forge()
-        case .doubleEndorsementEvidence(let doubleEndorsementEvidence):
-            return try doubleEndorsementEvidence.forge()
-        case .doubleBakingEvidence(let doubleBakingEvidence):
-            return try doubleBakingEvidence.forge()
-        case .activateAccount(let activateAccount):
-            return try activateAccount.forge()
-        case .proposals(let proposals):
-            return try proposals.forge()
-        case .ballot(let ballot):
-            return try ballot.forge()
-        case .doublePreendorsementEvidence(let doublePreendorsementEvidence):
-            return try doublePreendorsementEvidence.forge()
-        case .failingNoop(let failingNoop):
-            return try failingNoop.forge()
-        case .preendorsement(let preendorsement):
-            return try preendorsement.forge()
-        case .endorsement(let endorsement):
-            return try endorsement.forge()
-        case .reveal(let reveal):
-            return try reveal.forge()
-        case .transaction(let transaction):
-            return try transaction.forge()
-        case .origination(let origination):
-            return try origination.forge()
-        case .delegation(let delegation):
-            return try delegation.forge()
-        case .registerGlobalConstant(let registerGlobalConstant):
-            return try registerGlobalConstant.forge()
-        case .setDepositsLimit(let setDepositsLimit):
-            return try setDepositsLimit.forge()
-        }
+        try asForgeable().forge()
     }
 }
 
-extension Operation.Content.SeedNonceRevelation {
+// MARK: SeedNonceRevelation
+
+extension Operation.Content.SeedNonceRevelation: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.seedNonceRevelation, bytes: &bytes)
+        
+        let level = try Int32(fromConsuming: &bytes)
+        let nonce = try HexString(fromConsuming: &bytes)
+        
+        self.init(level: level, nonce: nonce)
+    }
+    
     public func forge() throws -> [UInt8] {
         let levelBytes = try level.encodeToBytes()
         let nonceBytes = try nonce.encodeToBytes()
@@ -98,7 +112,23 @@ extension Operation.Content.SeedNonceRevelation {
     }
 }
 
-extension Operation.Content.DoubleEndorsementEvidence {
+// MARK: DoubleEndorsementEvidence
+
+extension Operation.Content.DoubleEndorsementEvidence: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.doubleEndorsementEvidence, bytes: &bytes)
+        
+        let op1Length = try Int32(fromConsuming: &bytes)
+        var op1Bytes = bytes.consumeSubrange(0..<Int(op1Length))
+        let op1 = try Operation.InlinedEndorsement(fromConsuming: &op1Bytes)
+        
+        let op2Length = try Int32(fromConsuming: &bytes)
+        var op2Bytes = bytes.consumeSubrange(0..<Int(op2Length))
+        let op2 = try Operation.InlinedEndorsement(fromConsuming: &op2Bytes)
+        
+        self.init(op1: op1, op2: op2)
+    }
+    
     public func forge() throws -> [UInt8] {
         let op1Bytes = try op1.encodeToBytes()
         let op1Length = try Int32(op1Bytes.count).encodeToBytes()
@@ -110,7 +140,23 @@ extension Operation.Content.DoubleEndorsementEvidence {
     }
 }
 
-extension Operation.Content.DoubleBakingEvidence {
+// MARK: DoubleBakingEvidence
+
+extension Operation.Content.DoubleBakingEvidence: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.doubleBakingEvidence, bytes: &bytes)
+        
+        let bh1Length = try Int32(fromConsuming: &bytes)
+        var bh1Bytes = bytes.consumeSubrange(0..<Int(bh1Length))
+        let bh1 = try Operation.BlockHeader(fromConsuming: &bh1Bytes)
+        
+        let bh2Length = try Int32(fromConsuming: &bytes)
+        var bh2Bytes = bytes.consumeSubrange(0..<Int(bh2Length))
+        let bh2 = try Operation.BlockHeader(fromConsuming: &bh2Bytes)
+        
+        self.init(bh1: bh1, bh2: bh2)
+    }
+    
     public func forge() throws -> [UInt8] {
         let bh1Bytes = try bh1.encodeToBytes()
         let bh1Length = try Int32(bh1Bytes.count).encodeToBytes()
@@ -122,7 +168,18 @@ extension Operation.Content.DoubleBakingEvidence {
     }
 }
 
-extension Operation.Content.ActivateAccount {
+// MARK: ActivateAccount
+
+extension Operation.Content.ActivateAccount: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.activateAccount, bytes: &bytes)
+        
+        let pkh = try Ed25519PublicKeyHash(fromConsuming: &bytes)
+        let secret = try HexString(fromConsuming: &bytes, count: 20)
+        
+        self.init(pkh: pkh, secret: secret)
+    }
+    
     public func forge() throws -> [UInt8] {
         let pkhBytes = try pkh.encodeToBytes()
         let secretBytes = try secret.encodeToBytes()
@@ -131,7 +188,22 @@ extension Operation.Content.ActivateAccount {
     }
 }
 
-extension Operation.Content.Proposals {
+// MARK: Proposals
+
+extension Operation.Content.Proposals: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.proposals, bytes: &bytes)
+        
+        let source = try Address.Implicit(fromConsuming: &bytes)
+        let period = try Int32(fromConsuming: &bytes)
+        
+        let proposalsLength = try Int32(fromConsuming: &bytes)
+        var proposalsBytes = bytes.consumeSubrange(0..<Int(proposalsLength))
+        let proposals = try [ProtocolHash](fromConsuming: &proposalsBytes) { try ProtocolHash(fromConsuming: &$0) }
+        
+        self.init(source: source, period: period, proposals: proposals)
+    }
+    
     public func forge() throws -> [UInt8] {
         let sourceBytes = try source.encodeToBytes()
         let periodBytes = try period.encodeToBytes()
@@ -143,18 +215,49 @@ extension Operation.Content.Proposals {
     }
 }
 
-extension Operation.Content.Ballot {
+// MARK: Ballot
+
+extension Operation.Content.Ballot: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.ballot, bytes: &bytes)
+        
+        let source = try Address.Implicit(fromConsuming: &bytes)
+        let period = try Int32(fromConsuming: &bytes)
+        let proposal = try ProtocolHash(fromConsuming: &bytes)
+        guard let ballot = Kind(fromConsuming: &bytes) else {
+            throw TezosError.invalidValue("Invalid encoded OperationContent value.")
+        }
+        
+        self.init(source: source, period: period, proposal: proposal, ballot: ballot)
+    }
+    
     public func forge() throws -> [UInt8] {
         let sourceBytes = try source.encodeToBytes()
         let periodBytes = try period.encodeToBytes()
         let proposalBytes = try proposal.encodeToBytes()
-        let ballotBytes = ballot.value
+        let ballotBytes = ballot.encodeToBytes()
         
         return Self.tag + sourceBytes + periodBytes + proposalBytes + ballotBytes
     }
 }
 
-extension Operation.Content.DoublePreendorsementEvidence {
+// MARK: DoublePreendorsementEvidence
+
+extension Operation.Content.DoublePreendorsementEvidence: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.doublePreendorsementEvidence, bytes: &bytes)
+        
+        let op1Length = try Int32(fromConsuming: &bytes)
+        var op1Bytes = bytes.consumeSubrange(0..<Int(op1Length))
+        let op1 = try Operation.InlinedPreendorsement(fromConsuming: &op1Bytes)
+        
+        let op2Length = try Int32(fromConsuming: &bytes)
+        var op2Bytes = bytes.consumeSubrange(0..<Int(op2Length))
+        let op2 = try Operation.InlinedPreendorsement(fromConsuming: &op2Bytes)
+        
+        self.init(op1: op1, op2: op2)
+    }
+    
     public func forge() throws -> [UInt8] {
         let op1Bytes = try op1.encodeToBytes()
         let op1Length = try Int32(op1Bytes.count).encodeToBytes()
@@ -166,7 +269,18 @@ extension Operation.Content.DoublePreendorsementEvidence {
     }
 }
 
-extension Operation.Content.FailingNoop {
+// MARK: FailingNoop
+
+extension Operation.Content.FailingNoop: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.failingNoop, bytes: &bytes)
+        
+        let length = try Int32(fromConsuming: &bytes)
+        var bytes = bytes.consumeSubrange(0..<Int(length))
+        let arbitrary = try HexString(fromConsuming: &bytes)
+        
+        self.init(arbitrary: arbitrary)
+    }
     public func forge() throws -> [UInt8] {
         let bytes = try arbitrary.encodeToBytes()
         let length = try Int32(bytes.count).encodeToBytes()
@@ -175,7 +289,16 @@ extension Operation.Content.FailingNoop {
     }
 }
 
-extension Operation.Content.Preendorsement {
+// MARK: Preendorsement
+
+extension Operation.Content.Preendorsement: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.preendorsement, bytes: &bytes)
+        
+        let (slot, level, round, blockPayloadHash) = try unforgeConsensusOperation(fromConsuming: &bytes)
+        self.init(slot: slot, level: level, round: round, blockPayloadHash: blockPayloadHash)
+    }
+    
     public func forge() throws -> [UInt8] {
         let consensusBytes = try forgeConsensusOperation(self)
         
@@ -183,7 +306,16 @@ extension Operation.Content.Preendorsement {
     }
 }
 
-extension Operation.Content.Endorsement {
+// MARK: Endorsement
+
+extension Operation.Content.Endorsement: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.endorsement, bytes: &bytes)
+        
+        let (slot, level, round, blockPayloadHash) = try unforgeConsensusOperation(fromConsuming: &bytes)
+        self.init(slot: slot, level: level, round: round, blockPayloadHash: blockPayloadHash)
+    }
+    
     public func forge() throws -> [UInt8] {
         let consensusBytes = try forgeConsensusOperation(self)
         
@@ -191,7 +323,25 @@ extension Operation.Content.Endorsement {
     }
 }
 
-extension Operation.Content.Reveal {
+// MARK: Reveal
+
+extension Operation.Content.Reveal: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.reveal, bytes: &bytes)
+        
+        let (source, fee, counter, gasLimit, storageLimit) = try unforgeManagerOperation(fromConsuming: &bytes)
+        let publicKey = try Key.Public(fromConsuming: &bytes)
+            
+        self.init(
+            source: source,
+            fee: fee,
+            counter: counter,
+            gasLimit: gasLimit,
+            storageLimit: storageLimit,
+            publicKey: publicKey
+        )
+    }
+    
     public func forge() throws -> [UInt8] {
         let managerBytes = try forgeManagerOperation(self)
         let publicKeyBytes = try publicKey.encodeToBytes()
@@ -200,7 +350,31 @@ extension Operation.Content.Reveal {
     }
 }
 
-extension Operation.Content.Transaction {
+// MARK: Transaction
+
+extension Operation.Content.Transaction: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.transaction, bytes: &bytes)
+        
+        let (source, fee, counter, gasLimit, storageLimit) = try unforgeManagerOperation(fromConsuming: &bytes)
+        let amount = try Mutez(fromConsuming: &bytes)
+        let destination = try Address(fromConsuming: &bytes)
+        
+        let parametersPresence = Bool(fromConsuming: &bytes) ?? false
+        let parameters = parametersPresence ? try Operation.Parameters(fromConsuming: &bytes) : nil
+            
+        self.init(
+            source: source,
+            fee: fee,
+            counter: counter,
+            gasLimit: gasLimit,
+            storageLimit: storageLimit,
+            amount: amount,
+            destination: destination,
+            parameters: parameters
+        )
+    }
+    
     public func forge() throws -> [UInt8] {
         let managerBytes = try forgeManagerOperation(self)
         let amountBytes = try amount.encodeToBytes()
@@ -213,7 +387,32 @@ extension Operation.Content.Transaction {
     }
 }
 
-extension Operation.Content.Origination {
+// MARK: Origination
+
+extension Operation.Content.Origination: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.origination, bytes: &bytes)
+        
+        let (source, fee, counter, gasLimit, storageLimit) = try unforgeManagerOperation(fromConsuming: &bytes)
+        let balance = try Mutez(fromConsuming: &bytes)
+        
+        let delegatePresence = Bool(fromConsuming: &bytes) ?? false
+        let delegate = delegatePresence ? try Address.Implicit(fromConsuming: &bytes) : nil
+        
+        let script = try Operation.Script(fromConsuming: &bytes)
+            
+        self.init(
+            source: source,
+            fee: fee,
+            counter: counter,
+            gasLimit: gasLimit,
+            storageLimit: storageLimit,
+            balance: balance,
+            delegate: delegate,
+            script: script
+        )
+    }
+    
     public func forge() throws -> [UInt8] {
         let managerBytes = try forgeManagerOperation(self)
         let balanceBytes = try balance.encodeToBytes()
@@ -227,7 +426,27 @@ extension Operation.Content.Origination {
     }
 }
 
-extension Operation.Content.Delegation {
+// MARK: Delegation
+
+extension Operation.Content.Delegation: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.delegation, bytes: &bytes)
+        
+        let (source, fee, counter, gasLimit, storageLimit) = try unforgeManagerOperation(fromConsuming: &bytes)
+        
+        let delegatePresence = Bool(fromConsuming: &bytes) ?? false
+        let delegate = delegatePresence ? try Address.Implicit(fromConsuming: &bytes) : nil
+            
+        self.init(
+            source: source,
+            fee: fee,
+            counter: counter,
+            gasLimit: gasLimit,
+            storageLimit: storageLimit,
+            delegate: delegate
+        )
+    }
+    
     public func forge() throws -> [UInt8] {
         let managerBytes = try forgeManagerOperation(self)
         
@@ -238,7 +457,28 @@ extension Operation.Content.Delegation {
     }
 }
 
-extension Operation.Content.RegisterGlobalConstant {
+// MARK: RegisterGlobalConstant
+
+extension Operation.Content.RegisterGlobalConstant: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.registerGlobalConstant, bytes: &bytes)
+        
+        let (source, fee, counter, gasLimit, storageLimit) = try unforgeManagerOperation(fromConsuming: &bytes)
+        
+        let valueLength = try Int32(fromConsuming: &bytes)
+        var valueBytes = bytes.consumeSubrange(0..<Int(valueLength))
+        let value = try Micheline(fromConsuming: &valueBytes)
+            
+        self.init(
+            source: source,
+            fee: fee,
+            counter: counter,
+            gasLimit: gasLimit,
+            storageLimit: storageLimit,
+            value: value
+        )
+    }
+    
     public func forge() throws -> [UInt8] {
         let managerBytes = try forgeManagerOperation(self)
         
@@ -249,7 +489,27 @@ extension Operation.Content.RegisterGlobalConstant {
     }
 }
 
-extension Operation.Content.SetDepositsLimit {
+// MARK: SetDepositsLimit
+
+extension Operation.Content.SetDepositsLimit: ForgeableConsuming {
+    init(fromForgedConsuming bytes: inout [UInt8]) throws {
+        try assertConsumingKind(.setDepositsLimit, bytes: &bytes)
+        
+        let (source, fee, counter, gasLimit, storageLimit) = try unforgeManagerOperation(fromConsuming: &bytes)
+        
+        let limitPresence = Bool(fromConsuming: &bytes) ?? false
+        let limit = limitPresence ? try Mutez(fromConsuming: &bytes) : nil
+            
+        self.init(
+            source: source,
+            fee: fee,
+            counter: counter,
+            gasLimit: gasLimit,
+            storageLimit: storageLimit,
+            limit: limit
+        )
+    }
+    
     public func forge() throws -> [UInt8] {
         let managerBytes = try forgeManagerOperation(self)
         
@@ -269,6 +529,37 @@ private func unforgeContent(from bytes: inout [UInt8], unforged: [Operation.Cont
     
     let content = try Operation.Content(fromForgedConsuming: &bytes)
     return try unforgeContent(from: &bytes, unforged: unforged + [content])
+}
+
+private func unforgeConsensusOperation(
+    fromConsuming bytes: inout [UInt8]
+) throws -> (slot: UInt16, level: Int32, round: Int32, blockPayloadHash: BlockPayloadHash) {
+    let slot = try UInt16(fromConsuming: &bytes)
+    let level = try Int32(fromConsuming: &bytes)
+    let round = try Int32(fromConsuming: &bytes)
+    let blockPayloadHash = try BlockPayloadHash(fromConsuming: &bytes)
+    
+    return (slot, level, round, blockPayloadHash)
+}
+
+private func unforgeManagerOperation(
+    fromConsuming bytes: inout [UInt8]
+) throws -> (source: Address.Implicit, fee: Mutez, counter: TezosNat, gasLimit: TezosNat, storageLimit: TezosNat) {
+    let source = try Address.Implicit(fromConsuming: &bytes)
+    let fee = try Mutez(fromConsuming: &bytes)
+    let counter = try TezosNat(fromConsuming: &bytes)
+    let gasLimit = try TezosNat(fromConsuming: &bytes)
+    let storageLimit = try TezosNat(fromConsuming: &bytes)
+
+    return (source, fee, counter, gasLimit, storageLimit)
+}
+
+private func assertConsumingKind(_ kind: Operation.Content.Kind, bytes: inout [UInt8]) throws {
+    guard Operation.Content.resolveKind(from: bytes) == kind else {
+        throw TezosError.invalidValue("Invalid tag, encoded value is not \(kind).")
+    }
+    
+    let _ = bytes.consumeSubrange(0..<kind.rawValue.tag.count)
 }
 
 // MARK: Utilities: Forge
@@ -296,7 +587,62 @@ private func forgeManagerOperation(_ operation: Operation.Content.Manager) throw
     return sourceBytes + feeBytes + counterBytes + gasLimitBytes + storageLimitBytes
 }
 
+// MARK: Utility Extensions
+
+private extension Operation.Content {
+    static func resolveKind(from bytes: [UInt8]) -> Kind? {
+        Kind.allCases.first(where: { bytes.starts(with: $0.rawValue.tag) })
+    }
+}
+
+private extension Operation.Content {
+    func asForgeable() -> Forgeable {
+        switch self {
+        case .seedNonceRevelation(let seedNonceRevelation):
+            return seedNonceRevelation
+        case .doubleEndorsementEvidence(let doubleEndorsementEvidence):
+            return doubleEndorsementEvidence
+        case .doubleBakingEvidence(let doubleBakingEvidence):
+            return doubleBakingEvidence
+        case .activateAccount(let activateAccount):
+            return activateAccount
+        case .proposals(let proposals):
+            return proposals
+        case .ballot(let ballot):
+            return ballot
+        case .doublePreendorsementEvidence(let doublePreendorsementEvidence):
+            return doublePreendorsementEvidence
+        case .failingNoop(let failingNoop):
+            return failingNoop
+        case .preendorsement(let preendorsement):
+            return preendorsement
+        case .endorsement(let endorsement):
+            return endorsement
+        case .reveal(let reveal):
+            return reveal
+        case .transaction(let transaction):
+            return transaction
+        case .origination(let origination):
+            return origination
+        case .delegation(let delegation):
+            return delegation
+        case .registerGlobalConstant(let registerGlobalConstant):
+            return registerGlobalConstant
+        case .setDepositsLimit(let setDepositsLimit):
+            return setDepositsLimit
+        }
+    }
+}
+
 private extension Operation.InlinedEndorsement {
+    init(fromConsuming bytes: inout [UInt8]) throws {
+        let branch = try BlockHash(fromConsuming: &bytes)
+        let operations = try Operation.Content.Endorsement(fromForgedConsuming: &bytes)
+        let signature = try Signature(fromConsuming: &bytes)
+        
+        self.init(branch: branch, operations: operations, signature: signature)
+    }
+    
     func encodeToBytes() throws -> [UInt8] {
         let branchBytes = try branch.encodeToBytes()
         let operationsBytes = try operations.forge()
@@ -307,6 +653,14 @@ private extension Operation.InlinedEndorsement {
 }
 
 private extension Operation.InlinedPreendorsement {
+    init(fromConsuming bytes: inout [UInt8]) throws {
+        let branch = try BlockHash(fromConsuming: &bytes)
+        let operations = try Operation.Content.Preendorsement(fromForgedConsuming: &bytes)
+        let signature = try Signature(fromConsuming: &bytes)
+        
+        self.init(branch: branch, operations: operations, signature: signature)
+    }
+    
     func encodeToBytes() throws -> [UInt8] {
         let branchBytes = try branch.encodeToBytes()
         let operationsBytes = try operations.forge()
@@ -317,6 +671,50 @@ private extension Operation.InlinedPreendorsement {
 }
 
 private extension Operation.BlockHeader {
+    init(fromConsuming bytes: inout [UInt8]) throws {
+        let level = try Int32(fromConsuming: &bytes)
+        let proto = try UInt8(fromConsuming: &bytes)
+        let predecessor = try BlockHash(fromConsuming: &bytes)
+        let timestamp = try Timestamp(fromConsuming: &bytes)
+        let validationPass = try UInt8(fromConsuming: &bytes)
+        let operationsHash = try OperationListListHash(fromConsuming: &bytes)
+
+        let fitnessLength = try Int32(fromConsuming: &bytes)
+        var fitnessBytes = bytes.consumeSubrange(0..<Int(fitnessLength))
+        let fitness = try [HexString](fromConsuming: &fitnessBytes) {
+            let length = try Int32(fromConsuming: &$0)
+            return try HexString(fromConsuming: &$0, count: Int(length))
+        }
+
+        let context = try ContextHash(fromConsuming: &bytes)
+        let payloadHash = try BlockPayloadHash(fromConsuming: &bytes)
+        let payloadRound = try Int32(fromConsuming: &bytes)
+        let proofOfWorkNonce = try HexString(fromConsuming: &bytes)
+
+        let seedNonceHashPresence = Bool(fromConsuming: &bytes) ?? false
+        let seedNonceHash = seedNonceHashPresence ? try NonceHash(fromConsuming: &bytes) : nil
+
+        let liquidityBakingEscapeVote = Bool(fromConsuming: &bytes) ?? false
+        let signature = try Signature(fromConsuming: &bytes)
+
+        self.init(
+            level: level,
+            proto: proto,
+            predecessor: predecessor,
+            timestamp: timestamp,
+            validationPass: validationPass,
+            operationsHash: operationsHash,
+            fitness: fitness,
+            context: context,
+            payloadHash: payloadHash,
+            payloadRound: payloadRound,
+            proofOfWorkNonce: proofOfWorkNonce,
+            seedNonceHash: seedNonceHash,
+            liquidityBakingEscapeVote: liquidityBakingEscapeVote,
+            signature: signature
+        )
+    }
+    
     func encodeToBytes() throws -> [UInt8] {
         let levelBytes = try level.encodeToBytes()
         let protoBytes = try proto.encodeToBytes()
@@ -364,6 +762,16 @@ private extension Operation.BlockHeader {
 }
 
 private extension Operation.Parameters {
+    init(fromConsuming bytes: inout [UInt8]) throws {
+        let entrypoint = try Operation.Entrypoint(fromConsuming: &bytes)
+        
+        let valueLength = try Int32(fromConsuming: &bytes)
+        var valueBytes = bytes.consumeSubrange(0..<Int(valueLength))
+        let value = try Micheline(fromConsuming: &valueBytes)
+        
+        self.init(entrypoint: entrypoint, value: value)
+    }
+    
     func encodeToBytes() throws -> [UInt8] {
         let entrypointBytes = try entrypoint.encodeToBytes()
 
@@ -375,6 +783,22 @@ private extension Operation.Parameters {
 }
 
 private extension Operation.Entrypoint {
+    init(fromConsuming bytes: inout [UInt8]) throws {
+        guard let tag = Tag.allCases.first(where: { bytes.starts(with: $0.rawValue) }) else {
+            throw TezosError.invalidValue("Invalid encoded OperationContent value.")
+        }
+        
+        let _ = bytes.consumeSubrange(0..<tag.rawValue.count)
+        if let staticValue = tag.toStaticValue() {
+            self = staticValue.toEntrypoint()
+        } else {
+            let length = try UInt8(fromConsuming: &bytes)
+            let name = try String(fromConsuming: &bytes, count: Int(length))
+            
+            self = .named(name)
+        }
+    }
+    
     func encodeToBytes() throws -> [UInt8] {
         switch self {
         case .named(let string):
@@ -389,6 +813,18 @@ private extension Operation.Entrypoint {
 }
 
 private extension Operation.Script {
+    init(fromConsuming bytes: inout [UInt8]) throws {
+        let codeLength = try Int32(fromConsuming: &bytes)
+        var codeBytes = bytes.consumeSubrange(0..<Int(codeLength))
+        let code = try Micheline(fromConsuming: &codeBytes)
+        
+        let storageLength = try Int32(fromConsuming: &bytes)
+        var storageBytes = bytes.consumeSubrange(0..<Int(storageLength))
+        let storage = try Micheline(fromConsuming: &storageBytes)
+        
+        self.init(code: code, storage: storage)
+    }
+    
     func encodeToBytes() throws -> [UInt8] {
         let codeBytes = try code.encodeToBytes()
         let codeLength = try Int32(codeBytes.count).encodeToBytes()
@@ -400,7 +836,27 @@ private extension Operation.Script {
     }
 }
 
+private extension Operation.Content.Ballot.Kind {
+    init?(fromConsuming bytes: inout [UInt8]) {
+        guard let kind = Self.allCases.first(where: { bytes.starts(with: $0.value) }) else {
+            return nil
+        }
+        
+        let _ = bytes.consumeSubrange(0..<kind.value.count)
+        self = kind
+    }
+    
+    func encodeToBytes() -> [UInt8] {
+        value
+    }
+}
+
 private extension Timestamp {
+    init(fromConsuming bytes: inout [UInt8]) throws {
+        let millis = Timestamp.millis(try Int64(fromConsuming: &bytes))
+        self = .rfc3339(millis.toRFC3339())
+    }
+    
     func encodeToBytes() throws -> [UInt8] {
         try toMillis().encodeToBytes()
     }

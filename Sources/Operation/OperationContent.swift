@@ -33,6 +33,103 @@ extension Operation {
         case registerGlobalConstant(RegisterGlobalConstant)
         case setDepositsLimit(SetDepositsLimit)
         
+        enum Kind: CaseIterable, RawRepresentable {
+            typealias RawValue = (ForgeableConsuming & `Protocol`).Type
+            
+            case seedNonceRevelation
+            case doubleEndorsementEvidence
+            case doubleBakingEvidence
+            case activateAccount
+            case proposals
+            case ballot
+            case doublePreendorsementEvidence
+            case failingNoop
+            case preendorsement
+            case endorsement
+            case reveal
+            case transaction
+            case origination
+            case delegation
+            case registerGlobalConstant
+            case setDepositsLimit
+            
+            init?(rawValue: RawValue) {
+                switch rawValue {
+                case is SeedNonceRevelation.Type:
+                    self = .seedNonceRevelation
+                case is DoubleEndorsementEvidence.Type:
+                    self = .doubleEndorsementEvidence
+                case is DoubleBakingEvidence.Type:
+                    self = .doubleBakingEvidence
+                case is ActivateAccount.Type:
+                    self = .activateAccount
+                case is Proposals.Type:
+                    self = .proposals
+                case is Ballot.Type:
+                    self = .ballot
+                case is DoublePreendorsementEvidence.Type:
+                    self = .doublePreendorsementEvidence
+                case is FailingNoop.Type:
+                    self = .failingNoop
+                case is Preendorsement.Type:
+                    self = .preendorsement
+                case is Endorsement.Type:
+                    self = .endorsement
+                case is Reveal.Type:
+                    self = .reveal
+                case is Transaction.Type:
+                    self = .transaction
+                case is Origination.Type:
+                    self = .origination
+                case is Delegation.Type:
+                    self = .delegation
+                case is RegisterGlobalConstant.Type:
+                    self = .registerGlobalConstant
+                case is SetDepositsLimit.Type:
+                    self = .setDepositsLimit
+                default:
+                    return nil
+                }
+            }
+            
+            var rawValue: RawValue {
+                switch self {
+                case .seedNonceRevelation:
+                    return SeedNonceRevelation.self
+                case .doubleEndorsementEvidence:
+                    return DoubleEndorsementEvidence.self
+                case .doubleBakingEvidence:
+                    return DoubleBakingEvidence.self
+                case .activateAccount:
+                    return ActivateAccount.self
+                case .proposals:
+                    return Proposals.self
+                case .ballot:
+                    return Ballot.self
+                case .doublePreendorsementEvidence:
+                    return DoublePreendorsementEvidence.self
+                case .failingNoop:
+                    return FailingNoop.self
+                case .preendorsement:
+                    return Preendorsement.self
+                case .endorsement:
+                    return Endorsement.self
+                case .reveal:
+                    return Reveal.self
+                case .transaction:
+                    return Transaction.self
+                case .origination:
+                    return Origination.self
+                case .delegation:
+                    return Delegation.self
+                case .registerGlobalConstant:
+                    return RegisterGlobalConstant.self
+                case .setDepositsLimit:
+                    return SetDepositsLimit.self
+                }
+            }
+        }
+        
         // MARK: SeedNonceRevelation
         
         public struct SeedNonceRevelation: `Protocol`, Hashable {
@@ -44,6 +141,10 @@ extension Operation {
             public init(level: Int32, nonce: HexString) {
                 self.level = level
                 self.nonce = nonce
+            }
+            
+            public func asContent() -> Operation.Content {
+                .seedNonceRevelation(self)
             }
         }
         
@@ -59,6 +160,10 @@ extension Operation {
                 self.op1 = op1
                 self.op2 = op2
             }
+            
+            public func asContent() -> Operation.Content {
+                .doubleEndorsementEvidence(self)
+            }
         }
         
         // MARK: DoubleBakingEvidence
@@ -73,6 +178,10 @@ extension Operation {
                 self.bh1 = bh1
                 self.bh2 = bh2
             }
+            
+            public func asContent() -> Operation.Content {
+                .doubleBakingEvidence(self)
+            }
         }
         
         // MARK: ActivateAccount
@@ -86,6 +195,10 @@ extension Operation {
             public init(pkh: Ed25519PublicKeyHash, secret: HexString) {
                 self.pkh = pkh
                 self.secret = secret
+            }
+            
+            public func asContent() -> Operation.Content {
+                .activateAccount(self)
             }
         }
         
@@ -102,6 +215,10 @@ extension Operation {
                 self.source = source
                 self.period = period
                 self.proposals = proposals
+            }
+            
+            public func asContent() -> Operation.Content {
+                .proposals(self)
             }
         }
         
@@ -138,6 +255,10 @@ extension Operation {
                     }
                 }
             }
+            
+            public func asContent() -> Operation.Content {
+                .ballot(self)
+            }
         }
                     
         // MARK: DoublePreendorsementEvidence
@@ -152,6 +273,10 @@ extension Operation {
                 self.op1 = op1
                 self.op2 = op2
             }
+            
+            public func asContent() -> Operation.Content {
+                .doublePreendorsementEvidence(self)
+            }
         }
         
         // MARK: FailingNoop
@@ -163,6 +288,10 @@ extension Operation {
             
             public init(arbitrary: HexString) {
                 self.arbitrary = arbitrary
+            }
+            
+            public func asContent() -> Operation.Content {
+                .failingNoop(self)
             }
         }
         
@@ -187,6 +316,10 @@ extension Operation {
                 self.round = round
                 self.blockPayloadHash = blockPayloadHash
             }
+            
+            public func asContent() -> Operation.Content {
+                .preendorsement(self)
+            }
         }
                     
         // MARK: Endorsement
@@ -209,6 +342,10 @@ extension Operation {
                 self.level = level
                 self.round = round
                 self.blockPayloadHash = blockPayloadHash
+            }
+            
+            public func asContent() -> Operation.Content {
+                .endorsement(self)
             }
         }
         
@@ -238,6 +375,10 @@ extension Operation {
                 self.gasLimit = gasLimit
                 self.storageLimit = storageLimit
                 self.publicKey = publicKey
+            }
+            
+            public func asContent() -> Operation.Content {
+                .reveal(self)
             }
         }
         
@@ -274,6 +415,10 @@ extension Operation {
                 self.destination = destination
                 self.parameters = parameters
             }
+            
+            public func asContent() -> Operation.Content {
+                .transaction(self)
+            }
         }
         
         // MARK: Origination
@@ -309,6 +454,10 @@ extension Operation {
                 self.delegate = delegate
                 self.script = script
             }
+            
+            public func asContent() -> Operation.Content {
+                .origination(self)
+            }
         }
         
         // MARK: Delegation
@@ -337,6 +486,10 @@ extension Operation {
                 self.gasLimit = gasLimit
                 self.storageLimit = storageLimit
                 self.delegate = delegate
+            }
+            
+            public func asContent() -> Operation.Content {
+                .delegation(self)
             }
         }
         
@@ -367,6 +520,10 @@ extension Operation {
                 self.storageLimit = storageLimit
                 self.value = value
             }
+            
+            public func asContent() -> Operation.Content {
+                .registerGlobalConstant(self)
+            }
         }
                     
         // MARK: SetDepositsLimit
@@ -396,6 +553,10 @@ extension Operation {
                 self.storageLimit = storageLimit
                 self.limit = limit
             }
+            
+            public func asContent() -> Operation.Content {
+                .setDepositsLimit(self)
+            }
         }
     }
 }
@@ -404,6 +565,8 @@ extension Operation {
 
 public protocol OperationContentProtocol {
     static var tag: [UInt8] { get }
+    
+    func asContent() -> Operation.Content
 }
 
 public protocol OperationConsensusContentProtocol {
