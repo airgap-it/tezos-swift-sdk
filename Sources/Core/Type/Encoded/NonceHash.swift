@@ -11,7 +11,7 @@ import Foundation
 public struct NonceHash: EncodedValue {
     public static let base58Prefix: String = "nce"
     public static let base58Bytes: [UInt8] = [69, 220, 169]
-    public static let base58Length: Int = 52
+    public static let base58Length: Int = 53
     
     public static let bytesLength: Int = 32
     

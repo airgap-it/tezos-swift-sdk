@@ -8,7 +8,7 @@
 import Foundation
 import TezosMichelson
 
-extension Operation {
+extension TezosOperation {
     
     public struct Script: Hashable {
         public let code: Micheline

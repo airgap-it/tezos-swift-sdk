@@ -40,9 +40,13 @@ public extension BigNatWrapper {
         
         let part = BigUInt(byte & 0b0111_1111)
         let hasNext = byte & 0b1000_0000 == 0b1000_0000
-        var nextBytes = hasNext ? bytes : []
+        let decoded = decoded + (part << shift)
         
-        return decodeBigUInt(fromConsuming: &nextBytes, decoded: decoded + (part << shift), shiftedBy: shift + 7)
+        guard hasNext else {
+            return decoded
+        }
+        
+        return decodeBigUInt(fromConsuming: &bytes, decoded: decoded, shiftedBy: shift + 7)
     }
     
     private func encodeToBytes(_ nat: BigUInt, acc: [UInt8]) -> [UInt8] {

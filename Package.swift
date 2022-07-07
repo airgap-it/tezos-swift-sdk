@@ -49,5 +49,9 @@ let package = Package(
             name: "TezosMichelsonTests",
             dependencies: ["TezosCore", "TezosMichelson", "TezosTestUtils"],
             path: "Tests/Michelson"),
+        .testTarget(
+            name: "TezosOperationTests",
+            dependencies: ["TezosCore", "TezosOperation", "TezosTestUtils"],
+            path: "Tests/Operation"),
     ]
 )
