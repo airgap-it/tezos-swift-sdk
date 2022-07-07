@@ -34,7 +34,7 @@ extension Address: BytesCodable {
         }
     }
     
-    private enum Tag: BytesTag {
+    private enum Tag: BytesTagIterable {
         case implicit
         case originated
         
@@ -96,7 +96,7 @@ extension Address.Implicit: BytesCodable {
         }
     }
     
-    private enum Tag: BytesTag {
+    private enum Tag: BytesTagIterable {
         case tz1
         case tz2
         case tz3

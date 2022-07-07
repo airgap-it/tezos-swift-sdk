@@ -7,15 +7,19 @@
 
 import Foundation
 
-public protocol BytesTag: CaseIterable {
+public protocol BytesTag {
     var value: [UInt8] { get }
 }
+
+public protocol BytesTagIterable: BytesTag, CaseIterable {}
 
 public extension BytesTag {
     static func +(lhs: Self, rhs: [UInt8]) -> [UInt8] {
         lhs.value + rhs
     }
-    
+}
+
+public extension BytesTagIterable {
     static func recognize(from bytes: [UInt8]) -> Self? {
         guard !bytes.isEmpty else {
             return nil

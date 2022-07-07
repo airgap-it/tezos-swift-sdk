@@ -10,6 +10,8 @@ import Foundation
 // MARK: Address
 
 public enum Address: EncodedGroup {
+    public typealias `Protocol` = AddressProtocol
+    
     case implicit(Implicit)
     case originated(Originated)
     
@@ -41,11 +43,17 @@ public enum Address: EncodedGroup {
     }
 }
 
+public protocol AddressProtocol {
+    func asAddress() -> Address
+}
+
 // MARK: ImplicitAddress
 
 extension Address {
     
     public enum Implicit: EncodedGroup {
+        public typealias `Protocol` = ImplicitAddressProtocol
+        
         case tz1(Ed25519PublicKeyHash)
         case tz2(Secp256K1PublicKeyHash)
         case tz3(P256PublicKeyHash)
@@ -87,11 +95,23 @@ extension Address {
     }
 }
 
+public protocol ImplicitAddressProtocol: Address.`Protocol` {
+    func asImplicitAddress() -> Address.Implicit
+}
+
+extension Address.Implicit.`Protocol` {
+    public func asAddress() -> Address {
+        .implicit(asImplicitAddress())
+    }
+}
+
 // MARK: OriginatedAddress
 
 extension Address {
     
     public enum Originated: EncodedGroup {
+        public typealias `Protocol` = OriginatedAddressProtocol
+        
         case contract(ContractHash)
         
         public static func isValid(string: String) -> Bool {
@@ -116,5 +136,15 @@ extension Address {
                 throw TezosError.invalidValue("Invalid originated address base58 encoded value (\(base58).")
             }
         }
+    }
+}
+
+public protocol OriginatedAddressProtocol: Address.`Protocol` {
+    func asOriginatedAddress() -> Address.Originated
+}
+
+extension Address.Originated.`Protocol` {
+    public func asAddress() -> Address {
+        .originated(asOriginatedAddress())
     }
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Secp256K1Signature: EncodedValue {
+public struct Secp256K1Signature: Signature.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "spsig1"
     public static let base58Bytes: [UInt8] = [13, 115, 101, 19, 63]
     public static let base58Length: Int = 99
@@ -23,5 +23,9 @@ public struct Secp256K1Signature: EncodedValue {
         }
         
         self.base58 = base58
+    }
+    
+    public func asSignature() -> Signature {
+        .spsig(self)
     }
 }

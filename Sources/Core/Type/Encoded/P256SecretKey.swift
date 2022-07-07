@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct P256SecretKey: EncodedValue {
+public struct P256SecretKey: Key.Secret.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "p2sk"
     public static let base58Bytes: [UInt8] = [16, 81, 238, 189]
     public static let base58Length: Int = 54
@@ -23,5 +23,9 @@ public struct P256SecretKey: EncodedValue {
         }
         
         self.base58 = base58
+    }
+    
+    public func asSecretKey() -> Key.Secret {
+        .p2sk(self)
     }
 }

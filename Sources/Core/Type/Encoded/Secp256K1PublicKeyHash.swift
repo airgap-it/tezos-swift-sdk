@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Secp256K1PublicKeyHash: EncodedValue {
+public struct Secp256K1PublicKeyHash: Address.Implicit.`Protocol`, KeyHash.Public.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "tz2"
     public static let base58Bytes: [UInt8] = [6, 161, 161]
     public static let base58Length: Int = 36
@@ -23,5 +23,13 @@ public struct Secp256K1PublicKeyHash: EncodedValue {
         }
         
         self.base58 = base58
+    }
+    
+    public func asImplicitAddress() -> Address.Implicit {
+        .tz2(self)
+    }
+    
+    public func asPublicKeyHash() -> KeyHash.Public {
+        .tz2(self)
     }
 }

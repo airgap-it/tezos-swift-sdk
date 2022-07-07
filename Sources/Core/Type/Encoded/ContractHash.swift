@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct ContractHash: EncodedValue {
+public struct ContractHash: Address.Originated.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "KT1"
     public static let base58Bytes: [UInt8] = [2, 90, 121]
     public static let base58Length: Int = 36
@@ -23,5 +23,9 @@ public struct ContractHash: EncodedValue {
         }
         
         self.base58 = base58
+    }
+    
+    public func asOriginatedAddress() -> Address.Originated {
+        .contract(self)
     }
 }

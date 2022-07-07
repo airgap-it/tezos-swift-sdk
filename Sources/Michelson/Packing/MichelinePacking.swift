@@ -794,7 +794,7 @@ private func valueSchemaMismatchError(value: Micheline, schema: Micheline) -> Sw
 
 // MARK: Tag
 
-private enum Tag: BytesTag {
+private enum Tag: BytesTagIterable {
     case node
     
     var value: [UInt8] {
