@@ -10,6 +10,8 @@ import Foundation
 // MARK: Key
 
 public enum Key: EncodedGroup {
+    public typealias `Protocol` = KeyProtocol
+    
     case secret(Secret)
     case `public`(Public)
     
@@ -42,11 +44,17 @@ public enum Key: EncodedGroup {
     }
 }
 
+public protocol KeyProtocol {
+    func asKey() -> Key
+}
+
 // MARK: SecretKey
 
 extension Key {
     
     public enum Secret: EncodedGroup {
+        public typealias `Protocol` = SecretKeyProtocol
+        
         case edsk(Ed25519SecretKey)
         case spsk(Secp256K1SecretKey)
         case p2sk(P256SecretKey)
@@ -88,11 +96,23 @@ extension Key {
     }
 }
 
+public protocol SecretKeyProtocol: Key.`Protocol` {
+    func asSecretKey() -> Key.Secret
+}
+
+extension Key.Secret.`Protocol` {
+    public func asKey() -> Key {
+        .secret(asSecretKey())
+    }
+}
+
 // MARK: PublicKey
 
 extension Key {
     
     public enum Public: EncodedGroup {
+        public typealias `Protocol` = PublicKeyProtocol
+        
         case edpk(Ed25519PublicKey)
         case sppk(Secp256K1PublicKey)
         case p2pk(P256PublicKey)
@@ -131,5 +151,15 @@ extension Key {
                 throw TezosError.invalidValue("Invalid public key base58 encoded value (\(base58).")
             }
         }
+    }
+}
+
+public protocol PublicKeyProtocol: Key.`Protocol` {
+    func asPublicKey() -> Key.Public
+}
+
+extension Key.Public.`Protocol` {
+    public func asKey() -> Key {
+        .public(asPublicKey())
     }
 }
