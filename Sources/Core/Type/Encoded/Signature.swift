@@ -10,6 +10,8 @@ import Foundation
 // MARK: Signature
     
 public enum Signature: EncodedGroup {
+    public typealias `Protocol` = SignatureProtocol
+    
     case edsig(Ed25519Signature)
     case spsig(Secp256K1Signature)
     case p2sig(P256Signature)
@@ -55,4 +57,8 @@ public enum Signature: EncodedGroup {
             throw TezosError.invalidValue("Invalid signature base58 encoded value (\(base58).")
         }
     }
+}
+
+public protocol SignatureProtocol {
+    func asSignature() -> Signature
 }

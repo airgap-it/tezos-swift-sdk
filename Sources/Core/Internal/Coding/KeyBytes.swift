@@ -38,7 +38,7 @@ extension Key.Public: BytesCodable {
         }
     }
     
-    private enum Tag: BytesTag {
+    private enum Tag: BytesTagIterable {
         case edpk
         case sppk
         case p2pk

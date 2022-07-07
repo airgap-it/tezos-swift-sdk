@@ -17,8 +17,9 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(url: "https://github.com/keefertaylor/Base58Swift.git", from: "2.1.0"),
-        .package(url: "https://github.com/attaswift/BigInt.git", from: "5.3.0"),
+        .package(url: "https://github.com/keefertaylor/Base58Swift.git", .upToNextMajor(from: "2.1.0")),
+        .package(url: "https://github.com/attaswift/BigInt.git", .upToNextMajor(from: "5.3.0")),
+        .package(url: "https://github.com/jedisct1/swift-sodium.git", .upToNextMajor(from: "0.9.1")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -51,7 +52,12 @@ let package = Package(
             path: "Tests/Michelson"),
         .testTarget(
             name: "TezosOperationTests",
-            dependencies: ["TezosCore", "TezosOperation", "TezosTestUtils"],
+            dependencies: [
+                "TezosCore",
+                "TezosOperation",
+                "TezosTestUtils",
+                .product(name: "Clibsodium", package: "swift-sodium"),
+            ],
             path: "Tests/Operation"),
     ]
 )

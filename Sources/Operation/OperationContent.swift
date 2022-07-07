@@ -239,7 +239,7 @@ extension TezosOperation {
                 self.ballot = ballot
             }
             
-            public enum Kind: BytesTag {
+            public enum Kind: BytesTagIterable {
                 case yay
                 case nay
                 case pass

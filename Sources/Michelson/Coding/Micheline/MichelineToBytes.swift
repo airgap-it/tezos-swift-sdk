@@ -368,7 +368,7 @@ private func encodeSequence(_ nodes: [Micheline]) throws -> [UInt8] {
 
 // MARK: Tag
 
-private enum Tag: BytesTag {
+private enum Tag: BytesTagIterable {
     case int
     case string
     case sequence

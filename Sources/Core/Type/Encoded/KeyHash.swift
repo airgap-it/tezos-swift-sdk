@@ -10,6 +10,8 @@ import Foundation
 // MARK: KeyHash
 
 public enum KeyHash: EncodedGroup {
+    public typealias `Protocol` = KeyHashProtocol
+    
     case `public`(Public)
     
     public static func isValid(string: String) -> Bool {
@@ -37,11 +39,17 @@ public enum KeyHash: EncodedGroup {
     }
 }
 
+public protocol KeyHashProtocol {
+    func asKeyHash() -> KeyHash
+}
+
 // MARK: PublicKeyHash
 
 extension KeyHash {
     
     public enum Public: EncodedGroup {
+        public typealias `Protocol` = PublicKeyHashProtocol
+        
         case tz1(Ed25519PublicKeyHash)
         case tz2(Secp256K1PublicKeyHash)
         case tz3(P256PublicKeyHash)
@@ -83,9 +91,21 @@ extension KeyHash {
     }
 }
 
+public protocol PublicKeyHashProtocol: KeyHash.`Protocol` {
+    func asPublicKeyHash() -> KeyHash.Public
+}
+
+public extension KeyHash.Public.`Protocol` {
+    func asKeyHash() -> KeyHash {
+        .public(asPublicKeyHash())
+    }
+}
+
 // MARK: BlindedKeyHash
 
 public enum BlindedKeyHash: EncodedGroup {
+    public typealias `Protocol` = BlindedKeyHashProtocol
+    
     case `public`(Public)
     
     public static func isValid(string: String) -> Bool {
@@ -113,11 +133,17 @@ public enum BlindedKeyHash: EncodedGroup {
     }
 }
 
+public protocol BlindedKeyHashProtocol {
+    func asBlindedKeyHash() -> BlindedKeyHash
+}
+
 // MARK: BlindedPublicKeyHash
 
 extension BlindedKeyHash {
     
     public enum Public: EncodedGroup {
+        public typealias `Protocol` = PublicBlindedKeyHashProtocol
+        
         case btz1(Ed25519BlindedPublicKeyHash)
         
         public static func isValid(string: String) -> Bool {
@@ -142,5 +168,15 @@ extension BlindedKeyHash {
                 throw TezosError.invalidValue("Invalid blinded public key hash base58 encoded value (\(base58).")
             }
         }
+    }
+}
+
+public protocol PublicBlindedKeyHashProtocol: BlindedKeyHash.`Protocol` {
+    func asPublicBlindedKeyHash() -> BlindedKeyHash.Public
+}
+
+extension BlindedKeyHash.Public.`Protocol` {
+    public func asBlindedKeyHash() -> BlindedKeyHash {
+        .public(asPublicBlindedKeyHash())
     }
 }
