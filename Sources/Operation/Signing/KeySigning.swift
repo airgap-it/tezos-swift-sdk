@@ -68,6 +68,42 @@ extension Key.Public {
     }
 }
 
+// MARK: Ed25519PublicKey
+
+extension Ed25519PublicKey {
+    public func verify(_ operation: TezosOperation.Signed) throws -> Bool {
+        fatalError("TODO: Inject crypto")
+    }
+    
+    func verify(_ operation: TezosOperation.Signed, using crypto: Crypto) throws -> Bool {
+        try verifySignature(operation.signature, forOperation: operation.forge(), with: asPublicKey(), using: crypto)
+    }
+}
+
+// MARK: Secp256K1PublicKey
+
+extension Secp256K1PublicKey {
+    public func verify(_ operation: TezosOperation.Signed) throws -> Bool {
+        fatalError("TODO: Inject crypto")
+    }
+    
+    func verify(_ operation: TezosOperation.Signed, using crypto: Crypto) throws -> Bool {
+        try verifySignature(operation.signature, forOperation: operation.forge(), with: asPublicKey(), using: crypto)
+    }
+}
+
+// MARK: P256K1PublicKey
+
+extension P256PublicKey {
+    public func verify(_ operation: TezosOperation.Signed) throws -> Bool {
+        fatalError("TODO: Inject crypto")
+    }
+    
+    func verify(_ operation: TezosOperation.Signed, using crypto: Crypto) throws -> Bool {
+        try verifySignature(operation.signature, forOperation: operation.forge(), with: asPublicKey(), using: crypto)
+    }
+}
+
 // MARK: Utilities: Sign
 
 private func signOperation(_ operation: [UInt8], with key: Key.Secret, using crypto: Crypto) throws -> Signature {
