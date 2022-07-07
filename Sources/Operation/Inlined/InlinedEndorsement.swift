@@ -8,7 +8,7 @@
 import Foundation
 import TezosCore
 
-extension Operation {
+extension TezosOperation {
     
     public struct InlinedEndorsement: Hashable {
         public let branch: BlockHash

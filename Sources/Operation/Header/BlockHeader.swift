@@ -8,12 +8,12 @@
 import Foundation
 import TezosCore
 
-extension Operation {
+extension TezosOperation {
     public typealias ShellBlockHeader = ShellBlockHeaderProtocol
     public typealias ProtocolBlockHeader = ProtocolBlockHeaderProtocol
     
     public struct BlockHeader: Hashable, ShellBlockHeader, ProtocolBlockHeader {
-        public let level: Int
+        public let level: Int32
         public let proto: UInt8
         public let predecessor: BlockHash
         public let timestamp: Timestamp
@@ -22,14 +22,14 @@ extension Operation {
         public let fitness: [HexString]
         public let context: ContextHash
         public let payloadHash: BlockPayloadHash
-        public let payloadRound: Int
+        public let payloadRound: Int32
         public let proofOfWorkNonce: HexString
         public let seedNonceHash: NonceHash?
         public let liquidityBakingEscapeVote: Bool
         public let signature: Signature
         
         public init(
-            level: Int,
+            level: Int32,
             proto: UInt8,
             predecessor: BlockHash,
             timestamp: Timestamp,
@@ -38,7 +38,7 @@ extension Operation {
             fitness: [HexString],
             context: ContextHash,
             payloadHash: BlockPayloadHash,
-            payloadRound: Int,
+            payloadRound: Int32,
             proofOfWorkNonce: HexString,
             seedNonceHash: NonceHash? = nil,
             liquidityBakingEscapeVote: Bool,
@@ -63,7 +63,7 @@ extension Operation {
 }
 
 public protocol ShellBlockHeaderProtocol {
-    var level: Int { get }
+    var level: Int32 { get }
     var proto: UInt8 { get }
     var predecessor: BlockHash { get }
     var timestamp: Timestamp { get }
@@ -75,7 +75,7 @@ public protocol ShellBlockHeaderProtocol {
 
 public protocol ProtocolBlockHeaderProtocol {
     var payloadHash: BlockPayloadHash { get }
-    var payloadRound: Int { get }
+    var payloadRound: Int32 { get }
     var proofOfWorkNonce: HexString { get }
     var seedNonceHash: NonceHash? { get }
     var liquidityBakingEscapeVote: Bool { get }

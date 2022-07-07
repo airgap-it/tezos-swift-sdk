@@ -15,7 +15,8 @@ extension EncodedValue {
     }
     
     public init(fromConsuming bytes: inout [UInt8]) throws {
-        let subarray = bytes[0..<Self.bytesLength]
+        let upperBound = min(Self.bytesLength, bytes.count)
+        let subarray = bytes[0..<upperBound]
         guard Self.isValid(bytes: .init(subarray)) else {
             throw TezosError.invalidValue("Bytes \(bytes) are not valid \(Self.self) data.")
         }

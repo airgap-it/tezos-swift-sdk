@@ -8,7 +8,7 @@
 import Foundation
 import TezosMichelson
 
-extension Operation {
+extension TezosOperation {
     
     public struct Parameters: Hashable {
         public let entrypoint: Entrypoint

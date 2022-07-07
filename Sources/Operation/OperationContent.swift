@@ -9,7 +9,7 @@ import Foundation
 import TezosCore
 import TezosMichelson
 
-extension Operation {
+extension TezosOperation {
     
     public enum Content: Hashable {
         public typealias `Protocol` = OperationContentProtocol
@@ -33,17 +33,118 @@ extension Operation {
         case registerGlobalConstant(RegisterGlobalConstant)
         case setDepositsLimit(SetDepositsLimit)
         
+        enum Kind: CaseIterable, RawRepresentable {
+            typealias RawValue = (ForgeableConsuming & `Protocol`).Type
+            
+            case seedNonceRevelation
+            case doubleEndorsementEvidence
+            case doubleBakingEvidence
+            case activateAccount
+            case proposals
+            case ballot
+            case doublePreendorsementEvidence
+            case failingNoop
+            case preendorsement
+            case endorsement
+            case reveal
+            case transaction
+            case origination
+            case delegation
+            case registerGlobalConstant
+            case setDepositsLimit
+            
+            init?(rawValue: RawValue) {
+                switch rawValue {
+                case is SeedNonceRevelation.Type:
+                    self = .seedNonceRevelation
+                case is DoubleEndorsementEvidence.Type:
+                    self = .doubleEndorsementEvidence
+                case is DoubleBakingEvidence.Type:
+                    self = .doubleBakingEvidence
+                case is ActivateAccount.Type:
+                    self = .activateAccount
+                case is Proposals.Type:
+                    self = .proposals
+                case is Ballot.Type:
+                    self = .ballot
+                case is DoublePreendorsementEvidence.Type:
+                    self = .doublePreendorsementEvidence
+                case is FailingNoop.Type:
+                    self = .failingNoop
+                case is Preendorsement.Type:
+                    self = .preendorsement
+                case is Endorsement.Type:
+                    self = .endorsement
+                case is Reveal.Type:
+                    self = .reveal
+                case is Transaction.Type:
+                    self = .transaction
+                case is Origination.Type:
+                    self = .origination
+                case is Delegation.Type:
+                    self = .delegation
+                case is RegisterGlobalConstant.Type:
+                    self = .registerGlobalConstant
+                case is SetDepositsLimit.Type:
+                    self = .setDepositsLimit
+                default:
+                    return nil
+                }
+            }
+            
+            var rawValue: RawValue {
+                switch self {
+                case .seedNonceRevelation:
+                    return SeedNonceRevelation.self
+                case .doubleEndorsementEvidence:
+                    return DoubleEndorsementEvidence.self
+                case .doubleBakingEvidence:
+                    return DoubleBakingEvidence.self
+                case .activateAccount:
+                    return ActivateAccount.self
+                case .proposals:
+                    return Proposals.self
+                case .ballot:
+                    return Ballot.self
+                case .doublePreendorsementEvidence:
+                    return DoublePreendorsementEvidence.self
+                case .failingNoop:
+                    return FailingNoop.self
+                case .preendorsement:
+                    return Preendorsement.self
+                case .endorsement:
+                    return Endorsement.self
+                case .reveal:
+                    return Reveal.self
+                case .transaction:
+                    return Transaction.self
+                case .origination:
+                    return Origination.self
+                case .delegation:
+                    return Delegation.self
+                case .registerGlobalConstant:
+                    return RegisterGlobalConstant.self
+                case .setDepositsLimit:
+                    return SetDepositsLimit.self
+                }
+            }
+        }
+        
         // MARK: SeedNonceRevelation
         
         public struct SeedNonceRevelation: `Protocol`, Hashable {
             public static let tag: [UInt8] = [1]
             
-            public let level: Int
+            public let level: Int32
             public let nonce: HexString
             
-            public init(level: Int, nonce: HexString) {
+            public init(level: Int32, nonce: HexString) {
                 self.level = level
                 self.nonce = nonce
+            }
+            
+            public func asContent() -> TezosOperation.Content {
+                .seedNonceRevelation(self)
             }
         }
         
@@ -59,6 +160,10 @@ extension Operation {
                 self.op1 = op1
                 self.op2 = op2
             }
+            
+            public func asContent() -> TezosOperation.Content {
+                .doubleEndorsementEvidence(self)
+            }
         }
         
         // MARK: DoubleBakingEvidence
@@ -72,6 +177,10 @@ extension Operation {
             public init(bh1: BlockHeader, bh2: BlockHeader) {
                 self.bh1 = bh1
                 self.bh2 = bh2
+            }
+            
+            public func asContent() -> TezosOperation.Content {
+                .doubleBakingEvidence(self)
             }
         }
         
@@ -87,6 +196,10 @@ extension Operation {
                 self.pkh = pkh
                 self.secret = secret
             }
+            
+            public func asContent() -> TezosOperation.Content {
+                .activateAccount(self)
+            }
         }
         
         // MARK: Proposals
@@ -95,13 +208,17 @@ extension Operation {
             public static let tag: [UInt8] = [5]
             
             public let source: Address.Implicit
-            public let period: Int
+            public let period: Int32
             public let proposals: [ProtocolHash]
             
-            public init(source: Address.Implicit, period: Int, proposals: [ProtocolHash]) {
+            public init(source: Address.Implicit, period: Int32, proposals: [ProtocolHash]) {
                 self.source = source
                 self.period = period
                 self.proposals = proposals
+            }
+            
+            public func asContent() -> TezosOperation.Content {
+                .proposals(self)
             }
         }
         
@@ -111,9 +228,16 @@ extension Operation {
             public static let tag: [UInt8] = [6]
             
             public let source: Address.Implicit
-            public let period: Int
+            public let period: Int32
             public let proposal: ProtocolHash
             public let ballot: Kind
+            
+            public init(source: Address.Implicit, period: Int32, proposal: ProtocolHash, ballot: Kind) {
+                self.source = source
+                self.period = period
+                self.proposal = proposal
+                self.ballot = ballot
+            }
             
             public enum Kind: BytesTag {
                 case yay
@@ -131,6 +255,10 @@ extension Operation {
                     }
                 }
             }
+            
+            public func asContent() -> TezosOperation.Content {
+                .ballot(self)
+            }
         }
                     
         // MARK: DoublePreendorsementEvidence
@@ -145,6 +273,10 @@ extension Operation {
                 self.op1 = op1
                 self.op2 = op2
             }
+            
+            public func asContent() -> TezosOperation.Content {
+                .doublePreendorsementEvidence(self)
+            }
         }
         
         // MARK: FailingNoop
@@ -157,6 +289,10 @@ extension Operation {
             public init(arbitrary: HexString) {
                 self.arbitrary = arbitrary
             }
+            
+            public func asContent() -> TezosOperation.Content {
+                .failingNoop(self)
+            }
         }
         
         // MARK: Preendorsement
@@ -165,20 +301,24 @@ extension Operation {
             public static let tag: [UInt8] = [20]
             
             public let slot: UInt16
-            public let level: Int
-            public let round: Int
+            public let level: Int32
+            public let round: Int32
             public let blockPayloadHash: BlockPayloadHash
             
             public init(
                 slot: UInt16,
-                level: Int,
-                round: Int,
+                level: Int32,
+                round: Int32,
                 blockPayloadHash: BlockPayloadHash
             ) {
                 self.slot = slot
                 self.level = level
                 self.round = round
                 self.blockPayloadHash = blockPayloadHash
+            }
+            
+            public func asContent() -> TezosOperation.Content {
+                .preendorsement(self)
             }
         }
                     
@@ -188,20 +328,24 @@ extension Operation {
             public static let tag: [UInt8] = [21]
             
             public let slot: UInt16
-            public let level: Int
-            public let round: Int
+            public let level: Int32
+            public let round: Int32
             public let blockPayloadHash: BlockPayloadHash
             
             public init(
                 slot: UInt16,
-                level: Int,
-                round: Int,
+                level: Int32,
+                round: Int32,
                 blockPayloadHash: BlockPayloadHash
             ) {
                 self.slot = slot
                 self.level = level
                 self.round = round
                 self.blockPayloadHash = blockPayloadHash
+            }
+            
+            public func asContent() -> TezosOperation.Content {
+                .endorsement(self)
             }
         }
         
@@ -231,6 +375,10 @@ extension Operation {
                 self.gasLimit = gasLimit
                 self.storageLimit = storageLimit
                 self.publicKey = publicKey
+            }
+            
+            public func asContent() -> TezosOperation.Content {
+                .reveal(self)
             }
         }
         
@@ -267,6 +415,10 @@ extension Operation {
                 self.destination = destination
                 self.parameters = parameters
             }
+            
+            public func asContent() -> TezosOperation.Content {
+                .transaction(self)
+            }
         }
         
         // MARK: Origination
@@ -302,6 +454,10 @@ extension Operation {
                 self.delegate = delegate
                 self.script = script
             }
+            
+            public func asContent() -> TezosOperation.Content {
+                .origination(self)
+            }
         }
         
         // MARK: Delegation
@@ -330,6 +486,10 @@ extension Operation {
                 self.gasLimit = gasLimit
                 self.storageLimit = storageLimit
                 self.delegate = delegate
+            }
+            
+            public func asContent() -> TezosOperation.Content {
+                .delegation(self)
             }
         }
         
@@ -360,6 +520,10 @@ extension Operation {
                 self.storageLimit = storageLimit
                 self.value = value
             }
+            
+            public func asContent() -> TezosOperation.Content {
+                .registerGlobalConstant(self)
+            }
         }
                     
         // MARK: SetDepositsLimit
@@ -389,6 +553,10 @@ extension Operation {
                 self.storageLimit = storageLimit
                 self.limit = limit
             }
+            
+            public func asContent() -> TezosOperation.Content {
+                .setDepositsLimit(self)
+            }
         }
     }
 }
@@ -397,12 +565,14 @@ extension Operation {
 
 public protocol OperationContentProtocol {
     static var tag: [UInt8] { get }
+    
+    func asContent() -> TezosOperation.Content
 }
 
 public protocol OperationConsensusContentProtocol {
     var slot: UInt16 { get }
-    var level: Int { get }
-    var round: Int { get }
+    var level: Int32 { get }
+    var round: Int32 { get }
     var blockPayloadHash: BlockPayloadHash { get }
 }
 

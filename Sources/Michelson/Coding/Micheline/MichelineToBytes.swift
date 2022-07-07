@@ -169,7 +169,7 @@ extension Micheline.Sequence: Taggable {
     fileprivate static var tags: [Tag] = [.sequence]
 }
 
-// MARK: Utility Functions: Decode
+// MARK: Utilities: Decode
 
 private func decodeString(fromConsuming bytes: inout [UInt8]) throws -> String {
     let length = try Int32(fromConsuming: &bytes)
@@ -290,7 +290,7 @@ private func decodeSequence(fromConsuming bytes: inout [UInt8]) throws -> [Miche
 }
 
 
-// MARK: Utility Functions: Encode
+// MARK: Utilities: Encode
 
 private func encodeString(_ string: Swift.String) throws -> [UInt8] {
     let bytes = try string.encodeToBytes()
