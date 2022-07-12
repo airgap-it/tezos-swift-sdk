@@ -8,6 +8,18 @@
 import Foundation
 import TezosCore
 
+// MARK: ApplicableOperation
+
+public struct RPCApplicableOperation: Hashable, Codable {
+    // TODO
+}
+
+// MARK: AppliedOperation
+
+public struct RPCAppliedOperation: Hashable, Codable {
+    // TODO
+}
+
 // MARK: InjectableOperation
 
 public struct RPCInjectableOperation: Hashable, Codable {
@@ -18,4 +30,10 @@ public struct RPCInjectableOperation: Hashable, Codable {
         self.branch = branch
         self.data = data
     }
+}
+
+// MARK: RunnableOperation
+
+public struct RPCRunnableOperation: Hashable, Codable {
+    // TODO
 }
