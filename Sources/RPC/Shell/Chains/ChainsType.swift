@@ -18,7 +18,7 @@ public struct SetBootstrappedRequest: Hashable, Codable {
     }
 }
 
-public typealias SetBootstrappedResult = ()
+public typealias SetBootstrappedResult = EmptyResponse
 
 // MARK: /chains/<chain_id>/blocks
 
@@ -35,7 +35,7 @@ public typealias GetInvalidBlocksResponse = [RPCInvalidBlock]
 // MARK: /chains/<chain_id>/invalid_blocks/<block_hash>
 
 public typealias GetInvalidBlockResponse = RPCInvalidBlock
-public typealias DeleteInvalidBlockResponse = ()
+public typealias DeleteInvalidBlockResponse = EmptyResponse
 
 // MARK: /chains/<chain_id>/is_bootstrapped
 
