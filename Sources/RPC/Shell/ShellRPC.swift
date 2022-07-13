@@ -50,47 +50,11 @@ public extension ShellSimplifiedRPC {
 
 // MARK: Configuration
 
-public struct GetBlocksConfiguration {
-    let length: UInt32?
-    let head: BlockHash?
-    let minDate: String?
-    let headers: [HTTPHeader]
-    
-    public init(length: UInt32? = nil, head: BlockHash? = nil, minDate: String? = nil, headers: [HTTPHeader] = []) {
-        self.length = length
-        self.head = head
-        self.minDate = minDate
-        self.headers = headers
-    }
-}
+public typealias GetBlocksConfiguration = ChainsChainBlocksGetConfiguration
+public typealias GetChainIDConfiguration = ChainsChainChainIDGetConfiguration
+public typealias IsBootstrappedConfiguration = ChainsChainIsBootstrappedGetConfiguration
 
-public struct GetChainIDConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct IsBootstrappedConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct InjectOperationConfiguration {
-    let async: Bool?
-    let chain: ChainID?
-    let headers: [HTTPHeader]
-    
-    public init(async: Bool? = nil, chain: ChainID? = nil, headers: [HTTPHeader] = []) {
-        self.async = async
-        self.chain = chain
-        self.headers = headers
-    }
-}
+public typealias InjectOperationConfiguration = InjectionOperationPostConfiguration
 
 // MARK: Client
 
@@ -104,23 +68,18 @@ struct ShellSimplifiedRPCClient: ShellSimplifiedRPC {
     }
     
     func getBlocks(chainID: String, configuredWith configuration: GetBlocksConfiguration) async throws -> GetBlocksResponse {
-        try await chains(chainID: chainID).blocks.get(configuredWith: .init(
-            length: configuration.length,
-            head: configuration.head,
-            minDate: configuration.minDate,
-            headers: configuration.headers
-        ))
+        try await chains(chainID: chainID).blocks.get(configuredWith: configuration)
     }
     
     func getChainID(chainID: String, configuredWith configuration: GetChainIDConfiguration) async throws -> GetChainIDResponse {
-        try await chains(chainID: chainID).chainID.get(configuredWith: .init(headers: configuration.headers))
+        try await chains(chainID: chainID).chainID.get(configuredWith: configuration)
     }
     
     func isBootstrapped(chainID: String, configuredWith configuration: IsBootstrappedConfiguration) async throws -> GetBootstrappedStatusResponse {
-        try await chains(chainID: chainID).isBootstrapped.get(configuredWith: .init(headers: configuration.headers))
+        try await chains(chainID: chainID).isBootstrapped.get(configuredWith: configuration)
     }
     
     func injectOperation(_ data: String, configuredWith configuration: InjectOperationConfiguration) async throws -> InjectOperationResponse {
-        try await injection.operation.post(data: data, configuredWith: .init(async: configuration.async, chain: configuration.chain, headers: configuration.headers))
+        try await injection.operation.post(data: data, configuredWith: configuration)
     }
 }

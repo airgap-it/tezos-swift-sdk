@@ -1,5 +1,5 @@
 //
-//  Injection.swift
+//  InjectionRPC.swift
 //  
 //
 //  Created by Julia Samol on 11.07.22.
@@ -36,7 +36,7 @@ public protocol InjectionBlock {
     func post(
         data: String,
         operations: [[RPCInjectableOperation]],
-        configuredWith configuration: PostInjectionBlockConfiguration
+        configuredWith configuration: InjectionBlockPostConfiguration
     ) async throws -> InjectBlockResponse
 }
 
@@ -46,7 +46,7 @@ extension InjectionBlock {
     }
 }
 
-public struct PostInjectionBlockConfiguration {
+public struct InjectionBlockPostConfiguration: BaseConfiguration {
     let async: Bool?
     let force: Bool?
     let chain: ChainID?
@@ -72,7 +72,7 @@ struct InjectionBlockClient: InjectionBlock {
     func post(
         data: String,
         operations: [[RPCInjectableOperation]],
-        configuredWith configuration: PostInjectionBlockConfiguration
+        configuredWith configuration: InjectionBlockPostConfiguration
     ) async throws -> InjectBlockResponse {
         var parameters = [HTTPParameter]()
         if let async = configuration.async, async {
@@ -98,7 +98,7 @@ struct InjectionBlockClient: InjectionBlock {
 // MARK: /injection/operation
 
 public protocol InjectionOperation {
-    func post(data: String, configuredWith configuration: PostInjectionOperationConfiguration) async throws -> InjectOperationResponse
+    func post(data: String, configuredWith configuration: InjectionOperationPostConfiguration) async throws -> InjectOperationResponse
 }
 
 extension InjectionOperation {
@@ -107,7 +107,7 @@ extension InjectionOperation {
     }
 }
 
-public struct PostInjectionOperationConfiguration {
+public struct InjectionOperationPostConfiguration: BaseConfiguration {
     let async: Bool?
     let chain: ChainID?
     let headers: [HTTPHeader]
@@ -128,7 +128,7 @@ struct InjectionOperationClient: InjectionOperation {
         self.http = http
     }
     
-    func post(data: String, configuredWith configuration: PostInjectionOperationConfiguration) async throws -> InjectOperationResponse {
+    func post(data: String, configuredWith configuration: InjectionOperationPostConfiguration) async throws -> InjectOperationResponse {
         var parameters = [HTTPParameter]()
         if let async = configuration.async, async {
             parameters.append(("async", nil))
@@ -153,7 +153,7 @@ public protocol InjectionProtocol {
     func post(
         expectedEnvVersion: UInt16,
         components: [RPCProtocolComponent],
-        configuredWith configuration: PostInjectionProtocolConfiguration
+        configuredWith configuration: InjectionProtocolPostConfiguration
     ) async throws -> InjectProtocolResponse
 }
 
@@ -163,7 +163,7 @@ extension InjectionProtocol {
     }
 }
 
-public struct PostInjectionProtocolConfiguration {
+public struct InjectionProtocolPostConfiguration: BaseConfiguration {
     let async: Bool?
     let headers: [HTTPHeader]
     
@@ -185,7 +185,7 @@ struct InjectionProtocolClient: InjectionProtocol {
     func post(
         expectedEnvVersion: UInt16,
         components: [RPCProtocolComponent],
-        configuredWith configuration: PostInjectionProtocolConfiguration
+        configuredWith configuration: InjectionProtocolPostConfiguration
     ) async throws -> InjectProtocolResponse {
         var parameters = [HTTPParameter]()
         if let async = configuration.async, async {

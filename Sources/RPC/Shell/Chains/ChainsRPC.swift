@@ -1,5 +1,5 @@
 //
-//  Chains.swift
+//  ChainsRPC.swift
 //  
 //
 //  Created by Julia Samol on 11.07.22.
@@ -43,7 +43,7 @@ struct ChainsClient: Chains {
 // MARK: /chains/<chain_id>
 
 public protocol ChainsChain {
-    func patch(bootstrapped: Bool, configuredWith configuration: PatchChainsChainConfiguration) async throws -> SetBootstrappedResult
+    func patch(bootstrapped: Bool, configuredWith configuration: ChainsChainPatchConfiguration) async throws -> SetBootstrappedResult
     
     var blocks: ChainsChainBlocks { get }
     var chainID: ChainsChainChainID { get }
@@ -58,13 +58,7 @@ extension ChainsChain {
     }
 }
 
-public struct PatchChainsChainConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
+public typealias ChainsChainPatchConfiguration = HeadersOnlyConfiguration
 
 struct ChainsChainClient: ChainsChain {
     let baseURL: URL
@@ -75,7 +69,7 @@ struct ChainsChainClient: ChainsChain {
         self.http = http
     }
     
-    func patch(bootstrapped: Bool, configuredWith configuration: PatchChainsChainConfiguration) async throws -> SetBootstrappedResult {
+    func patch(bootstrapped: Bool, configuredWith configuration: ChainsChainPatchConfiguration) async throws -> SetBootstrappedResult {
         try await http.patch(
             baseURL: baseURL,
             endpoint: "/",
@@ -95,7 +89,7 @@ struct ChainsChainClient: ChainsChain {
 // MARK: /chains/<chain_id>/blocks
 
 public protocol ChainsChainBlocks {
-    func get(configuredWith configuration: GetChainsChainBlocksConfiguration) async throws -> GetBlocksResponse
+    func get(configuredWith configuration: ChainsChainBlocksGetConfiguration) async throws -> GetBlocksResponse
     
     // TODO: Block
 }
@@ -106,7 +100,7 @@ extension ChainsChainBlocks {
     }
 }
 
-public struct GetChainsChainBlocksConfiguration {
+public struct ChainsChainBlocksGetConfiguration: BaseConfiguration {
     let length: UInt32?
     let head: BlockHash?
     let minDate: String?
@@ -129,7 +123,7 @@ struct ChainsChainBlocksClient: ChainsChainBlocks {
         self.http = http
     }
     
-    func get(configuredWith configuration: GetChainsChainBlocksConfiguration) async throws -> GetBlocksResponse {
+    func get(configuredWith configuration: ChainsChainBlocksGetConfiguration) async throws -> GetBlocksResponse {
         var parameters = [HTTPParameter]()
         if let length = configuration.length {
             parameters.append(("length", String(length)))
@@ -148,7 +142,7 @@ struct ChainsChainBlocksClient: ChainsChainBlocks {
 // MARK: /chains/<chain_id>/chain_id
 
 public protocol ChainsChainChainID {
-    func get(configuredWith configuration: GetChainsChainChainIDConfiguration) async throws -> GetChainIDResponse
+    func get(configuredWith configuration: ChainsChainChainIDGetConfiguration) async throws -> GetChainIDResponse
 }
 
 extension ChainsChainChainID {
@@ -157,13 +151,7 @@ extension ChainsChainChainID {
     }
 }
 
-public struct GetChainsChainChainIDConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
+public typealias ChainsChainChainIDGetConfiguration = HeadersOnlyConfiguration
 
 struct ChainsChainChainIDClient: ChainsChainChainID {
     let baseURL: URL
@@ -174,7 +162,7 @@ struct ChainsChainChainIDClient: ChainsChainChainID {
         self.http = http
     }
     
-    func get(configuredWith configuration: GetChainsChainChainIDConfiguration) async throws -> GetChainIDResponse {
+    func get(configuredWith configuration: ChainsChainChainIDGetConfiguration) async throws -> GetChainIDResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -182,7 +170,7 @@ struct ChainsChainChainIDClient: ChainsChainChainID {
 // MARK: /chains/<chain_id>/invalid_blocks
 
 public protocol ChainsChainInvalidBlocks {
-    func get(configuredWith configuration: GetChainsChainInvalidBlocksConfiguration) async throws -> GetInvalidBlocksResponse
+    func get(configuredWith configuration: ChainsChainInvalidBlocksGetConfiguration) async throws -> GetInvalidBlocksResponse
     
     func callAsFunction(blockHash: BlockHash) -> ChainsChainInvalidBlocksBlock
 }
@@ -193,13 +181,7 @@ extension ChainsChainInvalidBlocks {
     }
 }
 
-public struct GetChainsChainInvalidBlocksConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
+public typealias ChainsChainInvalidBlocksGetConfiguration = HeadersOnlyConfiguration
 
 struct ChainsChainInvalidBlocksClient: ChainsChainInvalidBlocks {
     let baseURL: URL
@@ -210,7 +192,7 @@ struct ChainsChainInvalidBlocksClient: ChainsChainInvalidBlocks {
         self.http = http
     }
     
-    func get(configuredWith configuration: GetChainsChainInvalidBlocksConfiguration) async throws -> GetInvalidBlocksResponse {
+    func get(configuredWith configuration: ChainsChainInvalidBlocksGetConfiguration) async throws -> GetInvalidBlocksResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 
@@ -223,8 +205,8 @@ struct ChainsChainInvalidBlocksClient: ChainsChainInvalidBlocks {
 // MARK: /chains/<chain_id>/invalid_blocks/<block_hash>
 
 public protocol ChainsChainInvalidBlocksBlock {
-    func get(configuredWith configuration: GetChainsChainInvalidBlocksBlockConfiguration) async throws -> GetInvalidBlockResponse
-    func delete(configuredWith configuration: DeleteChainsChainInvalidBlocksBlockConfiguration) async throws -> DeleteInvalidBlockResponse
+    func get(configuredWith configuration: ChainsChainInvalidBlocksBlockGetConfiguration) async throws -> GetInvalidBlockResponse
+    func delete(configuredWith configuration: ChainsChainInvalidBlocksBlockDeleteConfiguration) async throws -> DeleteInvalidBlockResponse
 }
 
 extension ChainsChainInvalidBlocksBlock {
@@ -237,21 +219,8 @@ extension ChainsChainInvalidBlocksBlock {
     }
 }
 
-public struct GetChainsChainInvalidBlocksBlockConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct DeleteChainsChainInvalidBlocksBlockConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
+public typealias ChainsChainInvalidBlocksBlockGetConfiguration = HeadersOnlyConfiguration
+public typealias ChainsChainInvalidBlocksBlockDeleteConfiguration = HeadersOnlyConfiguration
 
 struct ChainsChainInvalidBlocksBlockClient: ChainsChainInvalidBlocksBlock {
     let baseURL: URL
@@ -262,11 +231,11 @@ struct ChainsChainInvalidBlocksBlockClient: ChainsChainInvalidBlocksBlock {
         self.http = http
     }
 
-    func get(configuredWith configuration: GetChainsChainInvalidBlocksBlockConfiguration) async throws -> GetInvalidBlockResponse {
+    func get(configuredWith configuration: ChainsChainInvalidBlocksBlockGetConfiguration) async throws -> GetInvalidBlockResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
     
-    func delete(configuredWith configuration: DeleteChainsChainInvalidBlocksBlockConfiguration) async throws -> DeleteInvalidBlockResponse {
+    func delete(configuredWith configuration: ChainsChainInvalidBlocksBlockDeleteConfiguration) async throws -> DeleteInvalidBlockResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -274,7 +243,7 @@ struct ChainsChainInvalidBlocksBlockClient: ChainsChainInvalidBlocksBlock {
 // MARK: /chains/<chain_id>/is_bootstrapped
 
 public protocol ChainsChainIsBootstrapped {
-    func get(configuredWith configuration: GetChainsChainIsBootstrappedConfiguration) async throws -> GetBootstrappedStatusResponse
+    func get(configuredWith configuration: ChainsChainIsBootstrappedGetConfiguration) async throws -> GetBootstrappedStatusResponse
 }
 
 extension ChainsChainIsBootstrapped {
@@ -283,13 +252,7 @@ extension ChainsChainIsBootstrapped {
     }
 }
 
-public struct GetChainsChainIsBootstrappedConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
+public typealias ChainsChainIsBootstrappedGetConfiguration = HeadersOnlyConfiguration
 
 struct ChainsChainIsBootstrappedClient: ChainsChainIsBootstrapped {
     let baseURL: URL
@@ -300,7 +263,7 @@ struct ChainsChainIsBootstrappedClient: ChainsChainIsBootstrapped {
         self.http = http
     }
 
-    func get(configuredWith configuration: GetChainsChainIsBootstrappedConfiguration) async throws -> GetBootstrappedStatusResponse {
+    func get(configuredWith configuration: ChainsChainIsBootstrappedGetConfiguration) async throws -> GetBootstrappedStatusResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -330,7 +293,7 @@ struct ChainsChainLevelsClient: ChainsChainLevels {
 // MARK: /chains/<chain_id>/levels/caboose
 
 public protocol ChainsChainLevelsCaboose {
-    func get(configuredWith configuration: GetChainsChainLevelsCabooseConfiguration) async throws -> GetCabooseResponse
+    func get(configuredWith configuration: ChainsChainLevelsCabooseGetConfiguration) async throws -> GetCabooseResponse
 }
 
 extension ChainsChainLevelsCaboose {
@@ -339,13 +302,7 @@ extension ChainsChainLevelsCaboose {
     }
 }
 
-public struct GetChainsChainLevelsCabooseConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
+public typealias ChainsChainLevelsCabooseGetConfiguration = HeadersOnlyConfiguration
 
 struct ChainsChainLevelsCabooseClient: ChainsChainLevelsCaboose {
     let baseURL: URL
@@ -356,7 +313,7 @@ struct ChainsChainLevelsCabooseClient: ChainsChainLevelsCaboose {
         self.http = http
     }
 
-    func get(configuredWith configuration: GetChainsChainLevelsCabooseConfiguration) async throws -> GetCabooseResponse {
+    func get(configuredWith configuration: ChainsChainLevelsCabooseGetConfiguration) async throws -> GetCabooseResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -364,7 +321,7 @@ struct ChainsChainLevelsCabooseClient: ChainsChainLevelsCaboose {
 // MARK: /chains/<chain_id>/levels/checkpoint
 
 public protocol ChainsChainLevelsCheckpoint {
-    func get(configuredWith configuration: GetChainsChainLevelsCheckpointConfiguration) async throws -> GetCheckpointResponse
+    func get(configuredWith configuration: ChainsChainLevelsCheckpointGetConfiguration) async throws -> GetCheckpointResponse
 }
 
 extension ChainsChainLevelsCheckpoint {
@@ -373,13 +330,7 @@ extension ChainsChainLevelsCheckpoint {
     }
 }
 
-public struct GetChainsChainLevelsCheckpointConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
+public typealias ChainsChainLevelsCheckpointGetConfiguration = HeadersOnlyConfiguration
 
 struct ChainsChainLevelsCheckpointClient: ChainsChainLevelsCheckpoint {
     let baseURL: URL
@@ -390,7 +341,7 @@ struct ChainsChainLevelsCheckpointClient: ChainsChainLevelsCheckpoint {
         self.http = http
     }
 
-    func get(configuredWith configuration: GetChainsChainLevelsCheckpointConfiguration) async throws -> GetCheckpointResponse {
+    func get(configuredWith configuration: ChainsChainLevelsCheckpointGetConfiguration) async throws -> GetCheckpointResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -398,7 +349,7 @@ struct ChainsChainLevelsCheckpointClient: ChainsChainLevelsCheckpoint {
 // MARK: /chains/<chain_id>/levels/savepoint
 
 public protocol ChainsChainLevelsSavepoint {
-    func get(configuredWith configuration: GetChainsChainLevelsSavepointConfiguration) async throws -> GetSavepointResponse
+    func get(configuredWith configuration: ChainsChainLevelsSavepointGetConfiguration) async throws -> GetSavepointResponse
 }
 
 extension ChainsChainLevelsSavepoint {
@@ -407,13 +358,7 @@ extension ChainsChainLevelsSavepoint {
     }
 }
 
-public struct GetChainsChainLevelsSavepointConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
+public typealias ChainsChainLevelsSavepointGetConfiguration = HeadersOnlyConfiguration
 
 struct ChainsChainLevelsSavepointClient: ChainsChainLevelsSavepoint {
     let baseURL: URL
@@ -424,7 +369,7 @@ struct ChainsChainLevelsSavepointClient: ChainsChainLevelsSavepoint {
         self.http = http
     }
 
-    func get(configuredWith configuration: GetChainsChainLevelsSavepointConfiguration) async throws -> GetSavepointResponse {
+    func get(configuredWith configuration: ChainsChainLevelsSavepointGetConfiguration) async throws -> GetSavepointResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }

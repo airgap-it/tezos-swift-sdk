@@ -428,15 +428,9 @@ public extension ActiveSimplifiedRPC {
 
 // MARK: Configuration
 
-public struct GetBlockConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
+public typealias GetBlockConfiguration = HeadersOnlyConfiguration
 
-public struct GetBigMapConfiguration {
+public struct GetBigMapConfiguration: BaseConfiguration {
     let offset: UInt32?
     let length: UInt32?
     let headers: [HTTPHeader]
@@ -448,79 +442,18 @@ public struct GetBigMapConfiguration {
     }
 }
 
-public struct GetBigMapValueConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
+public typealias GetBigMapValueConfiguration = HeadersOnlyConfiguration
 
-public struct GetConstantsConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
+public typealias GetConstantsConfiguration = HeadersOnlyConfiguration
 
-public struct GetContractDetailsConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetBalanceConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetCounterConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetDelegateConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetEntrypointsConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetEntrypointConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetManagerKeyConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetScriptConfiguration {
+public typealias GetContractDetailsConfiguration = HeadersOnlyConfiguration
+public typealias GetBalanceConfiguration = HeadersOnlyConfiguration
+public typealias GetCounterConfiguration = HeadersOnlyConfiguration
+public typealias GetDelegateConfiguration = HeadersOnlyConfiguration
+public typealias GetEntrypointsConfiguration = HeadersOnlyConfiguration
+public typealias GetEntrypointConfiguration = HeadersOnlyConfiguration
+public typealias GetManagerKeyConfiguration = HeadersOnlyConfiguration
+public struct GetScriptConfiguration: BaseConfiguration {
     let unparsingMode: RPCScriptParsing
     let headers: [HTTPHeader]
     
@@ -529,8 +462,7 @@ public struct GetScriptConfiguration {
         self.headers = headers
     }
 }
-
-public struct GetSaplingStateDiffConfiguration {
+public struct GetSaplingStateDiffConfiguration: BaseConfiguration {
     let commitmentOffset: UInt64?
     let nullifierOffset: UInt64?
     let headers: [HTTPHeader]
@@ -541,7 +473,6 @@ public struct GetSaplingStateDiffConfiguration {
         self.headers = headers
     }
 }
-
 public struct GetStorageConfiguration {
     let unparsingMode: RPCScriptParsing
     let headers: [HTTPHeader]
@@ -552,130 +483,22 @@ public struct GetStorageConfiguration {
     }
 }
 
-public struct GetDelegateDetailsConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
+public typealias GetDelegateDetailsConfiguration = HeadersOnlyConfiguration
+public typealias GetCurrentFrozenDepositsConfiguration = HeadersOnlyConfiguration
+public typealias IsDeactivatedConfiguration = HeadersOnlyConfiguration
+public typealias GetDelegatedBalanceConfiguration = HeadersOnlyConfiguration
+public typealias GetDelegatedContractsConfiguration = HeadersOnlyConfiguration
+public typealias GetFrozenDepositsConfiguration = HeadersOnlyConfiguration
+public typealias GetFrozenDepositsLimitConfiguration = HeadersOnlyConfiguration
+public typealias GetFullBalanceConfiguration = HeadersOnlyConfiguration
+public typealias GetGracePeriodConfiguration = HeadersOnlyConfiguration
+public typealias GetParticipationConfiguration = HeadersOnlyConfiguration
+public typealias GetStakingBalanceConfiguration = HeadersOnlyConfiguration
+public typealias GetVotingPowerConfiguration = HeadersOnlyConfiguration
 
-public struct GetCurrentFrozenDepositsConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
+public typealias GetBlockHeaderConfiguration = HeadersOnlyConfiguration
 
-public struct IsDeactivatedConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
+public typealias PreapplyOperationsConfiguration = HeadersOnlyConfiguration
+public typealias RunOperationConfiguration = HeadersOnlyConfiguration
 
-public struct GetDelegatedBalanceConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetDelegatedContractsConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetFrozenDepositsConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetFrozenDepositsLimitConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetFullBalanceConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetGracePeriodConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetParticipationConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetStakingBalanceConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetVotingPowerConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetBlockHeaderConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct PreapplyOperationsConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct RunOperationConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
-
-public struct GetOperationsConfiguration {
-    let headers: [HTTPHeader]
-    
-    public init(headers: [HTTPHeader] = []) {
-        self.headers = headers
-    }
-}
+public typealias GetOperationsConfiguration = HeadersOnlyConfiguration
