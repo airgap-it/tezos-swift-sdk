@@ -8,6 +8,12 @@
 import Foundation
 import TezosCore
 
+// MARK: Block
+
+public struct RPCBlock: Hashable, Codable {
+    
+}
+
 // MARK: InvalidBlock
 
 public struct RPCInvalidBlock: Hashable, Codable {

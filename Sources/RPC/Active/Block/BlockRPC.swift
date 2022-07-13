@@ -11,21 +11,13 @@ import TezosCore
 // MARK: ../<block_id>
 
 public protocol Block {
-    func get(configuredWith configuration: BlockGetConfiguration) async throws
+    func get(configuredWith configuration: BlockGetConfiguration) async throws -> GetBlockResponse
     
     var context: BlockContext { get }
     var header: BlockHeader { get }
     var helpers: BlockHelpers { get }
     var operations: BlockOperations { get }
 }
-
-public extension Block {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/context
 
@@ -46,67 +38,33 @@ public protocol BlockContextBigMaps {
 // MARK: ../<block_id>/context/big_maps/<big_map_id>
 
 public protocol BlockContextBigMapsBigMap {
-    func get(configuredWith configuration: BlockContextBigMapsBigMapGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextBigMapsBigMapGetConfiguration) async throws -> GetBigMapResponse
     
     func callAsFunction(scriptExpr: ScriptExprHash) -> BlockContextBigMapsBigMapValue
-}
-
-public extension BlockContextBigMapsBigMap {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public struct BlockContextBigMapsBigMapGetConfiguration: BaseConfiguration {
-    public let offset: UInt32?
-    public let length: UInt32?
-    public let headers: [HTTPHeader]
-    
-    public init(offset: UInt32? = nil, length: UInt32? = nil, headers: [HTTPHeader] = []) {
-        self.offset = offset
-        self.length = length
-        self.headers = headers
-    }
 }
 
 // MARK: ../<block_id>/context/big_maps/<big_map_id>/value
 
 public protocol BlockContextBigMapsBigMapValue {
-    func get(configuredWith configuration: BlockContextBigMapsBigMapValueGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextBigMapsBigMapValueGetConfiguration) async throws -> GetBigMapValueResponse
 }
-
-public extension BlockContextBigMapsBigMapValue {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextBigMapsBigMapValueGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/context/constants
 
 public protocol BlockContextConstants {
-    func get(configuredWith configuration: BlockContextConstantsGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextConstantsGetConfiguration) async throws -> GetConstantsResponse
 }
-
-public extension BlockContextConstants {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextConstantsGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/context/contracts
 
 public protocol BlockContextContracts {
-    func callAsFunction(address: Address) -> BlockContextContractsContract
+    func callAsFunction(contractID: Address) -> BlockContextContractsContract
 }
 
-// MARK: ../<block_id>/context/contracts/contract
+// MARK: ../<block_id>/context/contracts/<contract_id>
 
 public protocol BlockContextContractsContract {
-    func get(configuredWith configuration: BlockContextContractsContractGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextContractsContractGetConfiguration) async throws -> GetContractDetailsResponse
     
     var balance: BlockContextContractsContractBalance { get }
     var counter: BlockContextContractsContractCounter { get }
@@ -118,171 +76,77 @@ public protocol BlockContextContractsContract {
     var storage: BlockContextContractsContractStorage { get }
 }
 
-public extension BlockContextContractsContract {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextContractsContractGetConfiguration = HeadersOnlyConfiguration
-
-// MARK: ../<block_id>/context/contracts/contract/balance
+// MARK: ../<block_id>/context/contracts/<contract_id>/balance
 
 public protocol BlockContextContractsContractBalance {
-    func get(configuredWith configuration: BlockContextContractsContractBalanceGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextContractsContractBalanceGetConfiguration) async throws -> GetContractBalanceResponse
 }
 
-public extension BlockContextContractsContractBalance {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextContractsContractBalanceGetConfiguration = HeadersOnlyConfiguration
-
-// MARK: ../<block_id>/context/contracts/contract/counter
+// MARK: ../<block_id>/context/contracts/<contract_id>/counter
 
 public protocol BlockContextContractsContractCounter {
-    func get(configuredWith configuration: BlockContextContractsContractCounterGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextContractsContractCounterGetConfiguration) async throws -> GetContractCounterResponse
 }
 
-public extension BlockContextContractsContractCounter {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextContractsContractCounterGetConfiguration = HeadersOnlyConfiguration
-
-// MARK: ../<block_id>/context/contracts/contract/delegate
+// MARK: ../<block_id>/context/contracts/<contract_id>/delegate
 
 public protocol BlockContextContractsContractDelegate {
-    func get(configuredWith configuration: BlockContextContractsContractDelegateGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextContractsContractDelegateGetConfiguration) async throws -> GetContractDelegateResponse
 }
 
-public extension BlockContextContractsContractDelegate {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextContractsContractDelegateGetConfiguration = HeadersOnlyConfiguration
-
-// MARK: ../<block_id>/context/contracts/contract/entrypoints
+// MARK: ../<block_id>/context/contracts/<contract_id>/entrypoints
 
 public protocol BlockContextContractsContractEntrypoints {
-    func get(configuredWith configuration: BlockContextContractsContractEntrypointsGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextContractsContractEntrypointsGetConfiguration) async throws -> GetContractEntrypointsResponse
     
     func callAsFunction(string: String) -> BlockContextContractsContractEntrypointsEntrypoint
 }
 
-public extension BlockContextContractsContractEntrypoints {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextContractsContractEntrypointsGetConfiguration = HeadersOnlyConfiguration
-
-// MARK: ../<block_id>/context/contracts/contract/entrypoints/<string>
+// MARK: ../<block_id>/context/contracts/<contract_id>/entrypoints/<string>
 
 public protocol BlockContextContractsContractEntrypointsEntrypoint {
-    func get(configuredWith configuration: BlockContextContractsContractEntrypointsEntrypointGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextContractsContractEntrypointsEntrypointGetConfiguration) async throws -> GetContractEntrypointResponse
 }
 
-public extension BlockContextContractsContractEntrypointsEntrypoint {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextContractsContractEntrypointsEntrypointGetConfiguration = HeadersOnlyConfiguration
-
-// MARK: ../<block_id>/context/contracts/contract/manager_key
+// MARK: ../<block_id>/context/contracts/<contract_id>/manager_key
 
 public protocol BlockContextContractsContractManagerKey {
-    func get(configuredWith configuration: BlockContextContractsContractManagerKeyGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextContractsContractManagerKeyGetConfiguration) async throws -> GetContractManagerKeyResponse
 }
 
-public extension BlockContextContractsContractManagerKey {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextContractsContractManagerKeyGetConfiguration = HeadersOnlyConfiguration
-
-// MARK: ../<block_id>/context/contracts/contract/script
+// MARK: ../<block_id>/context/contracts/<contract_id>/script
 
 public protocol BlockContextContractsContractScript {
-    func get(configuredWith configuration: BlockContextContractsContractScriptGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextContractsContractScriptGetConfiguration) async throws -> GetContractScriptResponse
     
     var normalized: BlockContextContractsContractScriptNormalized { get }
 }
 
-public extension BlockContextContractsContractScript {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextContractsContractScriptGetConfiguration = HeadersOnlyConfiguration
-
-// MARK: ../<block_id>/context/contracts/contract/script/normalized
+// MARK: ../<block_id>/context/contracts/<contract_id>/script/normalized
 
 public protocol BlockContextContractsContractScriptNormalized {
-    func post(unparsingMode: RPCScriptParsing, configuredWith configuration: BlockContextContractsContractScriptGetConfiguration) async throws
+    func post(unparsingMode: RPCScriptParsing, configuredWith configuration: BlockContextContractsContractScriptGetConfiguration) async throws -> GetContractNormalizedScriptResponse
 }
 
-public extension BlockContextContractsContractScriptNormalized {
-    func post(unparsingMode: RPCScriptParsing) async throws {
-        try await post(unparsingMode: unparsingMode, configuredWith: .init())
-    }
-}
-
-public typealias BlockContextContractsContractScriptNormalizedPostConfiguration = HeadersOnlyConfiguration
-
-// MARK: ../<block_id>/context/contracts/contract/single_sapling_get_diff
+// MARK: ../<block_id>/context/contracts/<contract_id>/single_sapling_get_diff
 
 public protocol BlockContextContractsContractSingleSaplingGetDiff {
-    func get(configuredWith configuration: BlockContextContractsContractSingleSaplingGetDiffGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextContractsContractSingleSaplingGetDiffGetConfiguration) async throws -> GetContractSaplingStateDiffResponse
 }
 
-public extension BlockContextContractsContractSingleSaplingGetDiff {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextContractsContractSingleSaplingGetDiffGetConfiguration = BlockContextSaplingStateGetDiffGetConfiguration
-
-// MARK: ../<block_id>/context/contracts/contract/storage
+// MARK: ../<block_id>/context/contracts/<contract_id>/storage
 
 public protocol BlockContextContractsContractStorage {
-    func get(configuredWith configuration: BlockContextContractsContractGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextContractsContractGetConfiguration) async throws -> GetContractStorageResponse
+    
+    var normalized: BlockContextContractsContractStorageNormalized { get }
 }
 
-public extension BlockContextContractsContractStorage {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextContractsContractStorageGetConfiguration = HeadersOnlyConfiguration
-
-// MARK: ../<block_id>/context/contracts/contract/storage/normalized
+// MARK: ../<block_id>/context/contracts/<contract_id>/storage/normalized
 
 public protocol BlockContextContractsContractStorageNormalized {
-    func post(unparsingMode: RPCScriptParsing, configuredWith configuration: BlockContextContractsContractStorageGetConfiguration) async throws
+    func post(unparsingMode: RPCScriptParsing, configuredWith configuration: BlockContextContractsContractStorageGetConfiguration) async throws -> GetContractNormalizedStorageResponse
 }
-
-public extension BlockContextContractsContractStorageNormalized {
-    func post(unparsingMode: RPCScriptParsing) async throws {
-        try await post(unparsingMode: unparsingMode, configuredWith: .init())
-    }
-}
-
-public typealias BlockContextContractsContractStorageNormalizedPostConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/context/delegates
 
@@ -293,7 +157,7 @@ public protocol BlockContextDelegates {
 // MARK: ../<block_id>/context/delegates/<pkh>
 
 public protocol BlockContextDelegatesDelegate {
-    func get(configuredWith configuration: BlockContextDelegatesDelegateGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextDelegatesDelegateGetConfiguration) async throws -> GetDelegateDetailsResponse
     
     var currentFrozenDeposits: BlockContextDelegatesCurrentFrozenDeposits { get }
     var deactivated: BlockContextDelegatesDeactivated { get }
@@ -308,167 +172,71 @@ public protocol BlockContextDelegatesDelegate {
     var votingPower: BlockContextDelegatesVotingPower { get }
 }
 
-public extension BlockContextDelegatesDelegate {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextDelegatesDelegateGetConfiguration = HeadersOnlyConfiguration
-
 // MARK: ../<block_id>/context/delegates/current_frozen_deposits
 
 public protocol BlockContextDelegatesCurrentFrozenDeposits {
-    func get(configuredWith configuration: BlockContextDelegatesCurrentFrozenDepositsGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextDelegatesCurrentFrozenDepositsGetConfiguration) async throws -> GetDelegateCurrentFrozenDepositsResponse
 }
-
-public extension BlockContextDelegatesCurrentFrozenDeposits {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextDelegatesCurrentFrozenDepositsGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/context/delegates/deactivated
 
 public protocol BlockContextDelegatesDeactivated {
-    func get(configuredWith configuration: BlockContextDelegatesDeactivatedGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextDelegatesDeactivatedGetConfiguration) async throws -> GetDelegateDeactivatedStatusResponse
 }
-
-public extension BlockContextDelegatesDeactivated {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextDelegatesDeactivatedGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/context/delegates/delegated_balance
 
 public protocol BlockContextDelegatesDelegatedBalance {
-    func get(configuredWith configuration: BlockContextDelegatesDelegatedBalanceGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextDelegatesDelegatedBalanceGetConfiguration) async throws -> GetDelegateDelegatedBalanceResponse
 }
-
-public extension BlockContextDelegatesDelegatedBalance {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextDelegatesDelegatedBalanceGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/context/delegates/delegated_contracts
 
 public protocol BlockContextDelegatesDelegatedContracts {
-    func get(configuredWith configuration: BlockContextDelegatesDelegatedContractsGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextDelegatesDelegatedContractsGetConfiguration) async throws -> GetDelegateDelegatedContractsResponse
 }
-
-public extension BlockContextDelegatesDelegatedContracts {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextDelegatesDelegatedContractsGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/context/delegates/frozen_deposits
 
 public protocol BlockContextDelegatesFrozenDeposits {
-    func get(configuredWith configuration: BlockContextDelegatesFrozenDepositsGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextDelegatesFrozenDepositsGetConfiguration) async throws -> GetDelegateFrozenDepositsResponse
 }
-
-public extension BlockContextDelegatesFrozenDeposits {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextDelegatesFrozenDepositsGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/context/delegates/frozen_deposits_limit
 
 public protocol BlockContextDelegatesFrozenDeposistsLimit {
-    func get(configuredWith configuration: BlockContextDelegatesFrozenDeposistsLimitGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextDelegatesFrozenDeposistsLimitGetConfiguration) async throws -> GetDelegateFrozenDepositsLimitResponse
 }
-
-public extension BlockContextDelegatesFrozenDeposistsLimit {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextDelegatesFrozenDeposistsLimitGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/context/delegates/full_balance
 
 public protocol BlockContextDelegatesFullBalance {
-    func get(configuredWith configuration: BlockContextDelegatesFullBalanceGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextDelegatesFullBalanceGetConfiguration) async throws -> GetDelegateFullBalanceResponse
 }
-
-public extension BlockContextDelegatesFullBalance {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextDelegatesFullBalanceGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/context/delegates/grace_period
 
 public protocol BlockContextDelegatesGracePeriod {
-    func get(configuredWith configuration: BlockContextDelegatesGracePeriodGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextDelegatesGracePeriodGetConfiguration) async throws -> GetDelegateGracePeriodResponse
 }
-
-public extension BlockContextDelegatesGracePeriod {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextDelegatesGracePeriodGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/context/delegates/participation
 
 public protocol BlockContextDelegatesParticipation {
-    func get(configuredWith configuration: BlockContextDelegatesParticipationGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextDelegatesParticipationGetConfiguration) async throws -> GetDelegateParticipationResponse
 }
-
-public extension BlockContextDelegatesParticipation {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextDelegatesParticipationGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/context/delegates/staking_balance
 
 public protocol BlockContextDelegatesStakingBalance {
-    func get(configuredWith configuration: BlockContextDelegatesStakingBalanceGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextDelegatesStakingBalanceGetConfiguration) async throws -> GetDelegateStakingBalanceResponse
 }
-
-public extension BlockContextDelegatesStakingBalance {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextDelegatesStakingBalanceGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/context/delegates/voting_power
 
 public protocol BlockContextDelegatesVotingPower {
-    func get(configuredWith configuration: BlockContextDelegatesVotingPowerGetConfiguration) async throws
+    func get(configuredWith configuration: BlockContextDelegatesVotingPowerGetConfiguration) async throws -> GetDelegateVotingPowerResponse
 }
-
-public extension BlockContextDelegatesVotingPower {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockContextDelegatesVotingPowerGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/context/sapling
 
@@ -485,40 +253,14 @@ public protocol BlockContextSaplingState {
 // MARK: ../<block_id>/context/sapling/<sapling_state_id>/get_diff
 
 public protocol BlockContextSaplingStateGetDiff {
-    func get(configuredWith configuration: BlockContextSaplingStateGetDiffGetConfiguration) async throws
-}
-
-public extension BlockContextSaplingStateGetDiff {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public struct BlockContextSaplingStateGetDiffGetConfiguration: BaseConfiguration {
-    public let commitmentOffset: UInt64?
-    public let nullifierOffset: UInt64?
-    public let headers: [HTTPHeader]
-    
-    public init(commitmentOffset: UInt64? = nil, nullifierOffset: UInt64? = nil, headers: [HTTPHeader] = []) {
-        self.commitmentOffset = commitmentOffset
-        self.nullifierOffset = nullifierOffset
-        self.headers = headers
-    }
+    func get(configuredWith configuration: BlockContextSaplingStateGetDiffGetConfiguration) async throws -> GetSaplingStateDiffResponse
 }
 
 // MARK: ../<block_id>/header
 
 public protocol BlockHeader {
-    func get(configuredWith configuration: BlockHeaderGetConfiguration) async throws
+    func get(configuredWith configuration: BlockHeaderGetConfiguration) async throws -> GetBlockHeaderResponse
 }
-
-public extension BlockHeader {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockHeaderGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/helpers
 
@@ -532,20 +274,11 @@ public protocol BlockHelpers {
 public protocol BlockHelpersPreapply {
     var operations: BlockHelpersPreapplyOperations { get }
 }
-
 // MARK: ../<block_id>/helpers/preapply/operations
 
 public protocol BlockHelpersPreapplyOperations {
-    func post(operations: [RPCApplicableOperation], configuredWith configuration: BlockHelpersPreapplyOperationsPostConfiguration) async throws
+    func post(operations: [RPCApplicableOperation], configuredWith configuration: BlockHelpersPreapplyOperationsPostConfiguration) async throws -> PreapplyOperationsResponse
 }
-
-public extension BlockHelpersPreapplyOperations {
-    func post(operations: [RPCApplicableOperation]) async throws {
-        try await post(operations: operations, configuredWith: .init())
-    }
-}
-
-public typealias BlockHelpersPreapplyOperationsPostConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/helpers/scripts
 
@@ -556,27 +289,11 @@ public protocol BlockHelpersScripts {
 // MARK: ../<block_id>/helpers/scripts/run_operation
 
 public protocol BlockHelpersScriptsRunOperation {
-    func post(operation: RPCRunnableOperation, configuredWith configuration: BlockHelpersPreapplyOperationsPostConfiguration) async throws
+    func post(operation: RPCRunnableOperation, configuredWith configuration: BlockHelpersPreapplyOperationsPostConfiguration) async throws -> RunOperationResponse
 }
-
-public extension BlockHelpersScriptsRunOperation {
-    func post(operation: RPCRunnableOperation) async throws {
-        try await post(operation: operation, configuredWith: .init())
-    }
-}
-
-public typealias BlockHelpersScriptsRunOperationPostConfiguration = HeadersOnlyConfiguration
 
 // MARK: ../<block_id>/operations
 
 public protocol BlockOperations {
-    func get(configuredWith configuration: BlockOperationsGetConfiguration) async throws
+    func get(configuredWith configuration: BlockOperationsGetConfiguration) async throws -> GetBlockOperationsResponse
 }
-
-public extension BlockOperations {
-    func get() async throws {
-        try await get(configuredWith: .init())
-    }
-}
-
-public typealias BlockOperationsGetConfiguration = HeadersOnlyConfiguration

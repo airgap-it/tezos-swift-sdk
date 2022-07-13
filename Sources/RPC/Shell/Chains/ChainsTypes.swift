@@ -1,5 +1,5 @@
 //
-//  ChainsType.swift
+//  ChainsTypes.swift
 //  
 //
 //  Created by Julia Samol on 11.07.22.
