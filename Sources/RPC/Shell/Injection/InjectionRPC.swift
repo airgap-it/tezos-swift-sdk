@@ -47,10 +47,10 @@ extension InjectionBlock {
 }
 
 public struct InjectionBlockPostConfiguration: BaseConfiguration {
-    let async: Bool?
-    let force: Bool?
-    let chain: ChainID?
-    let headers: [HTTPHeader]
+    public let async: Bool?
+    public let force: Bool?
+    public let chain: ChainID?
+    public let headers: [HTTPHeader]
     
     public init(async: Bool? = nil, force: Bool? = nil, chain: ChainID? = nil, headers: [HTTPHeader] = []) {
         self.async = async
@@ -108,9 +108,9 @@ extension InjectionOperation {
 }
 
 public struct InjectionOperationPostConfiguration: BaseConfiguration {
-    let async: Bool?
-    let chain: ChainID?
-    let headers: [HTTPHeader]
+    public let async: Bool?
+    public let chain: ChainID?
+    public let headers: [HTTPHeader]
     
     public init(async: Bool? = nil, chain: ChainID? = nil, headers: [HTTPHeader] = []) {
         self.async = async
@@ -164,8 +164,8 @@ extension InjectionProtocol {
 }
 
 public struct InjectionProtocolPostConfiguration: BaseConfiguration {
-    let async: Bool?
-    let headers: [HTTPHeader]
+    public let async: Bool?
+    public let headers: [HTTPHeader]
     
     public init(async: Bool? = nil, headers: [HTTPHeader] = []) {
         self.async = async

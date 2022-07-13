@@ -428,54 +428,32 @@ public extension ActiveSimplifiedRPC {
 
 // MARK: Configuration
 
-public typealias GetBlockConfiguration = HeadersOnlyConfiguration
+public typealias GetBlockConfiguration = BlockGetConfiguration
 
-public struct GetBigMapConfiguration: BaseConfiguration {
-    let offset: UInt32?
-    let length: UInt32?
-    let headers: [HTTPHeader]
-    
-    public init(offset: UInt32? = nil, length: UInt32? = nil, headers: [HTTPHeader] = []) {
-        self.offset = offset
-        self.length = length
-        self.headers = headers
-    }
-}
+public typealias GetBigMapConfiguration = BlockContextBigMapsBigMapGetConfiguration
+public typealias GetBigMapValueConfiguration = BlockContextBigMapsBigMapValueGetConfiguration
 
-public typealias GetBigMapValueConfiguration = HeadersOnlyConfiguration
+public typealias GetConstantsConfiguration = BlockContextConstantsGetConfiguration
 
-public typealias GetConstantsConfiguration = HeadersOnlyConfiguration
-
-public typealias GetContractDetailsConfiguration = HeadersOnlyConfiguration
-public typealias GetBalanceConfiguration = HeadersOnlyConfiguration
-public typealias GetCounterConfiguration = HeadersOnlyConfiguration
-public typealias GetDelegateConfiguration = HeadersOnlyConfiguration
-public typealias GetEntrypointsConfiguration = HeadersOnlyConfiguration
-public typealias GetEntrypointConfiguration = HeadersOnlyConfiguration
-public typealias GetManagerKeyConfiguration = HeadersOnlyConfiguration
+public typealias GetContractDetailsConfiguration = BlockContextContractsContractGetConfiguration
+public typealias GetBalanceConfiguration = BlockContextContractsContractBalanceGetConfiguration
+public typealias GetCounterConfiguration = BlockContextContractsContractCounterGetConfiguration
+public typealias GetDelegateConfiguration = BlockContextContractsContractDelegateGetConfiguration
+public typealias GetEntrypointsConfiguration = BlockContextContractsContractEntrypointsGetConfiguration
+public typealias GetEntrypointConfiguration = BlockContextContractsContractEntrypointsEntrypointGetConfiguration
+public typealias GetManagerKeyConfiguration = BlockContextContractsContractManagerKeyGetConfiguration
 public struct GetScriptConfiguration: BaseConfiguration {
-    let unparsingMode: RPCScriptParsing
-    let headers: [HTTPHeader]
+    public let unparsingMode: RPCScriptParsing
+    public let headers: [HTTPHeader]
     
     public init(unparsingMode: RPCScriptParsing = .readable, headers: [HTTPHeader] = []) {
         self.unparsingMode = unparsingMode
-        self.headers = headers
-    }
-}
-public struct GetSaplingStateDiffConfiguration: BaseConfiguration {
-    let commitmentOffset: UInt64?
-    let nullifierOffset: UInt64?
-    let headers: [HTTPHeader]
-    
-    public init(commitmentOffset: UInt64? = nil, nullifierOffset: UInt64? = nil, headers: [HTTPHeader] = []) {
-        self.commitmentOffset = commitmentOffset
-        self.nullifierOffset = nullifierOffset
         self.headers = headers
     }
 }
 public struct GetStorageConfiguration {
-    let unparsingMode: RPCScriptParsing
-    let headers: [HTTPHeader]
+    public let unparsingMode: RPCScriptParsing
+    public let headers: [HTTPHeader]
     
     public init(unparsingMode: RPCScriptParsing = .readable, headers: [HTTPHeader] = []) {
         self.unparsingMode = unparsingMode
@@ -483,22 +461,24 @@ public struct GetStorageConfiguration {
     }
 }
 
-public typealias GetDelegateDetailsConfiguration = HeadersOnlyConfiguration
-public typealias GetCurrentFrozenDepositsConfiguration = HeadersOnlyConfiguration
-public typealias IsDeactivatedConfiguration = HeadersOnlyConfiguration
-public typealias GetDelegatedBalanceConfiguration = HeadersOnlyConfiguration
-public typealias GetDelegatedContractsConfiguration = HeadersOnlyConfiguration
-public typealias GetFrozenDepositsConfiguration = HeadersOnlyConfiguration
-public typealias GetFrozenDepositsLimitConfiguration = HeadersOnlyConfiguration
-public typealias GetFullBalanceConfiguration = HeadersOnlyConfiguration
-public typealias GetGracePeriodConfiguration = HeadersOnlyConfiguration
-public typealias GetParticipationConfiguration = HeadersOnlyConfiguration
-public typealias GetStakingBalanceConfiguration = HeadersOnlyConfiguration
-public typealias GetVotingPowerConfiguration = HeadersOnlyConfiguration
+public typealias GetDelegateDetailsConfiguration = BlockContextDelegatesDelegateGetConfiguration
+public typealias GetCurrentFrozenDepositsConfiguration = BlockContextDelegatesCurrentFrozenDepositsGetConfiguration
+public typealias IsDeactivatedConfiguration = BlockContextDelegatesDeactivatedGetConfiguration
+public typealias GetDelegatedBalanceConfiguration = BlockContextDelegatesDelegatedBalanceGetConfiguration
+public typealias GetDelegatedContractsConfiguration = BlockContextDelegatesDelegatedContractsGetConfiguration
+public typealias GetFrozenDepositsConfiguration = BlockContextDelegatesFrozenDepositsGetConfiguration
+public typealias GetFrozenDepositsLimitConfiguration = BlockContextDelegatesFrozenDeposistsLimitGetConfiguration
+public typealias GetFullBalanceConfiguration = BlockContextDelegatesFullBalanceGetConfiguration
+public typealias GetGracePeriodConfiguration = BlockContextDelegatesGracePeriodGetConfiguration
+public typealias GetParticipationConfiguration = BlockContextDelegatesParticipationGetConfiguration
+public typealias GetStakingBalanceConfiguration = BlockContextDelegatesStakingBalanceGetConfiguration
+public typealias GetVotingPowerConfiguration = BlockContextDelegatesVotingPowerGetConfiguration
 
-public typealias GetBlockHeaderConfiguration = HeadersOnlyConfiguration
+public typealias GetSaplingStateDiffConfiguration = BlockContextSaplingStateGetDiffGetConfiguration
 
-public typealias PreapplyOperationsConfiguration = HeadersOnlyConfiguration
-public typealias RunOperationConfiguration = HeadersOnlyConfiguration
+public typealias GetBlockHeaderConfiguration = BlockHeaderGetConfiguration
 
-public typealias GetOperationsConfiguration = HeadersOnlyConfiguration
+public typealias PreapplyOperationsConfiguration = BlockHelpersPreapplyOperationsPostConfiguration
+public typealias RunOperationConfiguration = BlockHelpersScriptsRunOperationPostConfiguration
+
+public typealias GetOperationsConfiguration = BlockOperationsGetConfiguration

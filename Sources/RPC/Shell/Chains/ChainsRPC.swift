@@ -101,10 +101,10 @@ extension ChainsChainBlocks {
 }
 
 public struct ChainsChainBlocksGetConfiguration: BaseConfiguration {
-    let length: UInt32?
-    let head: BlockHash?
-    let minDate: String?
-    let headers: [HTTPHeader]
+    public let length: UInt32?
+    public let head: BlockHash?
+    public let minDate: String?
+    public let headers: [HTTPHeader]
     
     public init(length: UInt32? = nil, head: BlockHash? = nil, minDate: String? = nil, headers: [HTTPHeader] = []) {
         self.length = length
