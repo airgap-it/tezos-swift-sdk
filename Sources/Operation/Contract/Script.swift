@@ -10,7 +10,7 @@ import TezosMichelson
 
 extension TezosOperation {
     
-    public struct Script: Hashable {
+    public struct Script: Hashable, Codable {
         public let code: Micheline
         public let storage: Micheline
         

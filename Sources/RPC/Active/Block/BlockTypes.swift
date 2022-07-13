@@ -7,6 +7,8 @@
 
 import Foundation
 import TezosCore
+import TezosMichelson
+import TezosOperation
 
 // MARK: ../<block_id>
 
@@ -14,11 +16,11 @@ public typealias GetBlockResponse = RPCBlock
 
 // MARK: ../<block_id>/context/big_maps/<big_map_id>
 
-public typealias GetBigMapResponse = EmptyResponse
+public typealias GetBigMapResponse = [Micheline]
 
 // MARK: ../<block_id>/context/big_maps/<big_map_id>/value
 
-public typealias GetBigMapValueResponse = EmptyResponse
+public typealias GetBigMapValueResponse = Micheline?
 
 // MARK: ../<block_id>/context/constants
 
@@ -26,19 +28,31 @@ public typealias GetConstantsResponse = EmptyResponse
 
 // MARK: ../<block_id>/context/contracts/<contract_id>
 
-public typealias GetContractDetailsResponse = EmptyResponse
+public struct GetContractDetailsResponse: Hashable, Codable {
+    public let balance: String
+    public let delegate: Address.Implicit?
+    public let script: TezosOperation.Script?
+    public let counter: String?
+    
+    public init(balance: String, delegate: Address.Implicit? = nil, script: TezosOperation.Script? = nil, counter: String? = nil) {
+        self.balance = balance
+        self.delegate = delegate
+        self.script = script
+        self.counter = counter
+    }
+}
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/balance
 
-public typealias GetContractBalanceResponse = EmptyResponse
+public typealias GetContractBalanceResponse = String
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/counter
 
-public typealias GetContractCounterResponse = EmptyResponse
+public typealias GetContractCounterResponse = String?
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/delegate
 
-public typealias GetContractDelegateResponse = EmptyResponse
+public typealias GetContractDelegateResponse = Address.Implicit?
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/entrypoints
 
@@ -46,15 +60,15 @@ public typealias GetContractEntrypointsResponse = EmptyResponse
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/entrypoints/<string>
 
-public typealias GetContractEntrypointResponse = EmptyResponse
+public typealias GetContractEntrypointResponse = Micheline
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/manager_key
 
-public typealias GetContractManagerKeyResponse = EmptyResponse
+public typealias GetContractManagerKeyResponse = Key.Public?
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/script
 
-public typealias GetContractScriptResponse = EmptyResponse
+public typealias GetContractScriptResponse = TezosOperation.Script?
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/script/normalized
 
@@ -70,7 +84,7 @@ public struct GetContractNormalizedScriptRequest: Hashable, Codable {
     }
 }
 
-public typealias GetContractNormalizedScriptResponse = EmptyResponse
+public typealias GetContractNormalizedScriptResponse = TezosOperation.Script?
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/single_sapling_get_diff
 
@@ -78,7 +92,7 @@ public typealias GetContractSaplingStateDiffResponse = EmptyResponse
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/storage
 
-public typealias GetContractStorageResponse = EmptyResponse
+public typealias GetContractStorageResponse = Micheline?
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/storage/normalized
 
@@ -94,7 +108,7 @@ public struct GetContractNormalizedStorageRequest: Hashable, Codable {
     }
 }
 
-public typealias GetContractNormalizedStorageResponse = EmptyResponse
+public typealias GetContractNormalizedStorageResponse = Micheline?
 
 // MARK: ../<block_id>/context/delegates/<pkh>
 
