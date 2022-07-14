@@ -8,6 +8,12 @@
 import Foundation
 import TezosCore
 
+// MARK: RPCOperation
+
+public struct RPCOperation: Hashable, Codable {
+    // TODO
+}
+
 // MARK: ApplicableOperation
 
 public struct RPCApplicableOperation: Hashable, Codable {

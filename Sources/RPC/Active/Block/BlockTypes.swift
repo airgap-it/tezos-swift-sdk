@@ -31,10 +31,10 @@ public typealias GetConstantsResponse = RPCConstants
 public struct GetContractDetailsResponse: Hashable, Codable {
     public let balance: String
     public let delegate: Address.Implicit?
-    public let script: TezosOperation.Script?
+    public let script: Script?
     public let counter: String?
     
-    public init(balance: String, delegate: Address.Implicit? = nil, script: TezosOperation.Script? = nil, counter: String? = nil) {
+    public init(balance: String, delegate: Address.Implicit? = nil, script: Script? = nil, counter: String? = nil) {
         self.balance = balance
         self.delegate = delegate
         self.script = script
@@ -56,7 +56,15 @@ public typealias GetContractDelegateResponse = Address.Implicit?
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/entrypoints
 
-public typealias GetContractEntrypointsResponse = EmptyResponse
+public struct GetContractEntrypointsResponse: Hashable, Codable {
+    public let unreachable: [RPCUnreachableEntrypoint]
+    public let entrypoints: [String: Micheline]
+    
+    public init(unreachable: [RPCUnreachableEntrypoint], entrypoints: [String: Micheline]) {
+        self.unreachable = unreachable
+        self.entrypoints = entrypoints
+    }
+}
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/entrypoints/<string>
 
@@ -68,7 +76,7 @@ public typealias GetContractManagerKeyResponse = Key.Public?
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/script
 
-public typealias GetContractScriptResponse = TezosOperation.Script?
+public typealias GetContractScriptResponse = Script?
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/script/normalized
 
@@ -84,11 +92,11 @@ public struct GetContractNormalizedScriptRequest: Hashable, Codable {
     }
 }
 
-public typealias GetContractNormalizedScriptResponse = TezosOperation.Script?
+public typealias GetContractNormalizedScriptResponse = Script?
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/single_sapling_get_diff
 
-public typealias GetContractSaplingStateDiffResponse = EmptyResponse
+public typealias GetContractSaplingStateDiffResponse = RPCSaplingStateDiff
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/storage
 
@@ -240,11 +248,11 @@ public typealias GetDelegateVotingPowerResponse = Int32
 
 // MARK: ../<block_id>/context/sapling/<sapling_state_id>/get_diff
 
-public typealias GetSaplingStateDiffResponse = EmptyResponse
+public typealias GetSaplingStateDiffResponse = RPCSaplingStateDiff
 
 // MARK: ../<block_id>/header
 
-public typealias GetBlockHeaderResponse = EmptyResponse
+public typealias GetBlockHeaderResponse = RPCFullBlockHeader
 
 // MARK: ../<block_id>/helpers/preapply/operations
 
@@ -260,8 +268,8 @@ public struct RunOperationRequest: Hashable, Codable {
     }
 }
 
-public typealias RunOperationResponse = EmptyResponse
+public typealias RunOperationResponse = [RPCOperation.Content]
 
 // MARK: ../<block_id>/operations
 
-public typealias GetBlockOperationsResponse = EmptyResponse
+public typealias GetBlockOperationsResponse = [[RPCOperation]]

@@ -361,7 +361,7 @@ extension TezosOperation.Content.Transaction: ForgeableConsuming {
         let destination = try Address(fromConsuming: &bytes)
         
         let parametersPresence = Bool(fromConsuming: &bytes) ?? false
-        let parameters = parametersPresence ? try TezosOperation.Parameters(fromConsuming: &bytes) : nil
+        let parameters = parametersPresence ? try Parameters(fromConsuming: &bytes) : nil
             
         self.init(
             source: source,
@@ -399,7 +399,7 @@ extension TezosOperation.Content.Origination: ForgeableConsuming {
         let delegatePresence = Bool(fromConsuming: &bytes) ?? false
         let delegate = delegatePresence ? try Address.Implicit(fromConsuming: &bytes) : nil
         
-        let script = try TezosOperation.Script(fromConsuming: &bytes)
+        let script = try Script(fromConsuming: &bytes)
             
         self.init(
             source: source,
@@ -761,9 +761,9 @@ private extension TezosOperation.BlockHeader {
     }
 }
 
-private extension TezosOperation.Parameters {
+private extension Parameters {
     init(fromConsuming bytes: inout [UInt8]) throws {
-        let entrypoint = try TezosOperation.Entrypoint(fromConsuming: &bytes)
+        let entrypoint = try Entrypoint(fromConsuming: &bytes)
         
         let valueLength = try Int32(fromConsuming: &bytes)
         var valueBytes = bytes.consumeSubrange(0..<Int(valueLength))
@@ -782,7 +782,7 @@ private extension TezosOperation.Parameters {
     }
 }
 
-private extension TezosOperation.Entrypoint {
+private extension Entrypoint {
     init(fromConsuming bytes: inout [UInt8]) throws {
         guard let tag = Tag.allCases.first(where: { bytes.starts(with: $0.rawValue) }) else {
             throw TezosError.invalidValue("Invalid encoded OperationContent value.")
@@ -812,7 +812,7 @@ private extension TezosOperation.Entrypoint {
     }
 }
 
-private extension TezosOperation.Script {
+private extension Script {
     init(fromConsuming bytes: inout [UInt8]) throws {
         let codeLength = try Int32(fromConsuming: &bytes)
         var codeBytes = bytes.consumeSubrange(0..<Int(codeLength))

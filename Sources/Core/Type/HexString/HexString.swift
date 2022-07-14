@@ -31,6 +31,17 @@ public struct HexString: Hashable, Codable {
     public func count(withPrefix prefixed: Bool = false) -> Int {
         String(self, withPrefix: prefixed).count
     }
+    
+    // MARK: Codable
+    
+    public init(from decoder: Decoder) throws {
+        let value = try String(from: decoder)
+        try self.init(from: value)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        try value.encode(to: encoder)
+    }
 }
 
 // MARK: String <- HexString

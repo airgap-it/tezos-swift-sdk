@@ -8,15 +8,12 @@
 import Foundation
 import TezosMichelson
 
-extension TezosOperation {
+public struct Parameters: Hashable, Codable {
+    public let entrypoint: Entrypoint
+    public let value: Micheline
     
-    public struct Parameters: Hashable {
-        public let entrypoint: Entrypoint
-        public let value: Micheline
-        
-        public init(entrypoint: Entrypoint, value: Micheline) {
-            self.entrypoint = entrypoint
-            self.value = value
-        }
+    public init(entrypoint: Entrypoint, value: Micheline) {
+        self.entrypoint = entrypoint
+        self.value = value
     }
 }
