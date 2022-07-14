@@ -102,7 +102,7 @@ struct BlockContextBigMapsBigMapValueClient: BlockContextBigMapsBigMapValue {
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextBigMapsBigMapValueGetConfiguration) async throws -> GetBlockHeaderResponse {
+    func get(configuredWith configuration: BlockContextBigMapsBigMapValueGetConfiguration) async throws -> GetBigMapValueResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -150,7 +150,7 @@ class BlockContextContractsContractClient: BlockContextContractsContract {
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockHeaderGetConfiguration) async throws -> GetBlockHeaderResponse {
+    func get(configuredWith configuration: BlockHeaderGetConfiguration) async throws -> GetContractDetailsResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
     
@@ -175,7 +175,7 @@ struct BlockContextContractsContractBalanceClient: BlockContextContractsContract
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextContractsContractBalanceGetConfiguration) async throws -> GetBlockHeaderResponse {
+    func get(configuredWith configuration: BlockContextContractsContractBalanceGetConfiguration) async throws -> GetContractBalanceResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -191,7 +191,7 @@ struct BlockContextContractsContractCounterClient: BlockContextContractsContract
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextContractsContractCounterGetConfiguration) async throws -> GetBlockHeaderResponse {
+    func get(configuredWith configuration: BlockContextContractsContractCounterGetConfiguration) async throws -> GetContractCounterResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -207,7 +207,7 @@ struct BlockContextContractsContractDelegateClient: BlockContextContractsContrac
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextContractsContractDelegateGetConfiguration) async throws -> GetBlockHeaderResponse {
+    func get(configuredWith configuration: BlockContextContractsContractDelegateGetConfiguration) async throws -> GetContractDelegateResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -243,7 +243,7 @@ struct BlockContextContractsContractEntrypointsEntrypointClient: BlockContextCon
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextContractsContractEntrypointsEntrypointGetConfiguration) async throws -> GetBlockHeaderResponse {
+    func get(configuredWith configuration: BlockContextContractsContractEntrypointsEntrypointGetConfiguration) async throws -> GetContractEntrypointResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -259,7 +259,7 @@ struct BlockContextContractsContractManagerKeyClient: BlockContextContractsContr
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextContractsContractManagerKeyGetConfiguration) async throws -> GetBlockHeaderResponse {
+    func get(configuredWith configuration: BlockContextContractsContractManagerKeyGetConfiguration) async throws -> GetContractManagerKeyResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
