@@ -24,7 +24,7 @@ public typealias GetBigMapValueResponse = Micheline?
 
 // MARK: ../<block_id>/context/constants
 
-public typealias GetConstantsResponse = EmptyResponse
+public typealias GetConstantsResponse = RPCConstants
 
 // MARK: ../<block_id>/context/contracts/<contract_id>
 
