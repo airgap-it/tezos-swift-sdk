@@ -7,13 +7,6 @@
 
 import Foundation
 
-// MARK: RPCBalanceUpdate
-
-public enum RPCBalanceUpdate: Hashable, Codable {
-    // TODO
-    case contract
-}
-
 // MARK: RPCOperationListMetadata
 
 public struct RPCOperationListMetadata: Hashable, Codable {
