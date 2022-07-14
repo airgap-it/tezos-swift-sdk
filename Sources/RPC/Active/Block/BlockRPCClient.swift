@@ -118,7 +118,7 @@ struct BlockContextConstantsClient: BlockContextConstants {
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextConstantsGetConfiguration) async throws -> GetBlockHeaderResponse {
+    func get(configuredWith configuration: BlockContextConstantsGetConfiguration) async throws -> GetConstantsResponse {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
