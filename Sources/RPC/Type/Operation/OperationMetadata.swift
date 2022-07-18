@@ -7,6 +7,12 @@
 
 import Foundation
 
+// MARK: RPCOperationMetadata
+
+public enum RPCOperationMetadata: String, Codable {
+    case tooLarge = "too large"
+}
+
 // MARK: RPCOperationListMetadata
 
 public struct RPCOperationListMetadata: Hashable, Codable {
