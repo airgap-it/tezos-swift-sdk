@@ -145,18 +145,21 @@ extension RPCOperation.Content {
         public let level: Int32
         public let round: Int32
         public let blockPayloadHash: BlockPayloadHash
+        public let metadata: RPCOperationMetadata.Endorsement?
         
         public init(
             slot: UInt16,
             level: Int32,
             round: Int32,
-            blockPayloadHash: BlockPayloadHash
+            blockPayloadHash: BlockPayloadHash,
+            metadata: RPCOperationMetadata.Endorsement? = nil
         ) {
             self.kind = .endorsement
             self.slot = slot
             self.level = level
             self.round = round
             self.blockPayloadHash = blockPayloadHash
+            self.metadata = metadata
         }
         
         enum CodingKeys: String, CodingKey {
@@ -165,6 +168,7 @@ extension RPCOperation.Content {
             case level
             case round
             case blockPayloadHash = "block_payload_hash"
+            case metadata
         }
     }
 }
@@ -179,18 +183,21 @@ extension RPCOperation.Content {
         public let level: Int32
         public let round: Int32
         public let blockPayloadHash: BlockPayloadHash
+        public let metadata: RPCOperationMetadata.Preendorsement?
         
         public init(
             slot: UInt16,
             level: Int32,
             round: Int32,
-            blockPayloadHash: BlockPayloadHash
+            blockPayloadHash: BlockPayloadHash,
+            metadata: RPCOperationMetadata.Preendorsement? = nil
         ) {
             self.kind = .preendorsement
             self.slot = slot
             self.level = level
             self.round = round
             self.blockPayloadHash = blockPayloadHash
+            self.metadata = metadata
         }
         
         enum CodingKeys: String, CodingKey {
@@ -199,6 +206,7 @@ extension RPCOperation.Content {
             case level
             case round
             case blockPayloadHash = "block_payload_hash"
+            case metadata
         }
     }
 }
@@ -211,11 +219,13 @@ extension RPCOperation.Content {
         private let kind: Kind
         public let level: Int32
         public let nonce: String
+        public let metadata: RPCOperationMetadata.SeedNonceRevelation?
         
-        public init(level: Int32, nonce: String) {
+        public init(level: Int32, nonce: String, metadata: RPCOperationMetadata.SeedNonceRevelation? = nil) {
             self.kind = .seedNonceRevelation
             self.level = level
             self.nonce = nonce
+            self.metadata = metadata
         }
     }
 }
@@ -228,11 +238,13 @@ extension RPCOperation.Content {
         private let kind: Kind
         public let op1: InlinedEndorsement
         public let op2: InlinedEndorsement
+        public let metadata: RPCOperationMetadata.DoubleEndorsementEvidence?
         
-        public init(op1: InlinedEndorsement, op2: InlinedEndorsement) {
+        public init(op1: InlinedEndorsement, op2: InlinedEndorsement, metadata: RPCOperationMetadata.DoubleEndorsementEvidence? = nil) {
             self.kind = .doubleEndorsementEvidence
             self.op1 = op1
             self.op2 = op2
+            self.metadata = metadata
         }
     }
     
@@ -257,11 +269,13 @@ extension RPCOperation.Content {
         private let kind: Kind
         public let op1: InlinedPreendorsement
         public let op2: InlinedPreendorsement
+        public let metadata: RPCOperationMetadata.DoublePreendorsementEvidence?
         
-        public init(op1: InlinedPreendorsement, op2: InlinedPreendorsement) {
+        public init(op1: InlinedPreendorsement, op2: InlinedPreendorsement, metadata: RPCOperationMetadata.DoublePreendorsementEvidence? = nil) {
             self.kind = .doublePreendorsementEvidence
             self.op1 = op1
             self.op2 = op2
+            self.metadata = metadata
         }
     }
     
@@ -286,11 +300,13 @@ extension RPCOperation.Content {
         private let kind: Kind
         public let bh1: RPCBlockHeader
         public let bh2: RPCBlockHeader
+        public let metadata: RPCOperationMetadata.DoubleBakingEvidence?
         
-        public init(bh1: RPCBlockHeader, bh2: RPCBlockHeader) {
+        public init(bh1: RPCBlockHeader, bh2: RPCBlockHeader, metadata: RPCOperationMetadata.DoubleBakingEvidence? = nil) {
             self.kind = .doubleBakingEvidence
             self.bh1 = bh1
             self.bh2 = bh2
+            self.metadata = metadata
         }
     }
 }
@@ -303,11 +319,13 @@ extension RPCOperation.Content {
         private let kind: Kind
         public let pkh: Ed25519PublicKeyHash
         public let secret: String
+        public let metadata: RPCOperationMetadata.ActivateAccount?
         
-        public init(pkh: Ed25519PublicKeyHash, secret: String) {
+        public init(pkh: Ed25519PublicKeyHash, secret: String, metadata: RPCOperationMetadata.ActivateAccount? = nil) {
             self.kind = .activateAccount
             self.pkh = pkh
             self.secret = secret
+            self.metadata = metadata
         }
     }
 }
@@ -321,12 +339,14 @@ extension RPCOperation.Content {
         public let source: Address.Implicit
         public let period: Int32
         public let proposals: [ProtocolHash]
+        public let metadata: RPCOperationMetadata.Proposals?
         
-        public init(source: Address.Implicit, period: Int32, proposals: [ProtocolHash]) {
+        public init(source: Address.Implicit, period: Int32, proposals: [ProtocolHash], metadata: RPCOperationMetadata.Proposals? = nil) {
             self.kind = .proposals
             self.source = source
             self.period = period
             self.proposals = proposals
+            self.metadata = metadata
         }
     }
 }
@@ -341,13 +361,15 @@ extension RPCOperation.Content {
         public let period: Int32
         public let proposal: ProtocolHash
         public let ballot: Kind
+        public let metadata: RPCOperationMetadata.Ballot?
         
-        public init(source: Address.Implicit, period: Int32, proposal: ProtocolHash, ballot: Kind) {
+        public init(source: Address.Implicit, period: Int32, proposal: ProtocolHash, ballot: Kind, metadata: RPCOperationMetadata.Ballot? = nil) {
             self.kind = .ballot
             self.source = source
             self.period = period
             self.proposal = proposal
             self.ballot = ballot
+            self.metadata = metadata
         }
         
         public enum Kind: String, Codable {
@@ -370,6 +392,7 @@ extension RPCOperation.Content {
         public let gasLimit: String
         public let storageLimit: String
         public let publicKey: Key.Public
+        public let metadata: RPCOperationMetadata.Reveal?
         
         public init(
             source: Address.Implicit,
@@ -377,7 +400,8 @@ extension RPCOperation.Content {
             counter: String,
             gasLimit: String,
             storageLimit: String,
-            publicKey: Key.Public
+            publicKey: Key.Public,
+            metadata: RPCOperationMetadata.Reveal? = nil
         ) {
             self.kind = .reveal
             self.source = source
@@ -386,6 +410,7 @@ extension RPCOperation.Content {
             self.gasLimit = gasLimit
             self.storageLimit = storageLimit
             self.publicKey = publicKey
+            self.metadata = metadata
         }
     }
 }
@@ -404,6 +429,7 @@ extension RPCOperation.Content {
         public let amount: Mutez
         public let destination: Address
         public let parameters: Parameters?
+        public let metadata: RPCOperationMetadata.Transaction?
         
         public init(
             source: Address.Implicit,
@@ -413,7 +439,8 @@ extension RPCOperation.Content {
             storageLimit: String,
             amount: Mutez,
             destination: Address,
-            parameters: Parameters? = nil
+            parameters: Parameters? = nil,
+            metadata: RPCOperationMetadata.Transaction? = nil
         ) {
             self.kind = .transaction
             self.source = source
@@ -424,6 +451,7 @@ extension RPCOperation.Content {
             self.amount = amount
             self.destination = destination
             self.parameters = parameters
+            self.metadata = metadata
         }
     }
 }
@@ -442,6 +470,7 @@ extension RPCOperation.Content {
         public let balance: Mutez
         public let delegate: Address.Implicit?
         public let script: Script
+        public let metadata: RPCOperationMetadata.Origination?
         
         public init(
             source: Address.Implicit,
@@ -451,7 +480,8 @@ extension RPCOperation.Content {
             storageLimit: String,
             balance: Mutez,
             delegate: Address.Implicit?,
-            script: Script
+            script: Script,
+            metadata: RPCOperationMetadata.Origination? = nil
         ) {
             self.kind = .origination
             self.source = source
@@ -462,6 +492,7 @@ extension RPCOperation.Content {
             self.balance = balance
             self.delegate = delegate
             self.script = script
+            self.metadata = metadata
         }
     }
 }
@@ -478,6 +509,7 @@ extension RPCOperation.Content {
         public let gasLimit: String
         public let storageLimit: String
         public let delegate: Address.Implicit?
+        public let metadata: RPCOperationMetadata.Delegation?
         
         public init(
             source: Address.Implicit,
@@ -485,7 +517,8 @@ extension RPCOperation.Content {
             counter: String,
             gasLimit: String,
             storageLimit: String,
-            delegate: Address.Implicit? = nil
+            delegate: Address.Implicit? = nil,
+            metadata: RPCOperationMetadata.Delegation? = nil
         ) {
             self.kind = .delegation
             self.source = source
@@ -494,6 +527,7 @@ extension RPCOperation.Content {
             self.gasLimit = gasLimit
             self.storageLimit = storageLimit
             self.delegate = delegate
+            self.metadata = metadata
         }
     }
 }
@@ -510,6 +544,7 @@ extension RPCOperation.Content {
         public let gasLimit: String
         public let storageLimit: String
         public let limit: Mutez?
+        public let metadata: RPCOperationMetadata.SetDepositsLimit?
         
         public init(
             source: Address.Implicit,
@@ -517,7 +552,8 @@ extension RPCOperation.Content {
             counter: String,
             gasLimit: String,
             storageLimit: String,
-            limit: Mutez? = nil
+            limit: Mutez? = nil,
+            metadata: RPCOperationMetadata.SetDepositsLimit? = nil
         ) {
             self.kind = .setDepositsLimit
             self.source = source
@@ -526,6 +562,7 @@ extension RPCOperation.Content {
             self.gasLimit = gasLimit
             self.storageLimit = storageLimit
             self.limit = limit
+            self.metadata = metadata
         }
     }
 }
@@ -557,6 +594,7 @@ extension RPCOperation.Content {
         public let gasLimit: String
         public let storageLimit: String
         public let value: Micheline
+        public let metadata: RPCOperationMetadata.RegisterGlobalConstant?
         
         public init(
             source: Address.Implicit,
@@ -564,7 +602,8 @@ extension RPCOperation.Content {
             counter: String,
             gasLimit: String,
             storageLimit: String,
-            value: Micheline
+            value: Micheline,
+            metadata: RPCOperationMetadata.RegisterGlobalConstant? = nil
         ) {
             self.kind = .registerGlobalConstant
             self.source = source
@@ -573,6 +612,7 @@ extension RPCOperation.Content {
             self.gasLimit = gasLimit
             self.storageLimit = storageLimit
             self.value = value
+            self.metadata = metadata
         }
     }
 }
