@@ -10,11 +10,11 @@ import TezosCore
 
 // MARK: /chains
 
-struct ChainsClient: Chains {
+struct ChainsClient<HTTPClient: HTTP>: Chains {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
     
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* /chains */ parentURL.appendingPathComponent("chains")
         self.http = http
     }
@@ -26,11 +26,11 @@ struct ChainsClient: Chains {
 
 // MARK: /chains/<chain_id>
 
-class ChainsChainClient: ChainsChain {
+class ChainsChainClient<HTTPClient: HTTP>: ChainsChain {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
     
-    init(parentURL: URL, chainID: String, http: HTTP) {
+    init(parentURL: URL, chainID: String, http: HTTPClient) {
         self.baseURL = /* /chains/<chain_id> */ parentURL.appendingPathComponent(chainID)
         self.http = http
     }
@@ -54,11 +54,11 @@ class ChainsChainClient: ChainsChain {
 
 // MARK: /chains/<chain_id>/blocks
 
-struct ChainsChainBlocksClient: ChainsChainBlocks {
+struct ChainsChainBlocksClient<HTTPClient: HTTP>: ChainsChainBlocks {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
     
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* /chains/<chain_id>/blocks */ parentURL.appendingPathComponent("blocks")
         self.http = http
     }
@@ -85,11 +85,11 @@ struct ChainsChainBlocksClient: ChainsChainBlocks {
 
 // MARK: /chains/<chain_id>/chain_id
 
-struct ChainsChainChainIDClient: ChainsChainChainID {
+struct ChainsChainChainIDClient<HTTPClient: HTTP>: ChainsChainChainID {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
     
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* /chains/<chain_id>/chain_id */ parentURL.appendingPathComponent("chain_id")
         self.http = http
     }
@@ -101,11 +101,11 @@ struct ChainsChainChainIDClient: ChainsChainChainID {
 
 // MARK: /chains/<chain_id>/invalid_blocks
 
-struct ChainsChainInvalidBlocksClient: ChainsChainInvalidBlocks {
+struct ChainsChainInvalidBlocksClient<HTTPClient: HTTP>: ChainsChainInvalidBlocks {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* /chains/<chain_id>/invalid_blocks */ parentURL.appendingPathComponent("invalid_blocks")
         self.http = http
     }
@@ -122,11 +122,11 @@ struct ChainsChainInvalidBlocksClient: ChainsChainInvalidBlocks {
 
 // MARK: /chains/<chain_id>/invalid_blocks/<block_hash>
 
-struct ChainsChainInvalidBlocksBlockClient: ChainsChainInvalidBlocksBlock {
+struct ChainsChainInvalidBlocksBlockClient<HTTPClient: HTTP>: ChainsChainInvalidBlocksBlock {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, blockHash: BlockHash, http: HTTP) {
+    init(parentURL: URL, blockHash: BlockHash, http: HTTPClient) {
         self.baseURL = /* /chains/<chain_id>/invalid_blocks/<block_hash> */ parentURL.appendingPathComponent(blockHash.base58)
         self.http = http
     }
@@ -142,11 +142,11 @@ struct ChainsChainInvalidBlocksBlockClient: ChainsChainInvalidBlocksBlock {
 
 // MARK: /chains/<chain_id>/is_bootstrapped
 
-struct ChainsChainIsBootstrappedClient: ChainsChainIsBootstrapped {
+struct ChainsChainIsBootstrappedClient<HTTPClient: HTTP>: ChainsChainIsBootstrapped {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* /chains/<chain_id>/is_bootstrapped */ parentURL.appendingPathComponent("is_bootstrapped")
         self.http = http
     }
@@ -158,11 +158,11 @@ struct ChainsChainIsBootstrappedClient: ChainsChainIsBootstrapped {
 
 // MARK: /chains/<chain_id>/levels
 
-class ChainsChainLevelsClient: ChainsChainLevels {
+class ChainsChainLevelsClient<HTTPClient: HTTP>: ChainsChainLevels {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* /chains/<chain_id>/levels */ parentURL.appendingPathComponent("levels")
         self.http = http
     }
@@ -174,11 +174,11 @@ class ChainsChainLevelsClient: ChainsChainLevels {
 
 // MARK: /chains/<chain_id>/levels/caboose
 
-struct ChainsChainLevelsCabooseClient: ChainsChainLevelsCaboose {
+struct ChainsChainLevelsCabooseClient<HTTPClient: HTTP>: ChainsChainLevelsCaboose {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* /chains/<chain_id>/levels/caboose */ parentURL.appendingPathComponent("caboose")
         self.http = http
     }
@@ -190,11 +190,11 @@ struct ChainsChainLevelsCabooseClient: ChainsChainLevelsCaboose {
 
 // MARK: /chains/<chain_id>/levels/checkpoint
 
-struct ChainsChainLevelsCheckpointClient: ChainsChainLevelsCheckpoint {
+struct ChainsChainLevelsCheckpointClient<HTTPClient: HTTP>: ChainsChainLevelsCheckpoint {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* /chains/<chain_id>/levels/checkpoint */ parentURL.appendingPathComponent("checkpoint")
         self.http = http
     }
@@ -206,11 +206,11 @@ struct ChainsChainLevelsCheckpointClient: ChainsChainLevelsCheckpoint {
 
 // MARK: /chains/<chain_id>/levels/savepoint
 
-struct ChainsChainLevelsSavepointClient: ChainsChainLevelsSavepoint {
+struct ChainsChainLevelsSavepointClient<HTTPClient: HTTP>: ChainsChainLevelsSavepoint {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* /chains/<chain_id>/levels/savepoint */ parentURL.appendingPathComponent("savepoint")
         self.http = http
     }

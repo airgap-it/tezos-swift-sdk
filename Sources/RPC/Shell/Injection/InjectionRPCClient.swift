@@ -9,11 +9,11 @@ import Foundation
 
 // MARK: /injection
 
-class InjectionClient: Injection {
+class InjectionClient<HTTPClient: HTTP>: Injection {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* /injection */ parentURL.appendingPathComponent("injection")
         self.http = http
     }
@@ -25,11 +25,11 @@ class InjectionClient: Injection {
 
 // MARK: /injection/block
 
-struct InjectionBlockClient: InjectionBlock {
+struct InjectionBlockClient<HTTPClient: HTTP>: InjectionBlock {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* /injection/block */ parentURL.appendingPathComponent("block")
         self.http = http
     }
@@ -62,11 +62,11 @@ struct InjectionBlockClient: InjectionBlock {
 
 // MARK: /injection/operation
 
-struct InjectionOperationClient: InjectionOperation {
+struct InjectionOperationClient<HTTPClient: HTTP>: InjectionOperation {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* /injection/operation */ parentURL.appendingPathComponent("operation")
         self.http = http
     }
@@ -92,11 +92,11 @@ struct InjectionOperationClient: InjectionOperation {
 
 // MARK: /injection/protocol
 
-struct InjectionProtocolClient: InjectionProtocol {
+struct InjectionProtocolClient<HTTPClient: HTTP>: InjectionProtocol {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* /injection/protocol */ parentURL.appendingPathComponent("protocol")
         self.http = http
     }

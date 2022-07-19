@@ -10,11 +10,11 @@ import TezosCore
 
 // MARK: ../<block_id>
 
-class BlockClient: Block {
+class BlockClient<HTTPClient: HTTP>: Block {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, blockID: String, http: HTTP) {
+    init(parentURL: URL, blockID: String, http: HTTPClient) {
         self.baseURL = /* ../<block_id> */ parentURL.appendingPathComponent(blockID)
         self.http = http
     }
@@ -31,11 +31,11 @@ class BlockClient: Block {
 
 // MARK: ../<block_id>/context
 
-class BlockContextClient: BlockContext {
+class BlockContextClient<HTTPClient: HTTP>: BlockContext {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context */ parentURL.appendingPathComponent("context")
         self.http = http
     }
@@ -49,11 +49,11 @@ class BlockContextClient: BlockContext {
 
 // MARK: ../<block_id>/context/big_maps
 
-struct BlockContextBigMapsClient: BlockContextBigMaps {
+struct BlockContextBigMapsClient<HTTPClient: HTTP>: BlockContextBigMaps {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/big_maps */ parentURL.appendingPathComponent("big_maps")
         self.http = http
     }
@@ -65,11 +65,11 @@ struct BlockContextBigMapsClient: BlockContextBigMaps {
 
 // MARK: ../<block_id>/context/big_maps/<big_map_id>
 
-struct BlockContextBigMapsBigMapClient: BlockContextBigMapsBigMap {
+struct BlockContextBigMapsBigMapClient<HTTPClient: HTTP>: BlockContextBigMapsBigMap {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, bigMapID: String, http: HTTP) {
+    init(parentURL: URL, bigMapID: String, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/big_maps/<big_map_id> */ parentURL.appendingPathComponent(bigMapID)
         self.http = http
     }
@@ -93,11 +93,11 @@ struct BlockContextBigMapsBigMapClient: BlockContextBigMapsBigMap {
 
 // MARK: ../<block_id>/context/big_maps/<big_map_id>/value
 
-struct BlockContextBigMapsBigMapValueClient: BlockContextBigMapsBigMapValue {
+struct BlockContextBigMapsBigMapValueClient<HTTPClient: HTTP>: BlockContextBigMapsBigMapValue {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, scriptExpr: ScriptExprHash, http: HTTP) {
+    init(parentURL: URL, scriptExpr: ScriptExprHash, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/big_map_id>/value */ parentURL.appendingPathComponent(scriptExpr.base58)
         self.http = http
     }
@@ -109,11 +109,11 @@ struct BlockContextBigMapsBigMapValueClient: BlockContextBigMapsBigMapValue {
 
 // MARK: ../<block_id>/context/constants
 
-struct BlockContextConstantsClient: BlockContextConstants {
+struct BlockContextConstantsClient<HTTPClient: HTTP>: BlockContextConstants {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/constants */ parentURL.appendingPathComponent("constants")
         self.http = http
     }
@@ -125,11 +125,11 @@ struct BlockContextConstantsClient: BlockContextConstants {
 
 // MARK: ../<block_id>/context/contracts
 
-struct BlockContextContractsClient: BlockContextContracts {
+struct BlockContextContractsClient<HTTPClient: HTTP>: BlockContextContracts {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/contracts */ parentURL.appendingPathComponent("contracts")
         self.http = http
     }
@@ -141,11 +141,11 @@ struct BlockContextContractsClient: BlockContextContracts {
 
 // MARK: ../<block_id>/context/contracts/<contract_id>
 
-class BlockContextContractsContractClient: BlockContextContractsContract {
+class BlockContextContractsContractClient<HTTPClient: HTTP>: BlockContextContractsContract {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, address: Address, http: HTTP) {
+    init(parentURL: URL, address: Address, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/contracts/<contract_id> */ parentURL.appendingPathComponent(address.base58)
         self.http = http
     }
@@ -166,11 +166,11 @@ class BlockContextContractsContractClient: BlockContextContractsContract {
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/balance
 
-struct BlockContextContractsContractBalanceClient: BlockContextContractsContractBalance {
+struct BlockContextContractsContractBalanceClient<HTTPClient: HTTP>: BlockContextContractsContractBalance {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/contracts/<contract_id>/balance */ parentURL.appendingPathComponent("balance")
         self.http = http
     }
@@ -182,11 +182,11 @@ struct BlockContextContractsContractBalanceClient: BlockContextContractsContract
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/counter
 
-struct BlockContextContractsContractCounterClient: BlockContextContractsContractCounter {
+struct BlockContextContractsContractCounterClient<HTTPClient: HTTP>: BlockContextContractsContractCounter {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/contracts/<contract_id>/counter */ parentURL.appendingPathComponent("counter")
         self.http = http
     }
@@ -198,11 +198,11 @@ struct BlockContextContractsContractCounterClient: BlockContextContractsContract
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/delegate
 
-struct BlockContextContractsContractDelegateClient: BlockContextContractsContractDelegate {
+struct BlockContextContractsContractDelegateClient<HTTPClient: HTTP>: BlockContextContractsContractDelegate {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/contracts/<contract_id>/delegate */ parentURL.appendingPathComponent("delegate")
         self.http = http
     }
@@ -214,11 +214,11 @@ struct BlockContextContractsContractDelegateClient: BlockContextContractsContrac
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/entrypoints
 
-struct BlockContextContractsContractEntrypointsClient: BlockContextContractsContractEntrypoints {
+struct BlockContextContractsContractEntrypointsClient<HTTPClient: HTTP>: BlockContextContractsContractEntrypoints {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/contracts/<contract_id>/entrypoints */ parentURL.appendingPathComponent("entrypoints")
         self.http = http
     }
@@ -234,11 +234,11 @@ struct BlockContextContractsContractEntrypointsClient: BlockContextContractsCont
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/entrypoints/<string>
 
-struct BlockContextContractsContractEntrypointsEntrypointClient: BlockContextContractsContractEntrypointsEntrypoint {
+struct BlockContextContractsContractEntrypointsEntrypointClient<HTTPClient: HTTP>: BlockContextContractsContractEntrypointsEntrypoint {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, string: String, http: HTTP) {
+    init(parentURL: URL, string: String, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/contracts/<contract_id>/entrypoints>/<string> */ parentURL.appendingPathComponent("string")
         self.http = http
     }
@@ -250,11 +250,11 @@ struct BlockContextContractsContractEntrypointsEntrypointClient: BlockContextCon
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/manager_key
 
-struct BlockContextContractsContractManagerKeyClient: BlockContextContractsContractManagerKey {
+struct BlockContextContractsContractManagerKeyClient<HTTPClient: HTTP>: BlockContextContractsContractManagerKey {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/contracts/<contract_id>/manager_key */ parentURL.appendingPathComponent("manager_key")
         self.http = http
     }
@@ -266,11 +266,11 @@ struct BlockContextContractsContractManagerKeyClient: BlockContextContractsContr
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/script
 
-class BlockContextContractsContractScriptClient: BlockContextContractsContractScript {
+class BlockContextContractsContractScriptClient<HTTPClient: HTTP>: BlockContextContractsContractScript {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/contracts/<contract_id>/script */ parentURL.appendingPathComponent("script")
         self.http = http
     }
@@ -284,11 +284,11 @@ class BlockContextContractsContractScriptClient: BlockContextContractsContractSc
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/script/normalized
 
-struct BlockContextContractsContractScriptNormalizedClient: BlockContextContractsContractScriptNormalized {
+struct BlockContextContractsContractScriptNormalizedClient<HTTPClient: HTTP>: BlockContextContractsContractScriptNormalized {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/contracts/<contract_id>/script/normalized */ parentURL.appendingPathComponent("normalized")
         self.http = http
     }
@@ -306,11 +306,11 @@ struct BlockContextContractsContractScriptNormalizedClient: BlockContextContract
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/single_sapling_get_diff
 
-struct BlockContextContractsContractSingleSaplingGetDiffClient: BlockContextContractsContractSingleSaplingGetDiff {
+struct BlockContextContractsContractSingleSaplingGetDiffClient<HTTPClient: HTTP>: BlockContextContractsContractSingleSaplingGetDiff {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/contracts/<contract_id>/single_sapling_get_diff */ parentURL.appendingPathComponent("single_sapling_get_diff")
         self.http = http
     }
@@ -330,11 +330,11 @@ struct BlockContextContractsContractSingleSaplingGetDiffClient: BlockContextCont
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/storage
 
-class BlockContextContractsContractStorageClient: BlockContextContractsContractStorage {
+class BlockContextContractsContractStorageClient<HTTPClient: HTTP>: BlockContextContractsContractStorage {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/contracts/<contract_id>/storage */ parentURL.appendingPathComponent("storage")
         self.http = http
     }
@@ -348,11 +348,11 @@ class BlockContextContractsContractStorageClient: BlockContextContractsContractS
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/storage/normalized
 
-struct BlockContextContractsContractStorageNormalizedClient: BlockContextContractsContractStorageNormalized {
+struct BlockContextContractsContractStorageNormalizedClient<HTTPClient: HTTP>: BlockContextContractsContractStorageNormalized {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/contracts/<contract_id>/storage/normalized */ parentURL.appendingPathComponent("normalized")
         self.http = http
     }
@@ -364,11 +364,11 @@ struct BlockContextContractsContractStorageNormalizedClient: BlockContextContrac
 
 // MARK: ../<block_id>/context/delegates
 
-struct BlockContextDelegatesClient: BlockContextDelegates {
+struct BlockContextDelegatesClient<HTTPClient: HTTP>: BlockContextDelegates {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/delegates */ parentURL.appendingPathComponent("delegates")
         self.http = http
     }
@@ -380,11 +380,11 @@ struct BlockContextDelegatesClient: BlockContextDelegates {
 
 // MARK: ../<block_id>/context/delegates/<pkh>
 
-class BlockContextDelegatesDelegateClient: BlockContextDelegatesDelegate {
+class BlockContextDelegatesDelegateClient<HTTPClient: HTTP>: BlockContextDelegatesDelegate {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, pkh: KeyHash.Public, http: HTTP) {
+    init(parentURL: URL, pkh: KeyHash.Public, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/delegates/<pkh> */ parentURL.appendingPathComponent(pkh.base58)
         self.http = http
     }
@@ -408,11 +408,11 @@ class BlockContextDelegatesDelegateClient: BlockContextDelegatesDelegate {
 
 // MARK: ../<block_id>/context/delegates/current_frozen_deposits
 
-struct BlockContextDelegatesCurrentFrozenDepositsClient: BlockContextDelegatesCurrentFrozenDeposits {
+struct BlockContextDelegatesCurrentFrozenDepositsClient<HTTPClient: HTTP>: BlockContextDelegatesCurrentFrozenDeposits {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/delegates/current_frozen_deposits */ parentURL.appendingPathComponent("current_frozen_deposits")
         self.http = http
     }
@@ -424,11 +424,11 @@ struct BlockContextDelegatesCurrentFrozenDepositsClient: BlockContextDelegatesCu
 
 // MARK: ../<block_id>/context/delegates/deactivated
 
-struct BlockContextDelegatesDeactivatedClient: BlockContextDelegatesDeactivated {
+struct BlockContextDelegatesDeactivatedClient<HTTPClient: HTTP>: BlockContextDelegatesDeactivated {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/delegates/deactivated */ parentURL.appendingPathComponent("deactivated")
         self.http = http
     }
@@ -440,11 +440,11 @@ struct BlockContextDelegatesDeactivatedClient: BlockContextDelegatesDeactivated 
 
 // MARK: ../<block_id>/context/delegates/delegated_balance
 
-struct BlockContextDelegatesDelegatedBalanceClient: BlockContextDelegatesDelegatedBalance {
+struct BlockContextDelegatesDelegatedBalanceClient<HTTPClient: HTTP>: BlockContextDelegatesDelegatedBalance {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/delegates/delegated_balance */ parentURL.appendingPathComponent("delegated_balance")
         self.http = http
     }
@@ -456,11 +456,11 @@ struct BlockContextDelegatesDelegatedBalanceClient: BlockContextDelegatesDelegat
 
 // MARK: ../<block_id>/context/delegates/delegated_contracts
 
-struct BlockContextDelegatesDelegatedContractsClient: BlockContextDelegatesDelegatedContracts {
+struct BlockContextDelegatesDelegatedContractsClient<HTTPClient: HTTP>: BlockContextDelegatesDelegatedContracts {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/delegates/delegated_contracts */ parentURL.appendingPathComponent("delegated_contracts")
         self.http = http
     }
@@ -472,11 +472,11 @@ struct BlockContextDelegatesDelegatedContractsClient: BlockContextDelegatesDeleg
 
 // MARK: ../<block_id>/context/delegates/frozen_deposits
 
-struct BlockContextDelegatesFrozenDepositsClient: BlockContextDelegatesFrozenDeposits {
+struct BlockContextDelegatesFrozenDepositsClient<HTTPClient: HTTP>: BlockContextDelegatesFrozenDeposits {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/delegates/frozen_deposits */ parentURL.appendingPathComponent("frozen_deposits")
         self.http = http
     }
@@ -488,11 +488,11 @@ struct BlockContextDelegatesFrozenDepositsClient: BlockContextDelegatesFrozenDep
 
 // MARK: ../<block_id>/context/delegates/frozen_deposits_limit
 
-struct BlockContextDelegatesFrozenDeposistsLimitClient: BlockContextDelegatesFrozenDeposistsLimit {
+struct BlockContextDelegatesFrozenDeposistsLimitClient<HTTPClient: HTTP>: BlockContextDelegatesFrozenDeposistsLimit {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/delegates/frozen_deposits_limit */ parentURL.appendingPathComponent("frozen_deposits_limit")
         self.http = http
     }
@@ -504,11 +504,11 @@ struct BlockContextDelegatesFrozenDeposistsLimitClient: BlockContextDelegatesFro
 
 // MARK: ../<block_id>/context/delegates/full_balance
 
-struct BlockContextDelegatesFullBalanceClient: BlockContextDelegatesFullBalance {
+struct BlockContextDelegatesFullBalanceClient<HTTPClient: HTTP>: BlockContextDelegatesFullBalance {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/delegates/full_balance */ parentURL.appendingPathComponent("full_balance")
         self.http = http
     }
@@ -520,11 +520,11 @@ struct BlockContextDelegatesFullBalanceClient: BlockContextDelegatesFullBalance 
 
 // MARK: ../<block_id>/context/delegates/grace_period
 
-struct BlockContextDelegatesGracePeriodClient: BlockContextDelegatesGracePeriod {
+struct BlockContextDelegatesGracePeriodClient<HTTPClient: HTTP>: BlockContextDelegatesGracePeriod {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/delegates/grace_period */ parentURL.appendingPathComponent("grace_period")
         self.http = http
     }
@@ -536,11 +536,11 @@ struct BlockContextDelegatesGracePeriodClient: BlockContextDelegatesGracePeriod 
 
 // MARK: ../<block_id>/context/delegates/participation
 
-struct BlockContextDelegatesParticipationClient: BlockContextDelegatesParticipation {
+struct BlockContextDelegatesParticipationClient<HTTPClient: HTTP>: BlockContextDelegatesParticipation {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/delegates/participation */ parentURL.appendingPathComponent("participation")
         self.http = http
     }
@@ -552,11 +552,11 @@ struct BlockContextDelegatesParticipationClient: BlockContextDelegatesParticipat
 
 // MARK: ../<block_id>/context/delegates/staking_balance
 
-struct BlockContextDelegatesStakingBalanceClient: BlockContextDelegatesStakingBalance {
+struct BlockContextDelegatesStakingBalanceClient<HTTPClient: HTTP>: BlockContextDelegatesStakingBalance {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/delegates/staking_balance */ parentURL.appendingPathComponent("staking_balance")
         self.http = http
     }
@@ -568,11 +568,11 @@ struct BlockContextDelegatesStakingBalanceClient: BlockContextDelegatesStakingBa
 
 // MARK: ../<block_id>/context/delegates/voting_power
 
-struct BlockContextDelegatesVotingPowerClient: BlockContextDelegatesVotingPower {
+struct BlockContextDelegatesVotingPowerClient<HTTPClient: HTTP>: BlockContextDelegatesVotingPower {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/delegates/voting_power */ parentURL.appendingPathComponent("voting_power")
         self.http = http
     }
@@ -584,11 +584,11 @@ struct BlockContextDelegatesVotingPowerClient: BlockContextDelegatesVotingPower 
 
 // MARK: ../<block_id>/context/sapling
 
-struct BlockContextSaplingClient: BlockContextSapling {
+struct BlockContextSaplingClient<HTTPClient: HTTP>: BlockContextSapling {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/sapling */ parentURL.appendingPathComponent("sapling")
         self.http = http
     }
@@ -600,11 +600,11 @@ struct BlockContextSaplingClient: BlockContextSapling {
 
 // MARK: ../<block_id>/context/sapling/<sapling_state_id>
 
-class BlockContextSaplingStateClient: BlockContextSaplingState {
+class BlockContextSaplingStateClient<HTTPClient: HTTP>: BlockContextSaplingState {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, stateID: String, http: HTTP) {
+    init(parentURL: URL, stateID: String, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/sapling/<sapling_state_id> */ parentURL.appendingPathComponent(stateID)
         self.http = http
     }
@@ -614,11 +614,11 @@ class BlockContextSaplingStateClient: BlockContextSaplingState {
 
 // MARK: ../<block_id>/context/sapling/<sapling_state_id>/get_diff
 
-struct BlockContextSaplingStateGetDiffClient: BlockContextSaplingStateGetDiff {
+struct BlockContextSaplingStateGetDiffClient<HTTPClient: HTTP>: BlockContextSaplingStateGetDiff {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/context/sapling/<sapling_state_id>/get_diff */ parentURL.appendingPathComponent("get_diff")
         self.http = http
     }
@@ -638,11 +638,11 @@ struct BlockContextSaplingStateGetDiffClient: BlockContextSaplingStateGetDiff {
 
 // MARK: ../<block_id>/header
 
-struct BlockHeaderClient: BlockHeader {
+struct BlockHeaderClient<HTTPClient: HTTP>: BlockHeader {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/header */ parentURL.appendingPathComponent("header")
         self.http = http
     }
@@ -654,11 +654,11 @@ struct BlockHeaderClient: BlockHeader {
 
 // MARK: ../<block_id>/helpers
 
-class BlockHelpersClient: BlockHelpers {
+class BlockHelpersClient<HTTPClient: HTTP>: BlockHelpers {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/helpers */ parentURL.appendingPathComponent("helpers")
         self.http = http
     }
@@ -669,11 +669,11 @@ class BlockHelpersClient: BlockHelpers {
 
 // MARK: ../<block_id>/helpers/preapply
 
-class BlockHelpersPreapplyClient: BlockHelpersPreapply {
+class BlockHelpersPreapplyClient<HTTPClient: HTTP>: BlockHelpersPreapply {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/helpers/prepply */ parentURL.appendingPathComponent("preapply")
         self.http = http
     }
@@ -683,11 +683,11 @@ class BlockHelpersPreapplyClient: BlockHelpersPreapply {
 
 // MARK: ../<block_id>/helpers/preapply/operations
 
-struct BlockHelpersPreapplyOperationsClient: BlockHelpersPreapplyOperations {
+struct BlockHelpersPreapplyOperationsClient<HTTPClient: HTTP>: BlockHelpersPreapplyOperations {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/helpers/prepply/operations */ parentURL.appendingPathComponent("operations")
         self.http = http
     }
@@ -702,11 +702,11 @@ struct BlockHelpersPreapplyOperationsClient: BlockHelpersPreapplyOperations {
 
 // MARK: ../<block_id>/helpers/scripts
 
-class BlockHelpersScriptsClient: BlockHelpersScripts {
+class BlockHelpersScriptsClient<HTTPClient: HTTP>: BlockHelpersScripts {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/helpers/scripts */ parentURL.appendingPathComponent("scripts")
         self.http = http
     }
@@ -716,11 +716,11 @@ class BlockHelpersScriptsClient: BlockHelpersScripts {
 
 // MARK: ../<block_id>/helpers/scripts/run_operation
 
-struct BlockHelpersScriptsRunOperationClient: BlockHelpersScriptsRunOperation {
+struct BlockHelpersScriptsRunOperationClient<HTTPClient: HTTP>: BlockHelpersScriptsRunOperation {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/helpers/scripts/run_operation */ parentURL.appendingPathComponent("run_operation")
         self.http = http
     }
@@ -735,11 +735,11 @@ struct BlockHelpersScriptsRunOperationClient: BlockHelpersScriptsRunOperation {
 
 // MARK: ../<block_id>/operations
 
-struct BlockOperationsClient: BlockOperations {
+struct BlockOperationsClient<HTTPClient: HTTP>: BlockOperations {
     let baseURL: URL
-    let http: HTTP
+    let http: HTTPClient
 
-    init(parentURL: URL, http: HTTP) {
+    init(parentURL: URL, http: HTTPClient) {
         self.baseURL = /* ../<block_id>/operations */ parentURL.appendingPathComponent("operations")
         self.http = http
     }
