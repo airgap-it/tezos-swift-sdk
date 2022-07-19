@@ -16,15 +16,15 @@ struct ShellSimplifiedRPCClient: ShellSimplifiedRPC {
         self.injection = injection
     }
     
-    func getBlocks(chainID: String, configuredWith configuration: GetBlocksConfiguration) async throws -> GetBlocksResponse {
+    func getBlocks(chainID: RPCChainID, configuredWith configuration: GetBlocksConfiguration) async throws -> GetBlocksResponse {
         try await chains(chainID: chainID).blocks.get(configuredWith: configuration)
     }
     
-    func getChainID(chainID: String, configuredWith configuration: GetChainIDConfiguration) async throws -> GetChainIDResponse {
+    func getChainID(chainID: RPCChainID, configuredWith configuration: GetChainIDConfiguration) async throws -> GetChainIDResponse {
         try await chains(chainID: chainID).chainID.get(configuredWith: configuration)
     }
     
-    func isBootstrapped(chainID: String, configuredWith configuration: IsBootstrappedConfiguration) async throws -> GetBootstrappedStatusResponse {
+    func isBootstrapped(chainID: RPCChainID, configuredWith configuration: IsBootstrappedConfiguration) async throws -> GetBootstrappedStatusResponse {
         try await chains(chainID: chainID).isBootstrapped.get(configuredWith: configuration)
     }
     

@@ -11,14 +11,11 @@ import TezosCore
 // MARK: Chains
 
 public extension Chains {
-    static var mainRaw: String { "main" }
-    static var testRaw: String { "test" }
-    
-    var main: ChainsChain { self(chainID: Self.mainRaw) }
-    var test: ChainsChain { self(chainID: Self.testRaw) }
+    var main: ChainsChain { self(chainID: .main) }
+    var test: ChainsChain { self(chainID: .test) }
     
     func callAsFunction(chainID: ChainID) -> ChainsChain {
-        self(chainID: chainID.base58)
+        self(chainID: .id(chainID))
     }
 }
 
@@ -33,16 +30,14 @@ public extension ChainsChain {
 // MARK: ChainsChainBlocks
 
 public extension ChainsChainBlocks {
-    static var headRaw: String { "head" }
-    
-    var head: Block { self(blockID: Self.headRaw) }
+    var head: Block { self(blockID: .head) }
     
     func get() async throws -> GetBlocksResponse {
         try await get(configuredWith: .init())
     }
     
     func callAsFunction(blockID: BlockHash) -> Block {
-        self(blockID: blockID.base58)
+        self(blockID: .hash(blockID))
     }
 }
 

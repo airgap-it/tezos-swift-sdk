@@ -14,8 +14,8 @@ class BlockClient<HTTPClient: HTTP>: Block {
     let baseURL: URL
     let http: HTTPClient
 
-    init(parentURL: URL, blockID: String, http: HTTPClient) {
-        self.baseURL = /* ../<block_id> */ parentURL.appendingPathComponent(blockID)
+    init(parentURL: URL, blockID: RPCBlockID, http: HTTPClient) {
+        self.baseURL = /* ../<block_id> */ parentURL.appendingPathComponent(blockID.rawValue)
         self.http = http
     }
     

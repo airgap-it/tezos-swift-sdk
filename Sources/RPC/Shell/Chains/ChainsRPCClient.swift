@@ -19,7 +19,7 @@ struct ChainsClient<HTTPClient: HTTP>: Chains {
         self.http = http
     }
     
-    func callAsFunction(chainID: String) -> ChainsChain {
+    func callAsFunction(chainID: RPCChainID) -> ChainsChain {
         ChainsChainClient(parentURL: baseURL, chainID: chainID, http: http)
     }
 }
@@ -30,8 +30,8 @@ class ChainsChainClient<HTTPClient: HTTP>: ChainsChain {
     let baseURL: URL
     let http: HTTPClient
     
-    init(parentURL: URL, chainID: String, http: HTTPClient) {
-        self.baseURL = /* /chains/<chain_id> */ parentURL.appendingPathComponent(chainID)
+    init(parentURL: URL, chainID: RPCChainID, http: HTTPClient) {
+        self.baseURL = /* /chains/<chain_id> */ parentURL.appendingPathComponent(chainID.rawValue)
         self.http = http
     }
     
@@ -78,7 +78,7 @@ struct ChainsChainBlocksClient<HTTPClient: HTTP>: ChainsChainBlocks {
         return try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: parameters)
     }
     
-    func callAsFunction(blockID: String) -> Block {
+    func callAsFunction(blockID: RPCBlockID) -> Block {
         BlockClient(parentURL: baseURL, blockID: blockID, http: http)
     }
 }

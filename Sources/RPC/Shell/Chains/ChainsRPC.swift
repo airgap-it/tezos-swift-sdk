@@ -11,7 +11,7 @@ import TezosCore
 // MARK: /chains
 
 public protocol Chains {
-    func callAsFunction(chainID: String) -> ChainsChain
+    func callAsFunction(chainID: RPCChainID) -> ChainsChain
 }
 
 // MARK: /chains/<chain_id>
@@ -31,7 +31,7 @@ public protocol ChainsChain {
 public protocol ChainsChainBlocks {
     func get(configuredWith configuration: ChainsChainBlocksGetConfiguration) async throws -> GetBlocksResponse
     
-    func callAsFunction(blockID: String) -> Block
+    func callAsFunction(blockID: RPCBlockID) -> Block
 }
 
 // MARK: /chains/<chain_id>/chain_id
