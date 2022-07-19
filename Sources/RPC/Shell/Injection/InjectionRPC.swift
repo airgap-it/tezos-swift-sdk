@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import TezosCore
 
 // MARK: /injection
 
@@ -22,13 +23,13 @@ public protocol InjectionBlock {
         data: String,
         operations: [[RPCInjectableOperation]],
         configuredWith configuration: InjectionBlockPostConfiguration
-    ) async throws -> InjectBlockResponse
+    ) async throws -> BlockHash
 }
 
 // MARK: /injection/operation
 
 public protocol InjectionOperation {
-    func post(data: String, configuredWith configuration: InjectionOperationPostConfiguration) async throws -> InjectOperationResponse
+    func post(data: String, configuredWith configuration: InjectionOperationPostConfiguration) async throws -> OperationHash
 }
 
 // MARK: /injection/protocol
@@ -38,5 +39,5 @@ public protocol InjectionProtocol {
         expectedEnvVersion: UInt16,
         components: [RPCProtocolComponent],
         configuredWith configuration: InjectionProtocolPostConfiguration
-    ) async throws -> InjectProtocolResponse
+    ) async throws -> ProtocolHash
 }

@@ -9,19 +9,19 @@ import Foundation
 import TezosCore
 
 public extension ShellSimplifiedRPC {
-    func getBlocks(chainID: RPCChainID = .main) async throws -> GetBlocksResponse {
+    func getBlocks(chainID: RPCChainID = .main) async throws -> [BlockHash] {
         try await getBlocks(chainID: chainID, configuredWith: .init())
     }
     
-    func getChainID(chainID: RPCChainID = .main) async throws -> GetChainIDResponse {
+    func getChainID(chainID: RPCChainID = .main) async throws -> ChainID {
         try await getChainID(chainID: chainID, configuredWith: .init())
     }
     
-    func isBootstrapped(chainID: RPCChainID = .main) async throws -> GetBootstrappedStatusResponse {
+    func isBootstrapped(chainID: RPCChainID = .main) async throws -> RPCChainBootstrappedStatus {
         try await isBootstrapped(chainID: chainID, configuredWith: .init())
     }
     
-    func injectOperation(_ data: String) async throws -> InjectOperationResponse {
+    func injectOperation(_ data: String) async throws -> OperationHash {
         try await injectOperation(data, configuredWith: .init())
     }
 }

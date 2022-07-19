@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import TezosCore
 
 // MARK: InjectionBlock
 
 extension InjectionBlock {
-    func post(data: String, operations: [[RPCInjectableOperation]]) async throws -> InjectBlockResponse {
+    func post(data: String, operations: [[RPCInjectableOperation]]) async throws -> BlockHash {
         try await post(data: data, operations: operations, configuredWith: .init())
     }
 }
@@ -18,7 +19,7 @@ extension InjectionBlock {
 // MARK: InjectionOperation
 
 extension InjectionOperation {
-    func post(data: String) async throws -> InjectOperationResponse {
+    func post(data: String) async throws -> OperationHash {
         try await post(data: data, configuredWith: .init())
     }
 }
@@ -26,7 +27,7 @@ extension InjectionOperation {
 // MARK: InjectionProtocol
 
 extension InjectionProtocol {
-    func post(expectedEnvVersion: UInt16, components: [RPCProtocolComponent]) async throws -> InjectProtocolResponse {
+    func post(expectedEnvVersion: UInt16, components: [RPCProtocolComponent]) async throws -> ProtocolHash {
         try await post(expectedEnvVersion: expectedEnvVersion, components: components, configuredWith: .init())
     }
 }

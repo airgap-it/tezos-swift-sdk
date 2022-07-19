@@ -22,7 +22,7 @@ public extension Chains {
 // MARK: ChainsChain
 
 public extension ChainsChain {
-    func patch(bootstrapped: Bool) async throws -> SetBootstrappedResult {
+    func patch(bootstrapped: Bool) async throws {
         try await patch(bootstrapped: bootstrapped, configuredWith: .init())
     }
 }
@@ -32,7 +32,7 @@ public extension ChainsChain {
 public extension ChainsChainBlocks {
     var head: Block { self(blockID: .head) }
     
-    func get() async throws -> GetBlocksResponse {
+    func get() async throws -> [BlockHash] {
         try await get(configuredWith: .init())
     }
     
@@ -44,7 +44,7 @@ public extension ChainsChainBlocks {
 // MARK: ChainsChainChainID
 
 public extension ChainsChainChainID {
-    func get() async throws -> GetChainIDResponse {
+    func get() async throws -> ChainID {
         try await get(configuredWith: .init())
     }
 }
@@ -52,7 +52,7 @@ public extension ChainsChainChainID {
 // MARK: ChainsChainInvalidBlocks
 
 public extension ChainsChainInvalidBlocks {
-    func get() async throws -> GetInvalidBlocksResponse {
+    func get() async throws -> [RPCInvalidBlock] {
         try await get(configuredWith: .init())
     }
 }
@@ -60,11 +60,11 @@ public extension ChainsChainInvalidBlocks {
 // MARK: ChainsChainInvalidBlocksBlock
 
 public extension ChainsChainInvalidBlocksBlock {
-    func get() async throws -> GetInvalidBlockResponse {
+    func get() async throws -> RPCInvalidBlock {
         try await get(configuredWith: .init())
     }
     
-    func delete() async throws -> DeleteInvalidBlockResponse {
+    func delete() async throws {
         try await delete(configuredWith: .init())
     }
 }
@@ -72,7 +72,7 @@ public extension ChainsChainInvalidBlocksBlock {
 // MARK: ChainsChainIsBootstrapped
 
 public extension ChainsChainIsBootstrapped {
-    func get() async throws -> GetBootstrappedStatusResponse {
+    func get() async throws -> RPCChainBootstrappedStatus {
         try await get(configuredWith: .init())
     }
 }
@@ -80,7 +80,7 @@ public extension ChainsChainIsBootstrapped {
 // MARK: ChainsChainLevelsCaboose
 
 public extension ChainsChainLevelsCaboose {
-    func get() async throws -> GetCabooseResponse {
+    func get() async throws -> RPCChainCaboose {
         try await get(configuredWith: .init())
     }
 }
@@ -88,7 +88,7 @@ public extension ChainsChainLevelsCaboose {
 // MARK: ChainsChainLevelsCheckpoint
 
 public extension ChainsChainLevelsCheckpoint {
-    func get() async throws -> GetCheckpointResponse {
+    func get() async throws -> RPCChainCheckpoint {
         try await get(configuredWith: .init())
     }
 }
@@ -96,7 +96,7 @@ public extension ChainsChainLevelsCheckpoint {
 // MARK: ChainsChainLevelsSavepoint
 
 public extension ChainsChainLevelsSavepoint {
-    func get() async throws -> GetSavepointResponse {
+    func get() async throws -> RPCChainSavepoint {
         try await get(configuredWith: .init())
     }
 }

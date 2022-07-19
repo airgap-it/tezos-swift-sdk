@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import TezosCore
 
 // MARK: /injection/block
 
@@ -19,13 +18,6 @@ public struct InjectBlockRequest: Hashable, Codable {
         self.operations = operations
     }
 }
-
-public typealias InjectBlockResponse = BlockHash
-
-// MARK: /injection/operation
-
-public typealias InjectOperationRequest = String
-public typealias InjectOperationResponse = OperationHash
 
 // MARK: /injection/protocol
 
@@ -43,5 +35,3 @@ public struct InjectProtocolRequest: Hashable, Codable {
         case components
     }
 }
-
-public typealias InjectProtocolResponse = ProtocolHash

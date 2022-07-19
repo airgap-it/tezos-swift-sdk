@@ -8,6 +8,23 @@
 import Foundation
 import TezosCore
 
+// MARK: RPCChainBootstrappedStatus
+
+public struct RPCChainBootstrappedStatus: Hashable, Codable {
+    public let bootstrapped: Bool
+    public let syncState: RPCChainStatus
+    
+    public init(bootstrapped: Bool, syncState: RPCChainStatus) {
+        self.bootstrapped = bootstrapped
+        self.syncState = syncState
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case bootstrapped
+        case syncState = "sync_state"
+    }
+}
+
 // MARK: RPCTestChainStatus
 
 public enum RPCTestChainStatus: Hashable, Codable {

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import TezosCore
 
 struct ShellSimplifiedRPCClient: ShellSimplifiedRPC {
     private let chains: Chains
@@ -16,19 +17,19 @@ struct ShellSimplifiedRPCClient: ShellSimplifiedRPC {
         self.injection = injection
     }
     
-    func getBlocks(chainID: RPCChainID, configuredWith configuration: GetBlocksConfiguration) async throws -> GetBlocksResponse {
+    func getBlocks(chainID: RPCChainID, configuredWith configuration: GetBlocksConfiguration) async throws -> [BlockHash] {
         try await chains(chainID: chainID).blocks.get(configuredWith: configuration)
     }
     
-    func getChainID(chainID: RPCChainID, configuredWith configuration: GetChainIDConfiguration) async throws -> GetChainIDResponse {
+    func getChainID(chainID: RPCChainID, configuredWith configuration: GetChainIDConfiguration) async throws -> ChainID {
         try await chains(chainID: chainID).chainID.get(configuredWith: configuration)
     }
     
-    func isBootstrapped(chainID: RPCChainID, configuredWith configuration: IsBootstrappedConfiguration) async throws -> GetBootstrappedStatusResponse {
+    func isBootstrapped(chainID: RPCChainID, configuredWith configuration: IsBootstrappedConfiguration) async throws -> RPCChainBootstrappedStatus {
         try await chains(chainID: chainID).isBootstrapped.get(configuredWith: configuration)
     }
     
-    func injectOperation(_ data: String, configuredWith configuration: InjectOperationConfiguration) async throws -> InjectOperationResponse {
+    func injectOperation(_ data: String, configuredWith configuration: InjectOperationConfiguration) async throws -> OperationHash {
         try await injection.operation.post(data: data, configuredWith: configuration)
     }
 }

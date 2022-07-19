@@ -7,6 +7,8 @@
 
 import Foundation
 import TezosCore
+import TezosMichelson
+import TezosOperation
 
 // MARK: ../<block_id>
 
@@ -19,7 +21,7 @@ class BlockClient<HTTPClient: HTTP>: Block {
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockGetConfiguration) async throws -> GetBlockResponse {
+    func get(configuredWith configuration: BlockGetConfiguration) async throws -> RPCBlock {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
     
@@ -74,7 +76,7 @@ struct BlockContextBigMapsBigMapClient<HTTPClient: HTTP>: BlockContextBigMapsBig
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextBigMapsBigMapGetConfiguration) async throws -> GetBigMapResponse {
+    func get(configuredWith configuration: BlockContextBigMapsBigMapGetConfiguration) async throws -> [Micheline] {
         var parameters = [HTTPParameter]()
         if let offset = configuration.offset {
             parameters.append(("offset", String(offset)))
@@ -102,7 +104,7 @@ struct BlockContextBigMapsBigMapValueClient<HTTPClient: HTTP>: BlockContextBigMa
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextBigMapsBigMapValueGetConfiguration) async throws -> GetBigMapValueResponse {
+    func get(configuredWith configuration: BlockContextBigMapsBigMapValueGetConfiguration) async throws -> Micheline? {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -118,7 +120,7 @@ struct BlockContextConstantsClient<HTTPClient: HTTP>: BlockContextConstants {
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextConstantsGetConfiguration) async throws -> GetConstantsResponse {
+    func get(configuredWith configuration: BlockContextConstantsGetConfiguration) async throws -> RPCConstants {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -150,7 +152,7 @@ class BlockContextContractsContractClient<HTTPClient: HTTP>: BlockContextContrac
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockHeaderGetConfiguration) async throws -> GetContractDetailsResponse {
+    func get(configuredWith configuration: BlockHeaderGetConfiguration) async throws -> RPCContractDetails {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
     
@@ -175,7 +177,7 @@ struct BlockContextContractsContractBalanceClient<HTTPClient: HTTP>: BlockContex
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextContractsContractBalanceGetConfiguration) async throws -> GetContractBalanceResponse {
+    func get(configuredWith configuration: BlockContextContractsContractBalanceGetConfiguration) async throws -> String {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -191,7 +193,7 @@ struct BlockContextContractsContractCounterClient<HTTPClient: HTTP>: BlockContex
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextContractsContractCounterGetConfiguration) async throws -> GetContractCounterResponse {
+    func get(configuredWith configuration: BlockContextContractsContractCounterGetConfiguration) async throws -> String? {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -207,7 +209,7 @@ struct BlockContextContractsContractDelegateClient<HTTPClient: HTTP>: BlockConte
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextContractsContractDelegateGetConfiguration) async throws -> GetContractDelegateResponse {
+    func get(configuredWith configuration: BlockContextContractsContractDelegateGetConfiguration) async throws -> Address.Implicit? {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -223,7 +225,7 @@ struct BlockContextContractsContractEntrypointsClient<HTTPClient: HTTP>: BlockCo
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextContractsContractEntrypointsGetConfiguration) async throws -> GetContractEntrypointsResponse {
+    func get(configuredWith configuration: BlockContextContractsContractEntrypointsGetConfiguration) async throws -> RPCContractEntrypoints {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
     
@@ -243,7 +245,7 @@ struct BlockContextContractsContractEntrypointsEntrypointClient<HTTPClient: HTTP
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextContractsContractEntrypointsEntrypointGetConfiguration) async throws -> GetContractEntrypointResponse {
+    func get(configuredWith configuration: BlockContextContractsContractEntrypointsEntrypointGetConfiguration) async throws -> Micheline {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -259,7 +261,7 @@ struct BlockContextContractsContractManagerKeyClient<HTTPClient: HTTP>: BlockCon
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextContractsContractManagerKeyGetConfiguration) async throws -> GetContractManagerKeyResponse {
+    func get(configuredWith configuration: BlockContextContractsContractManagerKeyGetConfiguration) async throws -> Key.Public? {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -275,7 +277,7 @@ class BlockContextContractsContractScriptClient<HTTPClient: HTTP>: BlockContextC
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextContractsContractScriptGetConfiguration) async throws -> GetContractScriptResponse {
+    func get(configuredWith configuration: BlockContextContractsContractScriptGetConfiguration) async throws -> Script? {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
     
@@ -293,7 +295,7 @@ struct BlockContextContractsContractScriptNormalizedClient<HTTPClient: HTTP>: Bl
         self.http = http
     }
     
-    func post(unparsingMode: RPCScriptParsing, configuredWith configuration: BlockContextContractsContractScriptNormalizedPostConfiguration) async throws -> GetContractNormalizedScriptResponse {
+    func post(unparsingMode: RPCScriptParsing, configuredWith configuration: BlockContextContractsContractScriptNormalizedPostConfiguration) async throws -> Script? {
         try await http.post(
             baseURL: baseURL,
             endpoint: "/",
@@ -315,7 +317,7 @@ struct BlockContextContractsContractSingleSaplingGetDiffClient<HTTPClient: HTTP>
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextContractsContractSingleSaplingGetDiffGetConfiguration) async throws -> GetContractSaplingStateDiffResponse {
+    func get(configuredWith configuration: BlockContextContractsContractSingleSaplingGetDiffGetConfiguration) async throws -> RPCSaplingStateDiff {
         var parameters = [HTTPParameter]()
         if let commitmentOffset = configuration.commitmentOffset {
             parameters.append(("offset_commitment", String(commitmentOffset)))
@@ -339,7 +341,7 @@ class BlockContextContractsContractStorageClient<HTTPClient: HTTP>: BlockContext
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextContractsContractStorageGetConfiguration) async throws -> GetContractStorageResponse {
+    func get(configuredWith configuration: BlockContextContractsContractStorageGetConfiguration) async throws -> Micheline? {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
     
@@ -357,7 +359,7 @@ struct BlockContextContractsContractStorageNormalizedClient<HTTPClient: HTTP>: B
         self.http = http
     }
     
-    func post(unparsingMode: RPCScriptParsing, configuredWith configuration: BlockContextContractsContractStorageNormalizedPostConfiguration) async throws -> GetContractNormalizedStorageResponse {
+    func post(unparsingMode: RPCScriptParsing, configuredWith configuration: BlockContextContractsContractStorageNormalizedPostConfiguration) async throws -> Micheline? {
         try await http.post(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [], request: GetContractNormalizedStorageRequest(unparsingMode: unparsingMode))
     }
 }
@@ -389,7 +391,7 @@ class BlockContextDelegatesDelegateClient<HTTPClient: HTTP>: BlockContextDelegat
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextDelegatesDelegateGetConfiguration) async throws -> GetDelegateDetailsResponse {
+    func get(configuredWith configuration: BlockContextDelegatesDelegateGetConfiguration) async throws -> RPCDelegateDetails {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
     
@@ -417,7 +419,7 @@ struct BlockContextDelegatesCurrentFrozenDepositsClient<HTTPClient: HTTP>: Block
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextDelegatesCurrentFrozenDepositsGetConfiguration) async throws -> GetDelegateCurrentFrozenDepositsResponse {
+    func get(configuredWith configuration: BlockContextDelegatesCurrentFrozenDepositsGetConfiguration) async throws -> String {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -433,7 +435,7 @@ struct BlockContextDelegatesDeactivatedClient<HTTPClient: HTTP>: BlockContextDel
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextDelegatesDeactivatedGetConfiguration) async throws -> GetDelegateDeactivatedStatusResponse {
+    func get(configuredWith configuration: BlockContextDelegatesDeactivatedGetConfiguration) async throws -> Bool {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -449,7 +451,7 @@ struct BlockContextDelegatesDelegatedBalanceClient<HTTPClient: HTTP>: BlockConte
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextDelegatesDelegatedBalanceGetConfiguration) async throws -> GetDelegateDelegatedBalanceResponse {
+    func get(configuredWith configuration: BlockContextDelegatesDelegatedBalanceGetConfiguration) async throws -> String {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -465,7 +467,7 @@ struct BlockContextDelegatesDelegatedContractsClient<HTTPClient: HTTP>: BlockCon
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextDelegatesDelegatedContractsGetConfiguration) async throws -> GetDelegateDelegatedContractsResponse {
+    func get(configuredWith configuration: BlockContextDelegatesDelegatedContractsGetConfiguration) async throws -> [Address] {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -481,7 +483,7 @@ struct BlockContextDelegatesFrozenDepositsClient<HTTPClient: HTTP>: BlockContext
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextDelegatesFrozenDepositsGetConfiguration) async throws -> GetDelegateFrozenDepositsResponse {
+    func get(configuredWith configuration: BlockContextDelegatesFrozenDepositsGetConfiguration) async throws -> String {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -497,7 +499,7 @@ struct BlockContextDelegatesFrozenDeposistsLimitClient<HTTPClient: HTTP>: BlockC
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextDelegatesFrozenDeposistsLimitGetConfiguration) async throws -> GetDelegateFrozenDepositsLimitResponse {
+    func get(configuredWith configuration: BlockContextDelegatesFrozenDeposistsLimitGetConfiguration) async throws -> String {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -513,7 +515,7 @@ struct BlockContextDelegatesFullBalanceClient<HTTPClient: HTTP>: BlockContextDel
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextDelegatesFullBalanceGetConfiguration) async throws -> GetDelegateFullBalanceResponse {
+    func get(configuredWith configuration: BlockContextDelegatesFullBalanceGetConfiguration) async throws -> String {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -529,7 +531,7 @@ struct BlockContextDelegatesGracePeriodClient<HTTPClient: HTTP>: BlockContextDel
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextDelegatesGracePeriodGetConfiguration) async throws -> GetDelegateGracePeriodResponse {
+    func get(configuredWith configuration: BlockContextDelegatesGracePeriodGetConfiguration) async throws -> Int32 {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -545,7 +547,7 @@ struct BlockContextDelegatesParticipationClient<HTTPClient: HTTP>: BlockContextD
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextDelegatesParticipationGetConfiguration) async throws -> GetDelegateParticipationResponse {
+    func get(configuredWith configuration: BlockContextDelegatesParticipationGetConfiguration) async throws -> RPCDelegateParticipation {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -561,7 +563,7 @@ struct BlockContextDelegatesStakingBalanceClient<HTTPClient: HTTP>: BlockContext
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextDelegatesStakingBalanceGetConfiguration) async throws -> GetDelegateStakingBalanceResponse {
+    func get(configuredWith configuration: BlockContextDelegatesStakingBalanceGetConfiguration) async throws -> String {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -577,7 +579,7 @@ struct BlockContextDelegatesVotingPowerClient<HTTPClient: HTTP>: BlockContextDel
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextDelegatesVotingPowerGetConfiguration) async throws -> GetDelegateVotingPowerResponse {
+    func get(configuredWith configuration: BlockContextDelegatesVotingPowerGetConfiguration) async throws -> Int32 {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -623,7 +625,7 @@ struct BlockContextSaplingStateGetDiffClient<HTTPClient: HTTP>: BlockContextSapl
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockContextSaplingStateGetDiffGetConfiguration) async throws -> GetSaplingStateDiffResponse {
+    func get(configuredWith configuration: BlockContextSaplingStateGetDiffGetConfiguration) async throws -> RPCSaplingStateDiff {
         var parameters = [HTTPParameter]()
         if let commitmentOffset = configuration.commitmentOffset {
             parameters.append(("offset_commitment", String(commitmentOffset)))
@@ -647,7 +649,7 @@ struct BlockHeaderClient<HTTPClient: HTTP>: BlockHeader {
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockHeaderGetConfiguration) async throws -> GetBlockHeaderResponse {
+    func get(configuredWith configuration: BlockHeaderGetConfiguration) async throws -> RPCFullBlockHeader {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -695,7 +697,7 @@ struct BlockHelpersPreapplyOperationsClient<HTTPClient: HTTP>: BlockHelpersPreap
     func post(
         operations: [RPCApplicableOperation],
         configuredWith configuration: BlockHelpersPreapplyOperationsPostConfiguration
-    ) async throws -> PreapplyOperationsResponse {
+    ) async throws -> RPCAppliedOperation {
         try await http.post(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [], request: operations)
     }
 }
@@ -728,8 +730,8 @@ struct BlockHelpersScriptsRunOperationClient<HTTPClient: HTTP>: BlockHelpersScri
     func post(
         operation: RPCRunnableOperation,
         configuredWith configuration: BlockHelpersPreapplyOperationsPostConfiguration
-    ) async throws -> RunOperationResponse {
-        try await http.post(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [], request: RunOperationRequest(from: operation))
+    ) async throws -> [RPCOperation.Content] {
+        try await http.post(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [], request: operation)
     }
 }
 
@@ -744,7 +746,7 @@ struct BlockOperationsClient<HTTPClient: HTTP>: BlockOperations {
         self.http = http
     }
     
-    func get(configuredWith configuration: BlockOperationsGetConfiguration) async throws -> GetBlockOperationsResponse {
+    func get(configuredWith configuration: BlockOperationsGetConfiguration) async throws -> [[RPCOperation]] {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }

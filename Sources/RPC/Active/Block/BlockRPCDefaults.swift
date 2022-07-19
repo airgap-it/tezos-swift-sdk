@@ -7,11 +7,13 @@
 
 import Foundation
 import TezosCore
+import TezosMichelson
+import TezosOperation
 
 // MARK: Block
 
 public extension Block {
-    func get() async throws -> GetBlockResponse {
+    func get() async throws -> RPCBlock {
         try await get(configuredWith: .init())
     }
 }
@@ -19,7 +21,7 @@ public extension Block {
 // MARK: BlockContextBigMapsBigMap
 
 public extension BlockContextBigMapsBigMap {
-    func get() async throws -> GetBigMapResponse {
+    func get() async throws -> [Micheline] {
         try await get(configuredWith: .init())
     }
 }
@@ -27,7 +29,7 @@ public extension BlockContextBigMapsBigMap {
 // MARK: BlockContextBigMapsBigMapValue
 
 public extension BlockContextBigMapsBigMapValue {
-    func get() async throws -> GetBigMapValueResponse {
+    func get() async throws -> Micheline? {
         try await get(configuredWith: .init())
     }
 }
@@ -35,7 +37,7 @@ public extension BlockContextBigMapsBigMapValue {
 // MARK: BlockContextConstants
 
 public extension BlockContextConstants {
-    func get() async throws -> GetConstantsResponse {
+    func get() async throws -> RPCConstants {
         try await get(configuredWith: .init())
     }
 }
@@ -43,7 +45,7 @@ public extension BlockContextConstants {
 // MARK: BlockContextContractsContract
 
 public extension BlockContextContractsContract {
-    func get() async throws -> GetContractDetailsResponse {
+    func get() async throws -> RPCContractDetails {
         try await get(configuredWith: .init())
     }
 }
@@ -51,7 +53,7 @@ public extension BlockContextContractsContract {
 // MARK: BlockContextContractsContractBalance
 
 public extension BlockContextContractsContractBalance {
-    func get() async throws -> GetContractBalanceResponse {
+    func get() async throws -> String {
         try await get(configuredWith: .init())
     }
 }
@@ -59,7 +61,7 @@ public extension BlockContextContractsContractBalance {
 // MARK: BlockContextContractsContractCounter
 
 public extension BlockContextContractsContractCounter {
-    func get() async throws -> GetContractCounterResponse {
+    func get() async throws -> String? {
         try await get(configuredWith: .init())
     }
 }
@@ -67,7 +69,7 @@ public extension BlockContextContractsContractCounter {
 // MARK: BlockContextContractsContractDelegate
 
 public extension BlockContextContractsContractDelegate {
-    func get() async throws -> GetContractDelegateResponse {
+    func get() async throws -> Address.Implicit? {
         try await get(configuredWith: .init())
     }
 }
@@ -75,7 +77,7 @@ public extension BlockContextContractsContractDelegate {
 // MARK: BlockContextContractsContractEntrypoints
 
 public extension BlockContextContractsContractEntrypoints {
-    func get() async throws -> GetContractEntrypointsResponse {
+    func get() async throws -> RPCContractEntrypoints {
         try await get(configuredWith: .init())
     }
 }
@@ -83,7 +85,7 @@ public extension BlockContextContractsContractEntrypoints {
 // MARK: BlockContextContractsContractEntrypointsEntrypoint
 
 public extension BlockContextContractsContractEntrypointsEntrypoint {
-    func get() async throws -> GetContractEntrypointResponse {
+    func get() async throws -> Micheline {
         try await get(configuredWith: .init())
     }
 }
@@ -91,7 +93,7 @@ public extension BlockContextContractsContractEntrypointsEntrypoint {
 // MARK: BlockContextContractsContractManagerKey
 
 public extension BlockContextContractsContractManagerKey {
-    func get() async throws -> GetContractManagerKeyResponse {
+    func get() async throws -> Key.Public? {
         try await get(configuredWith: .init())
     }
 }
@@ -99,7 +101,7 @@ public extension BlockContextContractsContractManagerKey {
 // MARK: BlockContextContractsContractScript
 
 public extension BlockContextContractsContractScript {
-    func get() async throws -> GetContractScriptResponse {
+    func get() async throws -> Script? {
         try await get(configuredWith: .init())
     }
 }
@@ -107,7 +109,7 @@ public extension BlockContextContractsContractScript {
 // MARK: BlockContextContractsContractScriptNormalized
 
 public extension BlockContextContractsContractScriptNormalized {
-    func post(unparsingMode: RPCScriptParsing) async throws -> GetContractNormalizedScriptResponse {
+    func post(unparsingMode: RPCScriptParsing) async throws -> Script? {
         try await post(unparsingMode: unparsingMode, configuredWith: .init())
     }
 }
@@ -115,7 +117,7 @@ public extension BlockContextContractsContractScriptNormalized {
 // MARK: BlockContextContractsContractSingleSaplingGetDiff
 
 public extension BlockContextContractsContractSingleSaplingGetDiff {
-    func get() async throws -> GetContractSaplingStateDiffResponse {
+    func get() async throws -> RPCSaplingStateDiff {
         try await get(configuredWith: .init())
     }
 }
@@ -123,7 +125,7 @@ public extension BlockContextContractsContractSingleSaplingGetDiff {
 // MARK: BlockContextContractsContractStorage
 
 public extension BlockContextContractsContractStorage {
-    func get() async throws -> GetContractStorageResponse {
+    func get() async throws -> Micheline? {
         try await get(configuredWith: .init())
     }
 }
@@ -131,7 +133,7 @@ public extension BlockContextContractsContractStorage {
 // MARK: BlockContextContractsContractStorageNormalized
 
 public extension BlockContextContractsContractStorageNormalized {
-    func post(unparsingMode: RPCScriptParsing) async throws -> GetContractNormalizedStorageResponse {
+    func post(unparsingMode: RPCScriptParsing) async throws -> Micheline? {
         try await post(unparsingMode: unparsingMode, configuredWith: .init())
     }
 }
@@ -139,7 +141,7 @@ public extension BlockContextContractsContractStorageNormalized {
 // MARK: BlockContextDelegatesDelegate
 
 public extension BlockContextDelegatesDelegate {
-    func get() async throws -> GetDelegateDetailsResponse {
+    func get() async throws -> RPCDelegateDetails {
         try await get(configuredWith: .init())
     }
 }
@@ -147,7 +149,7 @@ public extension BlockContextDelegatesDelegate {
 // MARK: BlockContextDelegatesCurrentFrozenDeposits
 
 public extension BlockContextDelegatesCurrentFrozenDeposits {
-    func get() async throws -> GetDelegateCurrentFrozenDepositsResponse {
+    func get() async throws -> String {
         try await get(configuredWith: .init())
     }
 }
@@ -155,7 +157,7 @@ public extension BlockContextDelegatesCurrentFrozenDeposits {
 // MARK: BlockContextDelegatesDeactivated
 
 public extension BlockContextDelegatesDeactivated {
-    func get() async throws -> GetDelegateDeactivatedStatusResponse {
+    func get() async throws -> Bool {
         try await get(configuredWith: .init())
     }
 }
@@ -163,7 +165,7 @@ public extension BlockContextDelegatesDeactivated {
 // MARK: BlockContextDelegatesDelegatedBalance
 
 public extension BlockContextDelegatesDelegatedBalance {
-    func get() async throws -> GetDelegateDelegatedBalanceResponse {
+    func get() async throws -> String {
         try await get(configuredWith: .init())
     }
 }
@@ -171,7 +173,7 @@ public extension BlockContextDelegatesDelegatedBalance {
 // MARK: BlockContextDelegatesDelegatedContracts
 
 public extension BlockContextDelegatesDelegatedContracts {
-    func get() async throws -> GetDelegateDelegatedContractsResponse {
+    func get() async throws -> [Address] {
         try await get(configuredWith: .init())
     }
 }
@@ -179,7 +181,7 @@ public extension BlockContextDelegatesDelegatedContracts {
 // MARK: BlockContextDelegatesFrozenDeposits
 
 public extension BlockContextDelegatesFrozenDeposits {
-    func get() async throws -> GetDelegateFrozenDepositsResponse {
+    func get() async throws -> String {
         try await get(configuredWith: .init())
     }
 }
@@ -187,7 +189,7 @@ public extension BlockContextDelegatesFrozenDeposits {
 // MARK: BlockContextDelegatesFrozenDeposistsLimit
 
 public extension BlockContextDelegatesFrozenDeposistsLimit {
-    func get() async throws -> GetDelegateFrozenDepositsLimitResponse {
+    func get() async throws -> String {
         try await get(configuredWith: .init())
     }
 }
@@ -195,7 +197,7 @@ public extension BlockContextDelegatesFrozenDeposistsLimit {
 // MARK: BlockContextDelegatesFullBalance
 
 public extension BlockContextDelegatesFullBalance {
-    func get() async throws -> GetDelegateFullBalanceResponse {
+    func get() async throws -> String {
         try await get(configuredWith: .init())
     }
 }
@@ -203,7 +205,7 @@ public extension BlockContextDelegatesFullBalance {
 // MARK: BlockContextDelegatesGracePeriod
 
 public extension BlockContextDelegatesGracePeriod {
-    func get() async throws -> GetDelegateGracePeriodResponse {
+    func get() async throws -> Int32 {
         try await get(configuredWith: .init())
     }
 }
@@ -211,7 +213,7 @@ public extension BlockContextDelegatesGracePeriod {
 // MARK: BlockContextDelegatesParticipation
 
 public extension BlockContextDelegatesParticipation {
-    func get() async throws -> GetDelegateParticipationResponse {
+    func get() async throws -> RPCDelegateParticipation {
         try await get(configuredWith: .init())
     }
 }
@@ -219,7 +221,7 @@ public extension BlockContextDelegatesParticipation {
 // MARK: BlockContextDelegatesStakingBalance
 
 public extension BlockContextDelegatesStakingBalance {
-    func get() async throws -> GetDelegateStakingBalanceResponse {
+    func get() async throws -> String {
         try await get(configuredWith: .init())
     }
 }
@@ -227,7 +229,7 @@ public extension BlockContextDelegatesStakingBalance {
 // MARK: BlockContextDelegatesVotingPower
 
 public extension BlockContextDelegatesVotingPower {
-    func get() async throws -> GetDelegateVotingPowerResponse {
+    func get() async throws -> Int32 {
         try await get(configuredWith: .init())
     }
 }
@@ -235,7 +237,7 @@ public extension BlockContextDelegatesVotingPower {
 // MARK: BlockContextSaplingStateGetDiff
 
 public extension BlockContextSaplingStateGetDiff {
-    func get() async throws -> GetSaplingStateDiffResponse {
+    func get() async throws -> RPCSaplingStateDiff {
         try await get(configuredWith: .init())
     }
 }
@@ -243,7 +245,7 @@ public extension BlockContextSaplingStateGetDiff {
 // MARK: BlockHeader
 
 public extension BlockHeader {
-    func get() async throws -> GetBlockHeaderResponse {
+    func get() async throws -> RPCFullBlockHeader {
         try await get(configuredWith: .init())
     }
 }
@@ -251,7 +253,7 @@ public extension BlockHeader {
 // MARK: BlockHelpersPreapplyOperations
 
 public extension BlockHelpersPreapplyOperations {
-    func post(operations: [RPCApplicableOperation]) async throws -> PreapplyOperationsResponse {
+    func post(operations: [RPCApplicableOperation]) async throws -> RPCAppliedOperation {
         try await post(operations: operations, configuredWith: .init())
     }
 }
@@ -259,7 +261,7 @@ public extension BlockHelpersPreapplyOperations {
 // MARK: BlockHelpersScriptsRunOperation
 
 public extension BlockHelpersScriptsRunOperation {
-    func post(operation: RPCRunnableOperation) async throws -> RunOperationResponse {
+    func post(operation: RPCRunnableOperation) async throws -> [RPCOperation.Content] {
         try await post(operation: operation, configuredWith: .init())
     }
 }
@@ -267,7 +269,7 @@ public extension BlockHelpersScriptsRunOperation {
 // MARK: BlockOperations
 
 public extension BlockOperations {
-    func get() async throws -> GetBlockOperationsResponse {
+    func get() async throws -> [[RPCOperation]] {
         try await get(configuredWith: .init())
     }
 }

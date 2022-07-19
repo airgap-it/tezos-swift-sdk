@@ -7,6 +7,8 @@
 
 import Foundation
 import TezosCore
+import TezosMichelson
+import TezosOperation
 
 struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
     private let chains: Chains
@@ -15,7 +17,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         chainID: RPCChainID = .main,
         blockID: RPCBlockID = .head,
         configuredWith configuration: GetBlockConfiguration
-    ) async throws -> GetBlockResponse {
+    ) async throws -> RPCBlock {
         try await chains(chainID: chainID).blocks(blockID: blockID).get(configuredWith: configuration)
     }
     
@@ -24,7 +26,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         bigMapID: String,
         configuredWith configuration: GetBigMapConfiguration
-    ) async throws -> GetBigMapResponse {
+    ) async throws -> [Micheline] {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.bigMaps(bigMapID: bigMapID).get(configuredWith: configuration)
     }
     func getBigMapValue(
@@ -33,7 +35,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         bigMapID: String,
         key: ScriptExprHash,
         configuredWith configuration: GetBigMapValueConfiguration
-    ) async throws -> GetBigMapValueResponse {
+    ) async throws -> Micheline? {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.bigMaps(bigMapID: bigMapID)(scriptExpr: key).get(configuredWith: configuration)
     }
     
@@ -41,7 +43,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         chainID: RPCChainID = .main,
         blockID: RPCBlockID = .head,
         configuredWith configuration: GetConstantsConfiguration
-    ) async throws -> GetConstantsResponse {
+    ) async throws -> RPCConstants {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.constants.get(configuredWith: configuration)
     }
     
@@ -50,7 +52,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         contractID: Address, configuredWith
         configuration: GetContractDetailsConfiguration) async
-    throws -> GetContractDetailsResponse {
+    throws -> RPCContractDetails {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.contracts(contractID: contractID).get(configuredWith: configuration)
     }
     func getBalance(
@@ -58,7 +60,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         contractID: Address, configuredWith
         configuration: GetBalanceConfiguration) async
-    throws -> GetContractBalanceResponse {
+    throws -> String {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.contracts(contractID: contractID).balance.get(configuredWith: configuration)
     }
     func getCounter(
@@ -66,7 +68,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         contractID: Address, configuredWith
         configuration: GetCounterConfiguration) async
-    throws -> GetContractCounterResponse {
+    throws -> String? {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.contracts(contractID: contractID).counter.get(configuredWith: configuration)
     }
     func getDelegate(
@@ -74,7 +76,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         contractID: Address, configuredWith
         configuration: GetDelegateConfiguration) async
-    throws -> GetContractDelegateResponse {
+    throws -> Address.Implicit? {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.contracts(contractID: contractID).delegate.get(configuredWith: configuration)
     }
     func getEntrypoints(
@@ -82,7 +84,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         contractID: Address, configuredWith
         configuration: GetEntrypointsConfiguration) async
-    throws -> GetContractEntrypointsResponse {
+    throws -> RPCContractEntrypoints {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.contracts(contractID: contractID).entrypoints.get(configuredWith: configuration)
     }
     func getEntrypoint(
@@ -91,7 +93,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         contractID: Address,
         entrypoint: String,
         configuredWith configuration: GetEntrypointConfiguration
-    ) async throws -> GetContractEntrypointResponse {
+    ) async throws -> Micheline {
         try await chains(chainID: chainID)
             .blocks(blockID: blockID)
             .context
@@ -104,7 +106,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         contractID: Address, configuredWith
         configuration: GetManagerKeyConfiguration) async
-    throws -> GetContractManagerKeyResponse {
+    throws -> Key.Public? {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.contracts(contractID: contractID).managerKey.get(configuredWith: configuration)
     }
     func getScript(
@@ -112,7 +114,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         contractID: Address, configuredWith
         configuration: GetScriptConfiguration) async
-    throws -> GetContractNormalizedScriptResponse {
+    throws -> Script? {
         try await chains(chainID: chainID)
             .blocks(blockID: blockID)
             .context.contracts(contractID: contractID)
@@ -125,7 +127,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         contractID: Address, configuredWith
         configuration: GetSaplingStateDiffConfiguration) async
-    throws -> GetContractSaplingStateDiffResponse {
+    throws -> RPCSaplingStateDiff {
         try await chains(chainID: chainID)
             .blocks(blockID: blockID)
             .context
@@ -138,7 +140,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         contractID: Address, configuredWith
         configuration: GetStorageConfiguration) async
-    throws -> GetContractNormalizedStorageResponse {
+    throws -> Micheline? {
         try await chains(chainID: chainID)
             .blocks(blockID: blockID)
             .context
@@ -153,7 +155,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         delegateID: KeyHash.Public,
         configuredWith configuration: GetContractDetailsConfiguration
-    ) async throws -> GetDelegateDetailsResponse {
+    ) async throws -> RPCDelegateDetails {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.delegates(pkh: delegateID).get(configuredWith: configuration)
     }
     func getCurrentFrozenDeposits(
@@ -161,7 +163,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         delegateID: KeyHash.Public,
         configuredWith configuration: GetCurrentFrozenDepositsConfiguration
-    ) async throws -> GetDelegateCurrentFrozenDepositsResponse {
+    ) async throws -> String {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.delegates(pkh: delegateID).frozenDeposits.get(configuredWith: configuration)
     }
     func isDeactivated(
@@ -169,7 +171,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         delegateID: KeyHash.Public,
         configuredWith configuration: IsDeactivatedConfiguration
-    ) async throws -> GetDelegateDeactivatedStatusResponse {
+    ) async throws -> Bool {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.delegates(pkh: delegateID).deactivated.get(configuredWith: configuration)
     }
     func getDelegatedBalance(
@@ -177,7 +179,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         delegateID: KeyHash.Public,
         configuredWith configuration: GetDelegatedBalanceConfiguration
-    ) async throws -> GetDelegateDelegatedBalanceResponse {
+    ) async throws -> String {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.delegates(pkh: delegateID).delegatedBalance.get(configuredWith: configuration)
     }
     func getDelegatedContracts(
@@ -185,7 +187,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         delegateID: KeyHash.Public,
         configuredWith configuration: GetDelegatedContractsConfiguration
-    ) async throws -> GetDelegateDelegatedContractsResponse {
+    ) async throws -> [Address] {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.delegates(pkh: delegateID).delegatedContracts.get(configuredWith: configuration)
     }
     func getFrozenDeposits(
@@ -193,7 +195,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         delegateID: KeyHash.Public,
         configuredWith configuration: GetFrozenDepositsConfiguration
-    ) async throws -> GetDelegateFrozenDepositsResponse {
+    ) async throws -> String {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.delegates(pkh: delegateID).frozenDeposits.get(configuredWith: configuration)
     }
     func getFrozenDepositsLimit(
@@ -201,7 +203,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         delegateID: KeyHash.Public,
         configuredWith configuration: GetFrozenDepositsLimitConfiguration
-    ) async throws -> GetDelegateFrozenDepositsLimitResponse {
+    ) async throws -> String {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.delegates(pkh: delegateID).frozenDeposits.get(configuredWith: configuration)
     }
     func getFullBalance(
@@ -209,7 +211,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         delegateID: KeyHash.Public,
         configuredWith configuration: GetFullBalanceConfiguration
-    ) async throws -> GetDelegateFullBalanceResponse {
+    ) async throws -> String {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.delegates(pkh: delegateID).fullBalance.get(configuredWith: configuration)
     }
     func getGracePeriod(
@@ -217,7 +219,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         delegateID: KeyHash.Public,
         configuredWith configuration: GetGracePeriodConfiguration
-    ) async throws -> GetDelegateGracePeriodResponse {
+    ) async throws -> Int32 {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.delegates(pkh: delegateID).gracePeriod.get(configuredWith: configuration)
     }
     func getParticipation(
@@ -225,7 +227,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         delegateID: KeyHash.Public,
         configuredWith configuration: GetParticipationConfiguration
-    ) async throws -> GetDelegateParticipationResponse {
+    ) async throws -> RPCDelegateParticipation {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.delegates(pkh: delegateID).participation.get(configuredWith: configuration)
     }
     func getStakingBalance(
@@ -233,7 +235,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         delegateID: KeyHash.Public,
         configuredWith configuration: GetStakingBalanceConfiguration
-    ) async throws -> GetDelegateStakingBalanceResponse {
+    ) async throws -> String {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.delegates(pkh: delegateID).stakingBalance.get(configuredWith: configuration)
     }
     func getVotingPower(
@@ -241,7 +243,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         delegateID: KeyHash.Public,
         configuredWith configuration: GetVotingPowerConfiguration
-    ) async throws -> GetDelegateVotingPowerResponse {
+    ) async throws -> Int32 {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.delegates(pkh: delegateID).votingPower.get(configuredWith: configuration)
     }
     
@@ -250,7 +252,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         blockID: RPCBlockID = .head,
         stateID: String,
         configuredWith configuration: GetSaplingStateDiffConfiguration) async
-    throws -> GetSaplingStateDiffResponse {
+    throws -> RPCSaplingStateDiff {
         try await chains(chainID: chainID).blocks(blockID: blockID).context.sapling(stateID: stateID).getDiff.get(configuredWith: configuration)
     }
     
@@ -258,7 +260,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         chainID: RPCChainID = .main,
         blockID: RPCBlockID = .head,
         configuredWith configuration: GetBlockHeaderConfiguration
-    ) async throws -> GetBlockHeaderResponse {
+    ) async throws -> RPCFullBlockHeader {
         try await chains(chainID: chainID).blocks(blockID: blockID).header.get(configuredWith: configuration)
     }
     
@@ -267,7 +269,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         chainID: RPCChainID = .main,
         blockID: RPCBlockID = .head,
         configuredWith configuration: PreapplyOperationsConfiguration
-    ) async throws -> PreapplyOperationsResponse {
+    ) async throws -> RPCAppliedOperation {
         try await chains(chainID: chainID).blocks(blockID: blockID).helpers.preapply.operations.post(operations: operations, configuredWith: configuration)
     }
     func runOperation(
@@ -275,7 +277,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         chainID: RPCChainID = .main,
         blockID: RPCBlockID = .head,
         configuredWith configuration: RunOperationConfiguration
-    ) async throws -> RunOperationResponse {
+    ) async throws -> [RPCOperation.Content] {
         try await chains(chainID: chainID).blocks(blockID: blockID).helpers.scripts.runOperation.post(operation: operation, configuredWith: configuration)
     }
     
@@ -283,7 +285,7 @@ struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
         chainID: RPCChainID = .main,
         blockID: RPCBlockID = .head,
         configuredWith configuration: GetOperationsConfiguration
-    ) async throws -> GetBlockOperationsResponse {
+    ) async throws -> [[RPCOperation]] {
         try await chains(chainID: chainID).blocks(blockID: blockID).operations.get(configuredWith: configuration)
     }
 }

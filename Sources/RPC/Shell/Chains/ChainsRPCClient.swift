@@ -35,8 +35,8 @@ class ChainsChainClient<HTTPClient: HTTP>: ChainsChain {
         self.http = http
     }
     
-    func patch(bootstrapped: Bool, configuredWith configuration: ChainsChainPatchConfiguration) async throws -> SetBootstrappedResult {
-        try await http.patch(
+    func patch(bootstrapped: Bool, configuredWith configuration: ChainsChainPatchConfiguration) async throws {
+        let _: EmptyResponse = try await http.patch(
             baseURL: baseURL,
             endpoint: "/",
             headers: configuration.headers,
@@ -63,7 +63,7 @@ struct ChainsChainBlocksClient<HTTPClient: HTTP>: ChainsChainBlocks {
         self.http = http
     }
     
-    func get(configuredWith configuration: ChainsChainBlocksGetConfiguration) async throws -> GetBlocksResponse {
+    func get(configuredWith configuration: ChainsChainBlocksGetConfiguration) async throws -> [BlockHash] {
         var parameters = [HTTPParameter]()
         if let length = configuration.length {
             parameters.append(("length", String(length)))
@@ -94,7 +94,7 @@ struct ChainsChainChainIDClient<HTTPClient: HTTP>: ChainsChainChainID {
         self.http = http
     }
     
-    func get(configuredWith configuration: ChainsChainChainIDGetConfiguration) async throws -> GetChainIDResponse {
+    func get(configuredWith configuration: ChainsChainChainIDGetConfiguration) async throws -> ChainID {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -110,7 +110,7 @@ struct ChainsChainInvalidBlocksClient<HTTPClient: HTTP>: ChainsChainInvalidBlock
         self.http = http
     }
     
-    func get(configuredWith configuration: ChainsChainInvalidBlocksGetConfiguration) async throws -> GetInvalidBlocksResponse {
+    func get(configuredWith configuration: ChainsChainInvalidBlocksGetConfiguration) async throws -> [RPCInvalidBlock] {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 
@@ -131,12 +131,12 @@ struct ChainsChainInvalidBlocksBlockClient<HTTPClient: HTTP>: ChainsChainInvalid
         self.http = http
     }
 
-    func get(configuredWith configuration: ChainsChainInvalidBlocksBlockGetConfiguration) async throws -> GetInvalidBlockResponse {
+    func get(configuredWith configuration: ChainsChainInvalidBlocksBlockGetConfiguration) async throws -> RPCInvalidBlock {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
     
-    func delete(configuredWith configuration: ChainsChainInvalidBlocksBlockDeleteConfiguration) async throws -> DeleteInvalidBlockResponse {
-        try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
+    func delete(configuredWith configuration: ChainsChainInvalidBlocksBlockDeleteConfiguration) async throws {
+        let _: EmptyResponse = try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
 
@@ -151,7 +151,7 @@ struct ChainsChainIsBootstrappedClient<HTTPClient: HTTP>: ChainsChainIsBootstrap
         self.http = http
     }
 
-    func get(configuredWith configuration: ChainsChainIsBootstrappedGetConfiguration) async throws -> GetBootstrappedStatusResponse {
+    func get(configuredWith configuration: ChainsChainIsBootstrappedGetConfiguration) async throws -> RPCChainBootstrappedStatus {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -183,7 +183,7 @@ struct ChainsChainLevelsCabooseClient<HTTPClient: HTTP>: ChainsChainLevelsCaboos
         self.http = http
     }
 
-    func get(configuredWith configuration: ChainsChainLevelsCabooseGetConfiguration) async throws -> GetCabooseResponse {
+    func get(configuredWith configuration: ChainsChainLevelsCabooseGetConfiguration) async throws -> RPCChainCaboose {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -199,7 +199,7 @@ struct ChainsChainLevelsCheckpointClient<HTTPClient: HTTP>: ChainsChainLevelsChe
         self.http = http
     }
 
-    func get(configuredWith configuration: ChainsChainLevelsCheckpointGetConfiguration) async throws -> GetCheckpointResponse {
+    func get(configuredWith configuration: ChainsChainLevelsCheckpointGetConfiguration) async throws -> RPCChainCheckpoint {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
@@ -215,7 +215,7 @@ struct ChainsChainLevelsSavepointClient<HTTPClient: HTTP>: ChainsChainLevelsSave
         self.http = http
     }
 
-    func get(configuredWith configuration: ChainsChainLevelsSavepointGetConfiguration) async throws -> GetSavepointResponse {
+    func get(configuredWith configuration: ChainsChainLevelsSavepointGetConfiguration) async throws -> RPCChainSavepoint {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 }
