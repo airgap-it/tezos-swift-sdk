@@ -9,13 +9,26 @@ import Foundation
 
 // MARK: Encoded
 
-public protocol Encoded: Hashable {
+public protocol Encoded: Hashable, Codable {
     var base58: String { get }
     
     init(base58: String) throws
     
     static func isValid(string: String) -> Bool
     static func isValid(bytes: [UInt8]) -> Bool
+}
+
+// MARK: Encoded: Codable
+
+public extension Encoded {
+    init(from decoder: Decoder) throws {
+        let base58 = try String(from: decoder)
+        try self.init(base58: base58)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        try base58.encode(to: encoder)
+    }
 }
 
 // MARK: EncodedValue
