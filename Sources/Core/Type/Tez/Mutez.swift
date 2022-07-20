@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 05.07.22.
 //
 
-import Foundation
-
 public struct Mutez: Hashable, Codable {
     public static var zero: Mutez {
         try! .init(0)
@@ -14,12 +12,12 @@ public struct Mutez: Hashable, Codable {
     
     public let value: Int64
     
-    public init(_ value: Int64) throws {
+    public init<I: SignedInteger>(_ value: I) throws {
         guard Self.isValid(value) else {
             throw TezosError.invalidValue("Invalid mutez value (\(value)).")
         }
         
-        self.value = value
+        self.value = .init(value)
     }
     
     public init(_ value: String) throws {
@@ -30,7 +28,7 @@ public struct Mutez: Hashable, Codable {
         try self.init(value)
     }
     
-    public static func isValid(_ value: Int64) -> Bool {
+    public static func isValid<I: SignedInteger>(_ value: I) -> Bool {
         // Mutez (micro-Tez) are internally represented by 64-bit signed integers.
         // These are restricted to prevent creating a negative amount of mutez.
         //
