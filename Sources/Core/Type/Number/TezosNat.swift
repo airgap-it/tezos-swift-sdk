@@ -8,6 +8,10 @@
 import Foundation
 
 public struct TezosNat: Hashable, BigNatWrapper {
+    public static var zero: TezosNat {
+        self.init(UInt(0))
+    }
+    
     public var value: String
     
     public init<S>(_ value: S) throws where S : StringProtocol {

@@ -30,12 +30,12 @@ class OperationSigningTest: XCTestCase {
             
             let signedWithCurrentKey = TezosOperation.Signed(
                 branch: operation.branch,
-                content: operation.content,
+                contents: operation.contents,
                 signature: signature.asSignature()
             )
             let signedWithOtherKey = TezosOperation.Signed(
                 branch: operation.branch,
-                content: operation.content,
+                contents: operation.contents,
                 signature: .edsig(try! .init(base58: "edsigtsnqaaNExgKjVyp4J5pphV4GvmEWh9T5hXyfLn1Bs2rLubib9htT8hy575R733UrmTc65cgjuNYKXQxGS2dR9BW98kKw8m"))
             )
             
@@ -54,12 +54,12 @@ class OperationSigningTest: XCTestCase {
 //
 //            let signedWithCurrentKey = TezosOperation.Signed(
 //                branch: operation.branch,
-//                content: operation.content,
+//                contents: operation.contents,
 //                signature: signature.asSignature()
 //            )
 //            let signedWithOtherKey = TezosOperation.Signed(
 //                branch: operation.branch,
-//                content: operation.content,
+//                contents: operation.contents,
 //                signature: .spsig(try! .init(base58: "spsig19ZLL6dzEryZ8sPp7ggaqK6p7P6oC4Zc24BTFYNZykuiuVA9KuNzfuoNETzPpqEzN16cLiHMfrfys8TTDV1ycyDgPL8wvm"))
 //            )
 //
@@ -78,12 +78,12 @@ class OperationSigningTest: XCTestCase {
 //            
 //            let signedWithCurrentKey = TezosOperation.Signed(
 //                branch: operation.branch,
-//                content: operation.content,
+//                contents: operation.contents,
 //                signature: signature.asSignature()
 //            )
 //            let signedWithOtherKey = TezosOperation.Signed(
 //                branch: operation.branch,
-//                content: operation.content,
+//                contents: operation.contents,
 //                signature: .p2sig(try! .init(base58: "p2sigTrmxRGhckRaai4vVSDBeRwUfuPhHzJZmQtnX9MxaUsRBE9KMgNe1nwA2BWWZdH8qUtcE5nr8H5XjD8VtcJsabqGpNDRgx"))
 //            )
 //            
@@ -104,22 +104,22 @@ class OperationSigningTest: XCTestCase {
             
             let signedWithCurrentKey = TezosOperation.Signed(
                 branch: operation.branch,
-                content: operation.content,
+                contents: operation.contents,
                 signature: signature.asSignature()
             )
             let signedWithOtherKey = TezosOperation.Signed(
                 branch: operation.branch,
-                content: operation.content,
+                contents: operation.contents,
                 signature: .edsig(try! .init(base58: "edsigtsnqaaNExgKjVyp4J5pphV4GvmEWh9T5hXyfLn1Bs2rLubib9htT8hy575R733UrmTc65cgjuNYKXQxGS2dR9BW98kKw8m"))
             )
             let signedWithSecp256K1Key = TezosOperation.Signed(
                 branch: operation.branch,
-                content: operation.content,
+                contents: operation.contents,
                 signature: .spsig(try! .init(base58: "spsig19ZLL6dzEryZ8sPp7ggaqK6p7P6oC4Zc24BTFYNZykuiuVA9KuNzfuoNETzPpqEzN16cLiHMfrfys8TTDV1ycyDgPL8wvm"))
             )
             let signedWithP256Key = TezosOperation.Signed(
                 branch: operation.branch,
-                content: operation.content,
+                contents: operation.contents,
                 signature: .p2sig(try! .init(base58: "p2sigTrmxRGhckRaai4vVSDBeRwUfuPhHzJZmQtnX9MxaUsRBE9KMgNe1nwA2BWWZdH8qUtcE5nr8H5XjD8VtcJsabqGpNDRgx"))
             )
             
@@ -140,22 +140,22 @@ class OperationSigningTest: XCTestCase {
 //
 //            let signedWithCurrentKey = TezosOperation.Signed(
 //                branch: operation.branch,
-//                content: operation.content,
+//                contents: operation.contents,
 //                signature: signature.asSignature()
 //            )
 //            let signedWithOtherKey = TezosOperation.Signed(
 //                branch: operation.branch,
-//                content: operation.content,
+//                contents: operation.contents,
 //                signature: .spsig(try! .init(base58: "spsig19ZLL6dzEryZ8sPp7ggaqK6p7P6oC4Zc24BTFYNZykuiuVA9KuNzfuoNETzPpqEzN16cLiHMfrfys8TTDV1ycyDgPL8wvm"))
 //            )
 //            let signedWithEd25519Key = TezosOperation.Signed(
 //                branch: operation.branch,
-//                content: operation.content,
+//                contents: operation.contents,
 //                signature: .edsig(try! .init(base58: "edsigtsnqaaNExgKjVyp4J5pphV4GvmEWh9T5hXyfLn1Bs2rLubib9htT8hy575R733UrmTc65cgjuNYKXQxGS2dR9BW98kKw8m"))
 //            )
 //            let signedWithP256Key = TezosOperation.Signed(
 //                branch: operation.branch,
-//                content: operation.content,
+//                contents: operation.contents,
 //                signature: .p2sig(try! .init(base58: "p2sigTrmxRGhckRaai4vVSDBeRwUfuPhHzJZmQtnX9MxaUsRBE9KMgNe1nwA2BWWZdH8qUtcE5nr8H5XjD8VtcJsabqGpNDRgx"))
 //            )
 //
@@ -176,22 +176,22 @@ class OperationSigningTest: XCTestCase {
 //
 //            let signedWithCurrentKey = TezosOperation.Signed(
 //                branch: operation.branch,
-//                content: operation.content,
+//                contents: operation.contents,
 //                signature: signature.asSignature()
 //            )
 //            let signedWithOtherKey = TezosOperation.Signed(
 //                branch: operation.branch,
-//                content: operation.content,
+//                contents: operation.contents,
 //                signature: .p2sig(try! .init(base58: "p2sigTrmxRGhckRaai4vVSDBeRwUfuPhHzJZmQtnX9MxaUsRBE9KMgNe1nwA2BWWZdH8qUtcE5nr8H5XjD8VtcJsabqGpNDRgx"))
 //            )
 //            let signedWithEd25519Key = TezosOperation.Signed(
 //                branch: operation.branch,
-//                content: operation.content,
+//                contents: operation.contents,
 //                signature: .edsig(try! .init(base58: "edsigtsnqaaNExgKjVyp4J5pphV4GvmEWh9T5hXyfLn1Bs2rLubib9htT8hy575R733UrmTc65cgjuNYKXQxGS2dR9BW98kKw8m"))
 //            )
 //            let signedWithSecp256K1Key = TezosOperation.Signed(
 //                branch: operation.branch,
-//                content: operation.content,
+//                contents: operation.contents,
 //                signature: .spsig(try! .init(base58: "spsig19ZLL6dzEryZ8sPp7ggaqK6p7P6oC4Zc24BTFYNZykuiuVA9KuNzfuoNETzPpqEzN16cLiHMfrfys8TTDV1ycyDgPL8wvm"))
 //            )
 //
@@ -212,14 +212,14 @@ class OperationSigningTest: XCTestCase {
             (
                 .unsigned(.init(
                     branch: try! .init(base58: "BLjg4HU2BwnCgJfRutxJX5rHACzLDxRJes1MXqbXXdxvHWdK3Te"),
-                    content: []
+                    contents: []
                 )),
                 try! .init(base58: "edsigtfLuR4pGGfJwYgWZbWi9JGzjLA8ThhThxqFGC8V6u4WTdS4fM7VFQKoN9jPDLKiAW75PtG1bykpnRa6ozr8m12iKGYCxNd")
             ),
             (
                 .unsigned(.init(
                     branch: try! .init(base58: "BLjg4HU2BwnCgJfRutxJX5rHACzLDxRJes1MXqbXXdxvHWdK3Te"),
-                    content: [
+                    contents: [
                         .seedNonceRevelation(.init(
                             level: 1,
                             nonce: try! .init(from: "6cdaf9367e551995a670a5c642a9396290f8c9d17e6bc3c1555bfaa910d92214")
@@ -231,7 +231,7 @@ class OperationSigningTest: XCTestCase {
             (
                 .unsigned(.init(
                     branch: try! .init(base58: "BLjg4HU2BwnCgJfRutxJX5rHACzLDxRJes1MXqbXXdxvHWdK3Te"),
-                    content: [
+                    contents: [
                         .seedNonceRevelation(.init(
                             level: 1,
                             nonce: try! .init(from: "9d15bcdc0194b327d3cb0dcd05242bc6ff1635da635e38ed7a62b8c413ce6833")
@@ -252,14 +252,14 @@ class OperationSigningTest: XCTestCase {
             (
                 .unsigned(.init(
                     branch: try! .init(base58: "BLjg4HU2BwnCgJfRutxJX5rHACzLDxRJes1MXqbXXdxvHWdK3Te"),
-                    content: []
+                    contents: []
                 )),
                 try! .init(base58: "spsig1LPnrCkaRypLUz3UYdxQGVpxfSAxWwSV2HpaitKWvqRN6CDqqLJwWNn1S9kEWT2ZLrWq7m2361YVMN4LNkc9FVPdxBjYZi")
             ),
             (
                 .unsigned(.init(
                     branch: try! .init(base58: "BLjg4HU2BwnCgJfRutxJX5rHACzLDxRJes1MXqbXXdxvHWdK3Te"),
-                    content: [
+                    contents: [
                         .seedNonceRevelation(.init(
                             level: 1,
                             nonce: try! .init(from: "6cdaf9367e551995a670a5c642a9396290f8c9d17e6bc3c1555bfaa910d92214")
@@ -271,7 +271,7 @@ class OperationSigningTest: XCTestCase {
             (
                 .unsigned(.init(
                     branch: try! .init(base58: "BLjg4HU2BwnCgJfRutxJX5rHACzLDxRJes1MXqbXXdxvHWdK3Te"),
-                    content: [
+                    contents: [
                         .seedNonceRevelation(.init(
                             level: 1,
                             nonce: try! .init(from: "9d15bcdc0194b327d3cb0dcd05242bc6ff1635da635e38ed7a62b8c413ce6833")
@@ -292,14 +292,14 @@ class OperationSigningTest: XCTestCase {
             (
                 .unsigned(.init(
                     branch: try! .init(base58: "BLjg4HU2BwnCgJfRutxJX5rHACzLDxRJes1MXqbXXdxvHWdK3Te"),
-                    content: []
+                    contents: []
                 )),
                 try! .init(base58: "p2sigY5tNCTjyR3w2rbgBHnkcEChmtk43Gt6BKqwX2TsNdpVojk3QgRy9Wf3TMkAyRnagy4LrhC4AfVDFBQK87sqBipsNkCt5N")
             ),
             (
                 .unsigned(.init(
                     branch: try! .init(base58: "BLjg4HU2BwnCgJfRutxJX5rHACzLDxRJes1MXqbXXdxvHWdK3Te"),
-                    content: [
+                    contents: [
                         .seedNonceRevelation(.init(
                             level: 1,
                             nonce: try! .init(from: "6cdaf9367e551995a670a5c642a9396290f8c9d17e6bc3c1555bfaa910d92214")
@@ -311,7 +311,7 @@ class OperationSigningTest: XCTestCase {
             (
                 .unsigned(.init(
                     branch: try! .init(base58: "BLjg4HU2BwnCgJfRutxJX5rHACzLDxRJes1MXqbXXdxvHWdK3Te"),
-                    content: [
+                    contents: [
                         .seedNonceRevelation(.init(
                             level: 1,
                             nonce: try! .init(from: "9d15bcdc0194b327d3cb0dcd05242bc6ff1635da635e38ed7a62b8c413ce6833")

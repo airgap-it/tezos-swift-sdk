@@ -8,6 +8,10 @@
 import Foundation
 
 public struct Mutez: Hashable, Codable {
+    public static var zero: Mutez {
+        try! .init(0)
+    }
+    
     public let value: Int64
     
     public init(_ value: Int64) throws {
