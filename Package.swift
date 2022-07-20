@@ -6,13 +6,14 @@ import PackageDescription
 let package = Package(
     name: "TezosSwiftSDK",
     platforms: [
-        .macOS(.v10_13)
+        .macOS(.v10_15)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(name: "TezosCore", targets: ["TezosCore"]),
         .library(name: "TezosMichelson", targets: ["TezosMichelson"]),
         .library(name: "TezosOperation", targets: ["TezosOperation"]),
+        .library(name: "TezosRPC", targets: ["TezosRPC"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -36,6 +37,10 @@ let package = Package(
             name: "TezosOperation",
             dependencies: ["TezosCore", "TezosMichelson"],
             path: "Sources/Operation"),
+        .target(
+            name: "TezosRPC",
+            dependencies: ["TezosCore", "TezosMichelson", "TezosOperation"],
+            path: "Sources/RPC"),
         
         // Tests
         .target(

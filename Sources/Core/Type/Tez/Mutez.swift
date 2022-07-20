@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Mutez: Hashable {
+public struct Mutez: Hashable, Codable {
     public let value: Int64
     
     public init(_ value: Int64) throws {
@@ -37,5 +37,16 @@ public struct Mutez: Hashable {
     
     public static func isValid(_ value: String) -> Bool {
         value.range(of: #"^[0-9]+$"#, options: .regularExpression) != nil
+    }
+    
+    // MARK: Codable
+    
+    public init(from decoder: Decoder) throws {
+        let value = try String(from: decoder)
+        try self.init(value)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        try String(value).encode(to: encoder)
     }
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Timestamp: Hashable {
+public enum Timestamp: Hashable, Codable {
     // TODO: validation
     case rfc3339(String)
     case millis(Int64)
@@ -37,6 +37,27 @@ public enum Timestamp: Hashable {
             return Int64((date.timeIntervalSince1970 * 1000.0).rounded())
         case .millis(let int64):
             return int64
+        }
+    }
+    
+    // MARK: Codable
+    
+    public init(from decoder: Decoder) throws {
+        if let string = try? String(from: decoder) {
+            self = .rfc3339(string)
+        } else if let int64 = try? Int64(from: decoder) {
+            self = .millis(int64)
+        } else {
+            throw TezosError.invalidValue("Unknown Timestamp value.")
+        }
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        switch self {
+        case .rfc3339(let string):
+            try string.encode(to: encoder)
+        case .millis(let int64):
+            try int64.encode(to: encoder)
         }
     }
 }

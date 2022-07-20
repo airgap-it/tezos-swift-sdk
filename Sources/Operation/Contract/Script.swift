@@ -8,15 +8,12 @@
 import Foundation
 import TezosMichelson
 
-extension TezosOperation {
+public struct Script: Hashable, Codable {
+    public let code: Micheline
+    public let storage: Micheline
     
-    public struct Script: Hashable {
-        public let code: Micheline
-        public let storage: Micheline
-        
-        public init(code: Micheline, storage: Micheline) {
-            self.code = code
-            self.storage = storage
-        }
+    public init(code: Micheline, storage: Micheline) {
+        self.code = code
+        self.storage = storage
     }
 }
