@@ -24,4 +24,18 @@ public class Cached<T> {
         
         return value
     }
+    
+    public func map<R>(_ transform: @escaping (T) throws -> R) rethrows -> Cached<R> {
+        let value = value
+        let fetch = fetch
+        
+        return .init {
+            if let value = value {
+                return try transform(value)
+            } else {
+                let value = try await fetch($0)
+                return try transform(value)
+            }
+        }
+    }
 }
