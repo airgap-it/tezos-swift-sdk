@@ -13,7 +13,8 @@ let package = Package(
         .library(name: "TezosCore", targets: ["TezosCore"]),
         .library(name: "TezosMichelson", targets: ["TezosMichelson"]),
         .library(name: "TezosOperation", targets: ["TezosOperation"]),
-        .library(name: "TezosRPC", targets: ["TezosRPC"])
+        .library(name: "TezosRPC", targets: ["TezosRPC"]),
+        .library(name: "TezosContract", targets: ["TezosContract"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -41,6 +42,10 @@ let package = Package(
             name: "TezosRPC",
             dependencies: ["TezosCore", "TezosMichelson", "TezosOperation"],
             path: "Sources/RPC"),
+        .target(
+            name: "TezosContract",
+            dependencies: ["TezosCore", "TezosMichelson", "TezosOperation", "TezosRPC"],
+            path: "Sources/Contract"),
         
         // Tests
         .target(
