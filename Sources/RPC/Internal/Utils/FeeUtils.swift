@@ -20,7 +20,7 @@ extension TezosOperation {
 
 extension TezosOperation.Content {
     var fee: Mutez {
-        guard let managerOperation = self as? Manager else {
+        guard let managerOperation = asManager() else {
             return try! .init(0)
         }
         

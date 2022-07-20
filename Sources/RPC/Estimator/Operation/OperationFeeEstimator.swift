@@ -9,20 +9,18 @@ import BigInt
 import TezosCore
 import TezosOperation
 
-class OperationFeeEstimator: FeeEstimator {
-    public typealias Result = TezosOperation
+class OperationFeeEstimator<ChainsRPC: Chains>: FeeEstimator {
+    private let chains: ChainsRPC
     
-    private let chains: Chains
-    
-    private lazy var chainIDCached: CachedMap<String, ChainID> = .init { [unowned self] in
+    private lazy var chainIDCached: CachedMap<RPCChainID, ChainID> = .init { [unowned self] in
         try await self.chains(chainID: $0).chainID.get(configuredWith: .init(headers: $1))
     }
     
-    init(chains: Chains) {
+    init(chains: ChainsRPC) {
         self.chains = chains
     }
     
-    func minFee(chainID: String, operation: TezosOperation, configuredWith configuration: MinFeeConfiguration) async throws -> TezosOperation {
+    func minFee(chainID: RPCChainID, operation: TezosOperation, configuredWith configuration: MinFeeConfiguration) async throws -> TezosOperation {
         let chainID = try await resolveChainID(from: chainID, with: configuration.headers)
         let runnableOperation = RPCRunnableOperation(from: try operation.apply(limits: configuration.limits), chainID: chainID)
         
@@ -39,8 +37,8 @@ class OperationFeeEstimator: FeeEstimator {
         return operation
     }
     
-    private func resolveChainID(from chainID: String, with headers: [HTTPHeader]) async throws -> ChainID {
-        if let chainID = try? ChainID(base58: chainID) {
+    private func resolveChainID(from chainID: RPCChainID, with headers: [HTTPHeader]) async throws -> ChainID {
+        if case let .id(chainID) = chainID {
             return chainID
         } else {
             return try await chainIDCached.get(forKey: chainID, headers: headers)
@@ -159,10 +157,10 @@ private extension TezosOperation.Content {
         }
     }
     
-    func update(with rpcContent: RPCOperation.Content) throws -> TezosOperation.Content {
+    func update(with rpcContent: RPCOperation.Content) throws -> TezosOperation.Content { 
         guard
             !hasFee,
-            let _ = self as? Manager,
+            let _ = asManager(),
             matches(rpcContent: rpcContent),
             let metadataLimits = try rpcContent.metadataLimits()
         else {

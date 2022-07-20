@@ -10,8 +10,8 @@ import TezosCore
 import TezosMichelson
 import TezosOperation
 
-struct ActiveSimplifiedRPCClient: ActiveSimplifiedRPC {
-    private let chains: Chains
+struct ActiveSimplifiedRPCClient<ChainsRPC: Chains>: ActiveSimplifiedRPC {
+    private let chains: ChainsRPC
     
     func getBlock(
         chainID: RPCChainID = .main,

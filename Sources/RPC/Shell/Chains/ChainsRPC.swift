@@ -11,27 +11,37 @@ import TezosCore
 // MARK: /chains
 
 public protocol Chains {
-    func callAsFunction(chainID: RPCChainID) -> ChainsChain
+    associatedtype ChainRPC: ChainsChain
+    
+    func callAsFunction(chainID: RPCChainID) -> ChainRPC
 }
 
 // MARK: /chains/<chain_id>
 
 public protocol ChainsChain {
+    associatedtype BlocksRPC: ChainsChainBlocks
+    associatedtype ChainIDRPC: ChainsChainChainID
+    associatedtype InvalidBlocksRPC: ChainsChainInvalidBlocks
+    associatedtype IsBootstrappedRPC: ChainsChainIsBootstrapped
+    associatedtype LevelsRPC: ChainsChainLevels
+    
     func patch(bootstrapped: Bool, configuredWith configuration: ChainsChainPatchConfiguration) async throws
     
-    var blocks: ChainsChainBlocks { get }
-    var chainID: ChainsChainChainID { get }
-    var invalidBlocks: ChainsChainInvalidBlocks { get }
-    var isBootstrapped: ChainsChainIsBootstrapped { get }
-    var levels: ChainsChainLevels { get }
+    var blocks: BlocksRPC { get }
+    var chainID: ChainIDRPC { get }
+    var invalidBlocks: InvalidBlocksRPC { get }
+    var isBootstrapped: IsBootstrappedRPC { get }
+    var levels: LevelsRPC { get }
 }
 
 // MARK: /chains/<chain_id>/blocks
 
 public protocol ChainsChainBlocks {
+    associatedtype BlockRPC: Block
+    
     func get(configuredWith configuration: ChainsChainBlocksGetConfiguration) async throws -> [BlockHash]
     
-    func callAsFunction(blockID: RPCBlockID) -> Block
+    func callAsFunction(blockID: RPCBlockID) -> BlockRPC
 }
 
 // MARK: /chains/<chain_id>/chain_id
@@ -43,9 +53,11 @@ public protocol ChainsChainChainID {
 // MARK: /chains/<chain_id>/invalid_blocks
 
 public protocol ChainsChainInvalidBlocks {
+    associatedtype BlockRPC: ChainsChainInvalidBlocksBlock
+    
     func get(configuredWith configuration: ChainsChainInvalidBlocksGetConfiguration) async throws -> [RPCInvalidBlock]
     
-    func callAsFunction(blockHash: BlockHash) -> ChainsChainInvalidBlocksBlock
+    func callAsFunction(blockHash: BlockHash) -> BlockRPC
 }
 
 // MARK: /chains/<chain_id>/invalid_blocks/<block_hash>
@@ -64,9 +76,13 @@ public protocol ChainsChainIsBootstrapped {
 // MARK: /chains/<chain_id>/levels
 
 public protocol ChainsChainLevels {
-    var caboose: ChainsChainLevelsCaboose { get }
-    var checkpoint: ChainsChainLevelsCheckpoint { get }
-    var savepoint: ChainsChainLevelsSavepoint { get }
+    associatedtype CabooseRPC
+    associatedtype CheckpointRPC
+    associatedtype SavepointRPC
+    
+    var caboose: CabooseRPC { get }
+    var checkpoint: CheckpointRPC { get }
+    var savepoint: SavepointRPC { get }
 }
 
 // MARK: /chains/<chain_id>/levels/caboose

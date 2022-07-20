@@ -8,7 +8,7 @@
 import TezosOperation
 
 public protocol FeeEstimator {
-    associatedtype Result
+    associatedtype FeeApplicable
     
-    func minFee(chainID: String, operation: TezosOperation, configuredWith configuration: MinFeeConfiguration) async throws -> Result
+    func minFee(chainID: RPCChainID, operation: FeeApplicable, configuredWith configuration: MinFeeConfiguration) async throws -> FeeApplicable
 }

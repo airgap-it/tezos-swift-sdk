@@ -22,7 +22,7 @@ extension TezosOperation {
 extension TezosOperation.Content {
     
     func limits() throws -> Limits.Operation {
-        guard hasFee, let managerOperation = self as? Manager else {
+        guard hasFee, let managerOperation = asManager() else {
             return .zero
         }
         
