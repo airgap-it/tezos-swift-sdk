@@ -14,7 +14,7 @@ extension Contract {
         public let parameter: Micheline
         public let storage: Micheline
         public let code: Micheline
+        
+        typealias Lazy = Cached<Code>
     }
-    
-    typealias LazyCode = Cached<Code>
 }

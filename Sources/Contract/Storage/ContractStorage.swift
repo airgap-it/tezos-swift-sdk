@@ -12,10 +12,10 @@ import TezosRPC
 extension Contract {
     
     public struct Storage {
-        private let type: LazyType
+        private let type: Micheline.Lazy
         private let contract: ContractRPC
         
-        init(from code: Contract.LazyCode, contract: ContractRPC) throws {
+        init(from code: Contract.Code.Lazy, contract: ContractRPC) throws {
             let type: Cached<Micheline> = try code.map {
                 guard let storage = try? $0.storage.asPrim(Michelson._Type.Storage.self), storage.args.count == 1 else {
                     throw TezosContractError.invalidType("storage")
@@ -37,8 +37,6 @@ extension Contract {
             return try .init(from: value, type: type)
         }
     }
-    
-    typealias LazyType = Cached<Micheline>
 }
 
 // MARK: Utility Exceptions
@@ -52,4 +50,8 @@ private extension BlockContextContractsContractStorage {
             return try await get(configuredWith: .init(headers: headers))?.normalized()
         }
     }
+}
+
+private extension Micheline {
+    typealias Lazy = Cached<Micheline>
 }

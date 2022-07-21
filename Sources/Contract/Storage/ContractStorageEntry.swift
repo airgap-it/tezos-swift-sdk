@@ -102,8 +102,12 @@ extension Contract.Storage.Entry {
         public let type: Micheline
         
         init(from value: Micheline, type: Micheline.PrimitiveApplication) {
+            self.init(value: value, type: .prim(type))
+        }
+        
+        init(value: Micheline, type: Micheline) {
             self.value = value
-            self.type = .prim(type)
+            self.type = type
         }
     }
 }
@@ -116,32 +120,44 @@ extension Contract.Storage.Entry {
         public let value: Micheline
         public let type: Micheline
         
-        private let values: [String: Contract.Storage.Entry]
+        public let elements: [Contract.Storage.Entry]
+        private let dict: [String: Contract.Storage.Entry]
         
         init(from value: Micheline.PrimitiveApplication, type: Micheline.PrimitiveApplication) throws {
             guard value.args.count == type.args.count else {
                 throw TezosContractError.invalidType("storage object")
             }
-            
-            self.value = .prim(value)
-            self.type = .prim(type)
-            self.values = try zip(value.args, type.args)
+
+            let elements = try zip(value.args, type.args)
                 .flatMap { (value) -> [Contract.Storage.Entry] in
                     let (v, t) = value
                     let entry = try Contract.Storage.Entry(from: v, type: t)
                     
                     if case let .object(object) = entry, object.names.isEmpty {
-                        return .init(object.values.values)
+                        return .init(object.elements)
                     } else {
                         return [entry]
                     }
                 }
+            
+            self.init(value: .prim(value), type: .prim(type), elements: elements)
+        }
+        
+        init(value: Micheline, type: Micheline, elements: [Contract.Storage.Entry]) {
+            self.value = value
+            self.type = type
+            self.elements = elements
+            self.dict = elements
                 .flatMap { (entry) -> [(String, Contract.Storage.Entry)] in
                     return entry.names.map { name in (name, entry) }
                 }
                 .reduce(into: [:]) { (dict, next) in
                     dict[next.0] = next.1
                 }
+        }
+        
+        subscript(key: String) -> Contract.Storage.Entry? {
+            dict[key]
         }
     }
 }
@@ -154,14 +170,20 @@ extension Contract.Storage.Entry {
         public let value: Micheline
         public let type: Micheline
         
-        private let values: [Contract.Storage.Entry]
+        public let elements: [Contract.Storage.Entry]
         
         init(from value: Micheline.Sequence, type: Micheline.PrimitiveApplication, elementType: Micheline? = nil) throws {
-            self.value = .sequence(value)
-            self.type = .prim(type)
-            self.values = try value.map {
+            let values = try value.map {
                 try Contract.Storage.Entry(from: $0, type: elementType ?? .prim(type))
             }
+            
+            self.init(value: .sequence(value), type: .prim(type), values: values)
+        }
+        
+        init(value: Micheline, type: Micheline, values: [Contract.Storage.Entry]) {
+            self.value = value
+            self.type = type
+            self.elements = values
         }
     }
 }
@@ -174,16 +196,14 @@ extension Contract.Storage.Entry {
         public let value: Micheline
         public let type: Micheline
         
-        private let values: [Contract.Storage.Entry: Contract.Storage.Entry]
+        private let dict: [Contract.Storage.Entry: Contract.Storage.Entry]
         
         init(from value: Micheline.Sequence, type: Micheline.PrimitiveApplication) throws {
             guard type.args.count == 2 else {
                 throw TezosContractError.invalidType("storage map")
             }
             
-            self.value = .sequence(value)
-            self.type = .prim(type)
-            self.values = try value.reduce(into: [:]) { (dict, next) in
+            let dict: [Contract.Storage.Entry: Contract.Storage.Entry] = try value.reduce(into: [:]) { (dict, next) in
                 guard let elt = try? next.asPrim(Michelson.Data.Elt.self), elt.args.count == 2 else {
                     throw TezosContractError.invalidType("storage map value")
                 }
@@ -193,6 +213,18 @@ extension Contract.Storage.Entry {
                 
                 dict[key] = value
             }
+            
+            self.init(value: .sequence(value), type: .prim(type), dict: dict)
+        }
+        
+        init(value: Micheline, type: Micheline, dict: [Contract.Storage.Entry: Contract.Storage.Entry]) {
+            self.value = value
+            self.type = type
+            self.dict = dict
+        }
+        
+        subscript(key: Contract.Storage.Entry) -> Contract.Storage.Entry? {
+            dict[key]
         }
     }
 }
@@ -208,9 +240,13 @@ extension Contract.Storage.Entry {
         public let type: Micheline
         
         init(from value: Micheline.Literal.Integer, type: Micheline.PrimitiveApplication) {
-            self.id = value.value
-            self.value = .literal(.integer(value))
-            self.type = .prim(type)
+            self.init(id: value.value, value: .literal(.integer(value)), type: .prim(type))
+        }
+        
+        init(id: String, value: Micheline, type: Micheline) {
+            self.id = id
+            self.value = value
+            self.type = type
         }
     }
 }

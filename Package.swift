@@ -78,5 +78,16 @@ let package = Package(
                 "TezosTestUtils",
             ],
             path: "Tests/RPC"),
+        .testTarget(
+            name: "TezosContractTests",
+            dependencies: [
+                "TezosCore",
+                "TezosMichelson",
+                "TezosOperation",
+                "TezosRPC",
+                "TezosContract",
+                "TezosTestUtils",
+            ],
+            path: "Tests/Contract"),
     ]
 )
