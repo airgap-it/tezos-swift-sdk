@@ -32,7 +32,7 @@ public extension Micheline.PrimitiveApplication {
     }
     
     func asPrim(_ prims: [Michelson.Prim.Type]) throws -> Micheline.PrimitiveApplication {
-        guard prims.contains(where: { $0.name == prim }) else {
+        guard prims.isEmpty || prims.contains(where: { $0.name == prim }) else {
             throw TezosError.invalidValue("Micheline primitive application value \(self) is not any of \(prims.map({ $0.name })).") // TODO: use expression
         }
         

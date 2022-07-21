@@ -23,8 +23,8 @@ public class Contract<ContractRPC: BlockContextContractsContract> {
         try .init(from: try await self.contract.script.getNormalized(headers: $0))
     }
     
-    public func code(headers: [HTTPHeader] = []) async throws -> Code {
-        try await codeCached.get(headers: headers)
+    public func code(configuredWith configuration: GetContractCodeConfiguration = .init()) async throws -> Code {
+        try await codeCached.get(headers: configuration.headers)
     }
 }
 

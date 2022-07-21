@@ -6,40 +6,50 @@
 //
 
 import Foundation
+import TezosMichelson
 import TezosRPC
 
 extension Contract {
     
     public struct Storage {
-        private let meta: LazyMeta
-        private let contract: ContractRPC
-    }
-}
-
-// MARK: Creator
-
-extension Contract.Storage {
-    
-    struct Creator {
+        private let type: LazyType
         private let contract: ContractRPC
         
-        func create(from code: Contract.LazyCode) throws -> Contract.Storage {
-            let meta = try code.map { try Meta(from: $0) }
-            return .init(meta: meta, contract: contract)
+        init(from code: Contract.LazyCode, contract: ContractRPC) throws {
+            let type: Cached<Micheline> = try code.map {
+                guard let storage = try? $0.storage.asPrim(Michelson._Type.Storage.self), storage.args.count == 1 else {
+                    throw TezosContractError.invalidType("storage")
+                }
+                
+                return try storage.args[0].normalized()
+            }
+           
+            self.type = type
+            self.contract = contract
         }
-    }
-}
-
-// MARK: Meta
-
-extension Contract.Storage {
-    
-    struct Meta {
         
-        init(from code: Contract.Code) throws {
+        public func get(configuredWith configuration: GetContractStorageConfiguration = .init()) async throws -> Entry? {
+            guard let value = try await contract.storage.getNormalized(headers: configuration.headers) else {
+                return nil
+            }
             
+            let type = try await type.get(headers: configuration.headers)
+            return try .init(from: value, type: type)
         }
     }
     
-    typealias LazyMeta = Cached<Meta>
+    typealias LazyType = Cached<Micheline>
+}
+
+// MARK: Utility Exceptions
+
+private extension BlockContextContractsContractStorage {
+    
+    func getNormalized(headers: [HTTPHeader]) async throws -> Micheline? {
+        do {
+            return try await normalized.post(unparsingMode: .optimizedLegacy, configuredWith: .init(headers: headers))
+        } catch {
+            return try await get(configuredWith: .init(headers: headers))?.normalized()
+        }
+    }
 }
