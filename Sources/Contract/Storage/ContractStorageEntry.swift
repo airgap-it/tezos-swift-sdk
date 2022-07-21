@@ -5,7 +5,9 @@
 //  Created by Julia Samol on 21.07.22.
 //
 
+import TezosCore
 import TezosMichelson
+import TezosRPC
 
 extension Contract.Storage {
     
@@ -248,8 +250,31 @@ extension Contract.Storage.Entry {
             self.value = value
             self.type = type
         }
+        
+        public func get<Provider: CryptoProvider, BigMapsRPC: BlockContextBigMaps>(
+            forKey key: Micheline,
+            using crypto: Crypto<Provider>,
+            and rpc: BigMapsRPC,
+            configuredWith configuration: ContractStorageEntryBigMapGetConfiguration
+        ) async throws -> Contract.Storage.Entry? {
+            guard let type = try? type.asPrim(Michelson._Type.BigMap.self), type.args.count == 2 else {
+                throw TezosContractError.invalidType("storage big map")
+            }
+            
+            let keyBytes = try key.packToBytes(usingSchema: type.args[0])
+            let keyHash = try crypto.hash(keyBytes, ofSize: 32)
+            let keyExpr = try ScriptExprHash(from: keyHash)
+            
+            guard let value = try await rpc(bigMapID: id)(scriptExpr: keyExpr).get(configuredWith: .init(headers: configuration.headers)) else {
+                return nil
+            }
+            
+            return try Contract.Storage.Entry(from: value, type: type.args[1])
+        }
     }
 }
+
+public typealias ContractStorageEntryBigMapGetConfiguration = HeadersOnlyConfiguration
 
 // MARK: Protocol
 
