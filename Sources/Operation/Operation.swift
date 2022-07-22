@@ -14,6 +14,14 @@ public enum TezosOperation: Hashable {
     case unsigned(Unsigned)
     case signed(Signed)
     
+    public init(branch: BlockHash, contents: [Content] = [], signature: Signature? = nil) {
+        if let signature = signature {
+            self = .signed(.init(branch: branch, contents: contents, signature: signature))
+        } else {
+            self = .unsigned(.init(branch: branch, contents: contents))
+        }
+    }
+    
     public var branch: BlockHash {
         switch self {
         case .unsigned(let unsigned):
@@ -23,12 +31,12 @@ public enum TezosOperation: Hashable {
         }
     }
     
-    public var content: [Content] {
+    public var contents: [Content] {
         switch self {
         case .unsigned(let unsigned):
-            return unsigned.content
+            return unsigned.contents
         case .signed(let signed):
-            return signed.content
+            return signed.contents
         }
     }
     
@@ -45,7 +53,7 @@ public enum TezosOperation: Hashable {
     
     public struct Unsigned: `Protocol`, Hashable {
         public let branch: BlockHash
-        public let content: [Content]
+        public let contents: [Content]
         
         public func asOperation() -> TezosOperation {
             .unsigned(self)
@@ -56,7 +64,7 @@ public enum TezosOperation: Hashable {
     
     public struct Signed: `Protocol`, Hashable {
         public let branch: BlockHash
-        public let content: [Content]
+        public let contents: [Content]
         public let signature: Signature
         
         public func asOperation() -> TezosOperation {
@@ -69,7 +77,7 @@ public enum TezosOperation: Hashable {
 
 public protocol OperationProtocol {
     var branch: BlockHash { get }
-    var content: [TezosOperation.Content] { get }
+    var contents: [TezosOperation.Content] { get }
     
     func asOperation() -> TezosOperation
 }

@@ -25,10 +25,10 @@ class BlockClient<HTTPClient: HTTP>: Block {
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
     
-    lazy var context: BlockContext = BlockContextClient(parentURL: baseURL, http: http)
-    lazy var header: BlockHeader = BlockHeaderClient(parentURL: baseURL, http: http)
-    lazy var helpers: BlockHelpers = BlockHelpersClient(parentURL: baseURL, http: http)
-    lazy var operations: BlockOperations = BlockOperationsClient(parentURL: baseURL, http: http)
+    lazy var context: BlockContextClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var header: BlockHeaderClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var helpers: BlockHelpersClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var operations: BlockOperationsClient<HTTPClient> = .init(parentURL: baseURL, http: http)
 }
 
 // MARK: ../<block_id>/context
@@ -42,11 +42,11 @@ class BlockContextClient<HTTPClient: HTTP>: BlockContext {
         self.http = http
     }
     
-    lazy var bigMaps: BlockContextBigMaps = BlockContextBigMapsClient(parentURL: baseURL, http: http)
-    lazy var constants: BlockContextConstants = BlockContextConstantsClient(parentURL: baseURL, http: http)
-    lazy var contracts: BlockContextContracts = BlockContextContractsClient(parentURL: baseURL, http: http)
-    lazy var delegates: BlockContextDelegates = BlockContextDelegatesClient(parentURL: baseURL, http: http)
-    lazy var sapling: BlockContextSapling = BlockContextSaplingClient(parentURL: baseURL, http: http)
+    lazy var bigMaps: BlockContextBigMapsClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var constants: BlockContextConstantsClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var contracts: BlockContextContractsClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var delegates: BlockContextDelegatesClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var sapling: BlockContextSaplingClient<HTTPClient> = .init(parentURL: baseURL, http: http)
 }
 
 // MARK: ../<block_id>/context/big_maps
@@ -60,8 +60,8 @@ struct BlockContextBigMapsClient<HTTPClient: HTTP>: BlockContextBigMaps {
         self.http = http
     }
     
-    func callAsFunction(bigMapID: String) -> BlockContextBigMapsBigMap {
-        BlockContextBigMapsBigMapClient(parentURL: baseURL, bigMapID: bigMapID, http: http)
+    func callAsFunction(bigMapID: String) -> BlockContextBigMapsBigMapClient<HTTPClient> {
+        .init(parentURL: baseURL, bigMapID: bigMapID, http: http)
     }
 }
 
@@ -88,8 +88,8 @@ struct BlockContextBigMapsBigMapClient<HTTPClient: HTTP>: BlockContextBigMapsBig
         return try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: parameters)
     }
     
-    func callAsFunction(scriptExpr: ScriptExprHash) -> BlockContextBigMapsBigMapValue {
-        BlockContextBigMapsBigMapValueClient(parentURL: baseURL, scriptExpr: scriptExpr, http: http)
+    func callAsFunction(scriptExpr: ScriptExprHash) -> BlockContextBigMapsBigMapValueClient<HTTPClient> {
+        .init(parentURL: baseURL, scriptExpr: scriptExpr, http: http)
     }
 }
 
@@ -136,8 +136,8 @@ struct BlockContextContractsClient<HTTPClient: HTTP>: BlockContextContracts {
         self.http = http
     }
     
-    func callAsFunction(contractID: Address) -> BlockContextContractsContract {
-        BlockContextContractsContractClient(parentURL: baseURL, address: contractID, http: http)
+    func callAsFunction(contractID: Address) -> BlockContextContractsContractClient<HTTPClient> {
+        .init(parentURL: baseURL, address: contractID, http: http)
     }
 }
 
@@ -156,14 +156,14 @@ class BlockContextContractsContractClient<HTTPClient: HTTP>: BlockContextContrac
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
     
-    lazy var balance: BlockContextContractsContractBalance = BlockContextContractsContractBalanceClient(parentURL: baseURL, http: http)
-    lazy var counter: BlockContextContractsContractCounter = BlockContextContractsContractCounterClient(parentURL: baseURL, http: http)
-    lazy var delegate: BlockContextContractsContractDelegate = BlockContextContractsContractDelegateClient(parentURL: baseURL, http: http)
-    lazy var entrypoints: BlockContextContractsContractEntrypoints = BlockContextContractsContractEntrypointsClient(parentURL: baseURL, http: http)
-    lazy var managerKey: BlockContextContractsContractManagerKey = BlockContextContractsContractManagerKeyClient(parentURL: baseURL, http: http)
-    lazy var script: BlockContextContractsContractScript = BlockContextContractsContractScriptClient(parentURL: baseURL, http: http)
-    lazy var singleSaplingGetDiff: BlockContextContractsContractSingleSaplingGetDiff = BlockContextContractsContractSingleSaplingGetDiffClient(parentURL: baseURL, http: http)
-    lazy var storage: BlockContextContractsContractStorage = BlockContextContractsContractStorageClient(parentURL: baseURL, http: http)
+    lazy var balance: BlockContextContractsContractBalanceClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var counter: BlockContextContractsContractCounterClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var delegate: BlockContextContractsContractDelegateClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var entrypoints: BlockContextContractsContractEntrypointsClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var managerKey: BlockContextContractsContractManagerKeyClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var script: BlockContextContractsContractScriptClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var singleSaplingGetDiff: BlockContextContractsContractSingleSaplingGetDiffClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var storage: BlockContextContractsContractStorageClient<HTTPClient> = .init(parentURL: baseURL, http: http)
 }
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/balance
@@ -229,8 +229,8 @@ struct BlockContextContractsContractEntrypointsClient<HTTPClient: HTTP>: BlockCo
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
     
-    func callAsFunction(string: String) -> BlockContextContractsContractEntrypointsEntrypoint {
-        BlockContextContractsContractEntrypointsEntrypointClient(parentURL: baseURL, string: string, http: http)
+    func callAsFunction(string: String) -> BlockContextContractsContractEntrypointsEntrypointClient<HTTPClient> {
+        .init(parentURL: baseURL, string: string, http: http)
     }
 }
 
@@ -375,8 +375,8 @@ struct BlockContextDelegatesClient<HTTPClient: HTTP>: BlockContextDelegates {
         self.http = http
     }
     
-    func callAsFunction(pkh: KeyHash.Public) -> BlockContextDelegatesDelegate {
-        BlockContextDelegatesDelegateClient(parentURL: baseURL, pkh: pkh, http: http)
+    func callAsFunction(pkh: KeyHash.Public) -> BlockContextDelegatesDelegateClient<HTTPClient> {
+        .init(parentURL: baseURL, pkh: pkh, http: http)
     }
 }
 
@@ -395,17 +395,17 @@ class BlockContextDelegatesDelegateClient<HTTPClient: HTTP>: BlockContextDelegat
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
     
-    lazy var currentFrozenDeposits: BlockContextDelegatesCurrentFrozenDeposits = BlockContextDelegatesCurrentFrozenDepositsClient(parentURL: baseURL, http: http)
-    lazy var deactivated: BlockContextDelegatesDeactivated = BlockContextDelegatesDeactivatedClient(parentURL: baseURL, http: http)
-    lazy var delegatedBalance: BlockContextDelegatesDelegatedBalance = BlockContextDelegatesDelegatedBalanceClient(parentURL: baseURL, http: http)
-    lazy var delegatedContracts: BlockContextDelegatesDelegatedContracts = BlockContextDelegatesDelegatedContractsClient(parentURL: baseURL, http: http)
-    lazy var frozenDeposits: BlockContextDelegatesCurrentFrozenDeposits = BlockContextDelegatesCurrentFrozenDepositsClient(parentURL: baseURL, http: http)
-    lazy var frozenDepositsLimit: BlockContextDelegatesFrozenDeposistsLimit = BlockContextDelegatesFrozenDeposistsLimitClient(parentURL: baseURL, http: http)
-    lazy var fullBalance: BlockContextDelegatesFullBalance = BlockContextDelegatesFullBalanceClient(parentURL: baseURL, http: http)
-    lazy var gracePeriod: BlockContextDelegatesGracePeriod = BlockContextDelegatesGracePeriodClient(parentURL: baseURL, http: http)
-    lazy var participation: BlockContextDelegatesParticipation = BlockContextDelegatesParticipationClient(parentURL: baseURL, http: http)
-    lazy var stakingBalance: BlockContextDelegatesStakingBalance = BlockContextDelegatesStakingBalanceClient(parentURL: baseURL, http: http)
-    lazy var votingPower: BlockContextDelegatesVotingPower = BlockContextDelegatesVotingPowerClient(parentURL: baseURL, http: http)
+    lazy var currentFrozenDeposits: BlockContextDelegatesCurrentFrozenDepositsClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var deactivated: BlockContextDelegatesDeactivatedClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var delegatedBalance: BlockContextDelegatesDelegatedBalanceClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var delegatedContracts: BlockContextDelegatesDelegatedContractsClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var frozenDeposits: BlockContextDelegatesFrozenDepositsClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var frozenDepositsLimit: BlockContextDelegatesFrozenDeposistsLimitClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var fullBalance: BlockContextDelegatesFullBalanceClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var gracePeriod: BlockContextDelegatesGracePeriodClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var participation: BlockContextDelegatesParticipationClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var stakingBalance: BlockContextDelegatesStakingBalanceClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var votingPower: BlockContextDelegatesVotingPowerClient<HTTPClient> = .init(parentURL: baseURL, http: http)
 }
 
 // MARK: ../<block_id>/context/delegates/current_frozen_deposits
@@ -595,8 +595,8 @@ struct BlockContextSaplingClient<HTTPClient: HTTP>: BlockContextSapling {
         self.http = http
     }
     
-    func callAsFunction(stateID: String) -> BlockContextSaplingState {
-        BlockContextSaplingStateClient(parentURL: baseURL, stateID: stateID, http: http)
+    func callAsFunction(stateID: String) -> BlockContextSaplingStateClient<HTTPClient> {
+        .init(parentURL: baseURL, stateID: stateID, http: http)
     }
 }
 
@@ -611,7 +611,7 @@ class BlockContextSaplingStateClient<HTTPClient: HTTP>: BlockContextSaplingState
         self.http = http
     }
     
-    lazy var getDiff: BlockContextSaplingStateGetDiff = BlockContextSaplingStateGetDiffClient(parentURL: baseURL, http: http)
+    lazy var getDiff: BlockContextSaplingStateGetDiffClient<HTTPClient> = .init(parentURL: baseURL, http: http)
 }
 
 // MARK: ../<block_id>/context/sapling/<sapling_state_id>/get_diff
@@ -665,8 +665,8 @@ class BlockHelpersClient<HTTPClient: HTTP>: BlockHelpers {
         self.http = http
     }
     
-    lazy var preapply: BlockHelpersPreapply = BlockHelpersPreapplyClient(parentURL: baseURL, http: http)
-    lazy var scripts: BlockHelpersScripts = BlockHelpersScriptsClient(parentURL: baseURL, http: http)
+    lazy var preapply: BlockHelpersPreapplyClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var scripts: BlockHelpersScriptsClient<HTTPClient> = .init(parentURL: baseURL, http: http)
 }
 
 // MARK: ../<block_id>/helpers/preapply
@@ -680,7 +680,7 @@ class BlockHelpersPreapplyClient<HTTPClient: HTTP>: BlockHelpersPreapply {
         self.http = http
     }
     
-    lazy var operations: BlockHelpersPreapplyOperations = BlockHelpersPreapplyOperationsClient(parentURL: baseURL, http: http)
+    lazy var operations: BlockHelpersPreapplyOperationsClient<HTTPClient> = .init(parentURL: baseURL, http: http)
 }
 
 // MARK: ../<block_id>/helpers/preapply/operations
@@ -713,7 +713,7 @@ class BlockHelpersScriptsClient<HTTPClient: HTTP>: BlockHelpersScripts {
         self.http = http
     }
     
-    lazy var runOperation: BlockHelpersScriptsRunOperation = BlockHelpersScriptsRunOperationClient(parentURL: baseURL, http: http)
+    lazy var runOperation: BlockHelpersScriptsRunOperationClient<HTTPClient> = .init(parentURL: baseURL, http: http)
 }
 
 // MARK: ../<block_id>/helpers/scripts/run_operation

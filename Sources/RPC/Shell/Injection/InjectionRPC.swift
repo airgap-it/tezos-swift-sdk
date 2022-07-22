@@ -11,9 +11,13 @@ import TezosCore
 // MARK: /injection
 
 public protocol Injection {
-    var block: InjectionBlock { get }
-    var operation: InjectionOperation { get }
-    var `protocol`: InjectionProtocol { get }
+    associatedtype BlockRPC: InjectionBlock
+    associatedtype OperationRPC: InjectionOperation
+    associatedtype ProtocolRPC: InjectionProtocol
+    
+    var block: BlockRPC { get }
+    var operation: OperationRPC { get }
+    var `protocol`: ProtocolRPC { get }
 }
 
 // MARK: /injection/block

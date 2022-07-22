@@ -23,7 +23,7 @@ public struct RPCBlockHeader: Hashable, Codable {
     public let payloadRound: Int32
     public let proofOfWorkNonce: String
     public let seedNonceHash: NonceHash?
-    public let liquidityBakingToggleVote: RPCVoteToggle
+    public let liquidityBakingToggleVote: RPCLiquidityBakingToggleVote
     public let signature: Signature
     
     public init(
@@ -39,7 +39,7 @@ public struct RPCBlockHeader: Hashable, Codable {
         payloadRound: Int32,
         proofOfWorkNonce: String,
         seedNonceHash: NonceHash?,
-        liquidityBakingToggleVote: RPCVoteToggle,
+        liquidityBakingToggleVote: RPCLiquidityBakingToggleVote,
         signature: Signature
     ) {
         self.level = level
@@ -94,7 +94,7 @@ public struct RPCFullBlockHeader: Hashable, Codable {
     public let payloadRound: Int32
     public let proofOfWorkNonce: String
     public let seedNonceHash: NonceHash?
-    public let liquidityBakingToggleVote: RPCVoteToggle
+    public let liquidityBakingToggleVote: RPCLiquidityBakingToggleVote
     public let signature: Signature
     
     public init(
@@ -113,7 +113,7 @@ public struct RPCFullBlockHeader: Hashable, Codable {
         payloadRound: Int32,
         proofOfWorkNonce: String,
         seedNonceHash: NonceHash?,
-        liquidityBakingToggleVote: RPCVoteToggle,
+        liquidityBakingToggleVote: RPCLiquidityBakingToggleVote,
         signature: Signature
     ) {
         self.`protocol` = `protocol`

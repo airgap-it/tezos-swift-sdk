@@ -17,7 +17,11 @@ public extension BigIntWrapper {
         #"^-?[0-9]+$"#
     }
     
-    init(_ value: Int) {
+    init<I: SignedInteger>(_ value: I) {
+        try! self.init(String(value))
+    }
+    
+    init<I: UnsignedInteger>(_ value: I) {
         try! self.init(String(value))
     }
 }

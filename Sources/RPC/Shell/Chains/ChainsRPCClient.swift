@@ -19,8 +19,8 @@ struct ChainsClient<HTTPClient: HTTP>: Chains {
         self.http = http
     }
     
-    func callAsFunction(chainID: RPCChainID) -> ChainsChain {
-        ChainsChainClient(parentURL: baseURL, chainID: chainID, http: http)
+    func callAsFunction(chainID: RPCChainID) -> ChainsChainClient<HTTPClient> {
+        .init(parentURL: baseURL, chainID: chainID, http: http)
     }
 }
 
@@ -45,11 +45,11 @@ class ChainsChainClient<HTTPClient: HTTP>: ChainsChain {
         )
     }
     
-    lazy var blocks: ChainsChainBlocks = ChainsChainBlocksClient(parentURL: baseURL, http: http)
-    lazy var chainID: ChainsChainChainID = ChainsChainChainIDClient(parentURL: baseURL, http: http)
-    lazy var invalidBlocks: ChainsChainInvalidBlocks = ChainsChainInvalidBlocksClient(parentURL: baseURL, http: http)
-    lazy var isBootstrapped: ChainsChainIsBootstrapped = ChainsChainIsBootstrappedClient(parentURL: baseURL, http: http)
-    lazy var levels: ChainsChainLevels = ChainsChainLevelsClient(parentURL: baseURL, http: http)
+    lazy var blocks: ChainsChainBlocksClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var chainID: ChainsChainChainIDClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var invalidBlocks: ChainsChainInvalidBlocksClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var isBootstrapped: ChainsChainIsBootstrappedClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var levels: ChainsChainLevelsClient<HTTPClient> = .init(parentURL: baseURL, http: http)
 }
 
 // MARK: /chains/<chain_id>/blocks
@@ -78,8 +78,8 @@ struct ChainsChainBlocksClient<HTTPClient: HTTP>: ChainsChainBlocks {
         return try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: parameters)
     }
     
-    func callAsFunction(blockID: RPCBlockID) -> Block {
-        BlockClient(parentURL: baseURL, blockID: blockID, http: http)
+    func callAsFunction(blockID: RPCBlockID) -> BlockClient<HTTPClient> {
+        .init(parentURL: baseURL, blockID: blockID, http: http)
     }
 }
 
@@ -114,8 +114,8 @@ struct ChainsChainInvalidBlocksClient<HTTPClient: HTTP>: ChainsChainInvalidBlock
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
 
-    func callAsFunction(blockHash: BlockHash) -> ChainsChainInvalidBlocksBlock {
-        ChainsChainInvalidBlocksBlockClient(parentURL: baseURL, blockHash: blockHash, http: http)
+    func callAsFunction(blockHash: BlockHash) -> ChainsChainInvalidBlocksBlockClient<HTTPClient> {
+        .init(parentURL: baseURL, blockHash: blockHash, http: http)
     }
 }
 
@@ -167,9 +167,9 @@ class ChainsChainLevelsClient<HTTPClient: HTTP>: ChainsChainLevels {
         self.http = http
     }
 
-    lazy var caboose: ChainsChainLevelsCaboose = ChainsChainLevelsCabooseClient(parentURL: baseURL, http: http)
-    lazy var checkpoint: ChainsChainLevelsCheckpoint = ChainsChainLevelsCheckpointClient(parentURL: baseURL, http: http)
-    lazy var savepoint: ChainsChainLevelsSavepoint = ChainsChainLevelsSavepointClient(parentURL: baseURL, http: http)
+    lazy var caboose: ChainsChainLevelsCabooseClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var checkpoint: ChainsChainLevelsCheckpointClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var savepoint: ChainsChainLevelsSavepointClient<HTTPClient> = .init(parentURL: baseURL, http: http)
 }
 
 // MARK: /chains/<chain_id>/levels/caboose

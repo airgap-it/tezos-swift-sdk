@@ -22,6 +22,18 @@ public extension Array {
     func replacing(_ element: Element, at index: Index) -> Self {
         Array(self[0..<index] + [element] + self[(index + 1)...])
     }
+    
+    func grouping<K: Hashable>(by selector: (Element) throws -> K) rethrows -> [K: [Element]] {
+        var groups = [K: [Element]]()
+        for element in self {
+            let key = try selector(element)
+            let others = groups[key] ?? []
+            
+            groups[key] = others + [element]
+        }
+        
+        return groups
+    }
 }
 
 // MARK: Mutating

@@ -64,5 +64,14 @@ let package = Package(
                 .product(name: "Clibsodium", package: "swift-sodium"),
             ],
             path: "Tests/Operation"),
+        .testTarget(
+            name: "TezosRPCTests",
+            dependencies: [
+                "TezosCore",
+                "TezosOperation",
+                "TezosRPC",
+                "TezosTestUtils",
+            ],
+            path: "Tests/RPC"),
     ]
 )
