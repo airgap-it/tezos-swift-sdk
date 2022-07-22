@@ -186,5 +186,9 @@ public protocol ActiveSimplifiedRPC {
         configuredWith configuration: RunOperationConfiguration
     ) async throws -> [RPCOperation.Content]
     
-    func getOperations(chainID: RPCChainID, blockID: RPCBlockID, configuredWith configuration: GetOperationsConfiguration) async throws -> [[RPCOperation]]
+    func getOperations(
+        chainID: RPCChainID,
+        blockID: RPCBlockID,
+        configuredWith configuration: GetOperationsConfiguration
+    ) async throws -> [[RPCOperation]]
 }

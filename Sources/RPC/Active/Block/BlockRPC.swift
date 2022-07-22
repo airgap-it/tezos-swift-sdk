@@ -13,36 +13,51 @@ import TezosOperation
 // MARK: ../<block_id>
 
 public protocol Block {
+    associatedtype ContextRPC: BlockContext
+    associatedtype HeaderRPC: BlockHeader
+    associatedtype HelpersRPC: BlockHelpers
+    associatedtype OperationsRPC: BlockOperations
+    
     func get(configuredWith configuration: BlockGetConfiguration) async throws -> RPCBlock
     
-    var context: BlockContext { get }
-    var header: BlockHeader { get }
-    var helpers: BlockHelpers { get }
-    var operations: BlockOperations { get }
+    var context: ContextRPC { get }
+    var header: HeaderRPC { get }
+    var helpers: HelpersRPC { get }
+    var operations: OperationsRPC { get }
 }
 
 // MARK: ../<block_id>/context
 
 public protocol BlockContext {
-    var bigMaps: BlockContextBigMaps { get }
-    var constants: BlockContextConstants { get }
-    var contracts: BlockContextContracts { get }
-    var delegates: BlockContextDelegates { get }
-    var sapling: BlockContextSapling { get }
+    associatedtype BigMapsRPC: BlockContextBigMaps
+    associatedtype ConstantsRPC: BlockContextConstants
+    associatedtype ContractsRPC: BlockContextContracts
+    associatedtype DelegatesRPC: BlockContextDelegates
+    associatedtype SaplingRPC: BlockContextSapling
+    
+    var bigMaps: BigMapsRPC { get }
+    var constants: ConstantsRPC { get }
+    var contracts: ContractsRPC { get }
+    var delegates: DelegatesRPC { get }
+    var sapling: SaplingRPC { get }
 }
 
 // MARK: ../<block_id>/context/big_maps
 
 public protocol BlockContextBigMaps {
-    func callAsFunction(bigMapID: String) -> BlockContextBigMapsBigMap
+    associatedtype BigMapRPC: BlockContextBigMapsBigMap
+    
+    func callAsFunction(bigMapID: String) -> BigMapRPC
 }
 
 // MARK: ../<block_id>/context/big_maps/<big_map_id>
 
 public protocol BlockContextBigMapsBigMap {
+    associatedtype ValueRPC: BlockContextBigMapsBigMapValue
+    
     func get(configuredWith configuration: BlockContextBigMapsBigMapGetConfiguration) async throws -> [Micheline]
     
-    func callAsFunction(scriptExpr: ScriptExprHash) -> BlockContextBigMapsBigMapValue
+    func callAsFunction(scriptExpr: ScriptExprHash) -> ValueRPC
 }
 
 // MARK: ../<block_id>/context/big_maps/<big_map_id>/value
@@ -60,22 +75,33 @@ public protocol BlockContextConstants {
 // MARK: ../<block_id>/context/contracts
 
 public protocol BlockContextContracts {
-    func callAsFunction(contractID: Address) -> BlockContextContractsContract
+    associatedtype ContractRPC: BlockContextContractsContract
+    
+    func callAsFunction(contractID: Address) -> ContractRPC
 }
 
 // MARK: ../<block_id>/context/contracts/<contract_id>
 
 public protocol BlockContextContractsContract {
+    associatedtype BalanceRPC: BlockContextContractsContractBalance
+    associatedtype CounterRPC: BlockContextContractsContractCounter
+    associatedtype DelegateRPC: BlockContextContractsContractDelegate
+    associatedtype EntrypointsRPC: BlockContextContractsContractEntrypoints
+    associatedtype ManagerKeyRPC: BlockContextContractsContractManagerKey
+    associatedtype ScriptRPC: BlockContextContractsContractScript
+    associatedtype SingleSaplingGetDiffRPC: BlockContextContractsContractSingleSaplingGetDiff
+    associatedtype StorageRPC: BlockContextContractsContractStorage
+    
     func get(configuredWith configuration: BlockContextContractsContractGetConfiguration) async throws -> RPCContractDetails
     
-    var balance: BlockContextContractsContractBalance { get }
-    var counter: BlockContextContractsContractCounter { get }
-    var delegate: BlockContextContractsContractDelegate { get }
-    var entrypoints: BlockContextContractsContractEntrypoints { get }
-    var managerKey: BlockContextContractsContractManagerKey { get }
-    var script: BlockContextContractsContractScript { get }
-    var singleSaplingGetDiff: BlockContextContractsContractSingleSaplingGetDiff { get }
-    var storage: BlockContextContractsContractStorage { get }
+    var balance: BalanceRPC { get }
+    var counter: CounterRPC { get }
+    var delegate: DelegateRPC { get }
+    var entrypoints: EntrypointsRPC { get }
+    var managerKey: ManagerKeyRPC { get }
+    var script: ScriptRPC { get }
+    var singleSaplingGetDiff: SingleSaplingGetDiffRPC { get }
+    var storage: StorageRPC { get }
 }
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/balance
@@ -99,9 +125,11 @@ public protocol BlockContextContractsContractDelegate {
 // MARK: ../<block_id>/context/contracts/<contract_id>/entrypoints
 
 public protocol BlockContextContractsContractEntrypoints {
+    associatedtype EntrypointRPC: BlockContextContractsContractEntrypointsEntrypoint
+    
     func get(configuredWith configuration: BlockContextContractsContractEntrypointsGetConfiguration) async throws -> RPCContractEntrypoints
     
-    func callAsFunction(string: String) -> BlockContextContractsContractEntrypointsEntrypoint
+    func callAsFunction(string: String) -> EntrypointRPC
 }
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/entrypoints/<string>
@@ -153,25 +181,39 @@ public protocol BlockContextContractsContractStorageNormalized {
 // MARK: ../<block_id>/context/delegates
 
 public protocol BlockContextDelegates {
-    func callAsFunction(pkh: KeyHash.Public) -> BlockContextDelegatesDelegate
+    associatedtype DelegateRPC: BlockContextDelegatesDelegate
+    
+    func callAsFunction(pkh: KeyHash.Public) -> DelegateRPC
 }
 
 // MARK: ../<block_id>/context/delegates/<pkh>
 
 public protocol BlockContextDelegatesDelegate {
+    associatedtype CurrentFrozenDepositsRPC: BlockContextDelegatesCurrentFrozenDeposits
+    associatedtype DeactivatedRPC: BlockContextDelegatesDeactivated
+    associatedtype DelegatedBalanceRPC: BlockContextDelegatesDelegatedBalance
+    associatedtype DelegatedContractsRPC: BlockContextDelegatesDelegatedContracts
+    associatedtype FrozenDepositsRPC: BlockContextDelegatesFrozenDeposits
+    associatedtype FrozenDeposistsLimitRPC: BlockContextDelegatesFrozenDeposistsLimit
+    associatedtype FullBalanceRPC: BlockContextDelegatesFullBalance
+    associatedtype GracePeriodRPC: BlockContextDelegatesGracePeriod
+    associatedtype ParticipationRPC: BlockContextDelegatesParticipation
+    associatedtype StakingBalanceRPC: BlockContextDelegatesStakingBalance
+    associatedtype VotingPowerRPC: BlockContextDelegatesVotingPower
+    
     func get(configuredWith configuration: BlockContextDelegatesDelegateGetConfiguration) async throws -> RPCDelegateDetails
     
-    var currentFrozenDeposits: BlockContextDelegatesCurrentFrozenDeposits { get }
-    var deactivated: BlockContextDelegatesDeactivated { get }
-    var delegatedBalance: BlockContextDelegatesDelegatedBalance { get }
-    var delegatedContracts: BlockContextDelegatesDelegatedContracts { get }
-    var frozenDeposits: BlockContextDelegatesCurrentFrozenDeposits { get }
-    var frozenDepositsLimit: BlockContextDelegatesFrozenDeposistsLimit { get }
-    var fullBalance: BlockContextDelegatesFullBalance { get }
-    var gracePeriod: BlockContextDelegatesGracePeriod { get }
-    var participation: BlockContextDelegatesParticipation { get }
-    var stakingBalance: BlockContextDelegatesStakingBalance { get }
-    var votingPower: BlockContextDelegatesVotingPower { get }
+    var currentFrozenDeposits: CurrentFrozenDepositsRPC { get }
+    var deactivated: DeactivatedRPC { get }
+    var delegatedBalance: DelegatedBalanceRPC { get }
+    var delegatedContracts: DelegatedContractsRPC { get }
+    var frozenDeposits: FrozenDepositsRPC { get }
+    var frozenDepositsLimit: FrozenDeposistsLimitRPC { get }
+    var fullBalance: FullBalanceRPC { get }
+    var gracePeriod: GracePeriodRPC { get }
+    var participation: ParticipationRPC { get }
+    var stakingBalance: StakingBalanceRPC { get }
+    var votingPower: VotingPowerRPC { get }
 }
 
 // MARK: ../<block_id>/context/delegates/current_frozen_deposits
@@ -243,13 +285,17 @@ public protocol BlockContextDelegatesVotingPower {
 // MARK: ../<block_id>/context/sapling
 
 public protocol BlockContextSapling {
-    func callAsFunction(stateID: String) -> BlockContextSaplingState
+    associatedtype SaplingStateRPC: BlockContextSaplingState
+    
+    func callAsFunction(stateID: String) -> SaplingStateRPC
 }
 
 // MARK: ../<block_id>/context/sapling/<sapling_state_id>
 
 public protocol BlockContextSaplingState {
-    var getDiff: BlockContextSaplingStateGetDiff { get }
+    associatedtype GetDiffRPC: BlockContextSaplingStateGetDiff
+    
+    var getDiff: GetDiffRPC { get }
 }
 
 // MARK: ../<block_id>/context/sapling/<sapling_state_id>/get_diff
@@ -267,14 +313,19 @@ public protocol BlockHeader {
 // MARK: ../<block_id>/helpers
 
 public protocol BlockHelpers {
-    var preapply: BlockHelpersPreapply { get }
-    var scripts: BlockHelpersScripts { get }
+    associatedtype PreapplyRPC: BlockHelpersPreapply
+    associatedtype ScriptsRPC: BlockHelpersScripts
+    
+    var preapply: PreapplyRPC { get }
+    var scripts: ScriptsRPC { get }
 }
 
 // MARK: ../<block_id>/helpers/preapply
 
 public protocol BlockHelpersPreapply {
-    var operations: BlockHelpersPreapplyOperations { get }
+    associatedtype OperationsRPC: BlockHelpersPreapplyOperations
+    
+    var operations: OperationsRPC { get }
 }
 // MARK: ../<block_id>/helpers/preapply/operations
 
@@ -285,7 +336,9 @@ public protocol BlockHelpersPreapplyOperations {
 // MARK: ../<block_id>/helpers/scripts
 
 public protocol BlockHelpersScripts {
-    var runOperation: BlockHelpersScriptsRunOperation { get }
+    associatedtype RunOperationRPC: BlockHelpersScriptsRunOperation
+    
+    var runOperation: RunOperationRPC { get }
 }
 
 // MARK: ../<block_id>/helpers/scripts/run_operation

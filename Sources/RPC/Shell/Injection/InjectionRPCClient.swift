@@ -19,9 +19,9 @@ class InjectionClient<HTTPClient: HTTP>: Injection {
         self.http = http
     }
     
-    lazy var block: InjectionBlock = InjectionBlockClient(parentURL: baseURL, http: http)
-    lazy var operation: InjectionOperation = InjectionOperationClient(parentURL: baseURL, http: http)
-    lazy var `protocol`: InjectionProtocol = InjectionProtocolClient(parentURL: baseURL, http: http)
+    lazy var block: InjectionBlockClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var operation: InjectionOperationClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    lazy var `protocol`: InjectionProtocolClient<HTTPClient> = .init(parentURL: baseURL, http: http)
 }
 
 // MARK: /injection/block

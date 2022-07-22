@@ -16,7 +16,7 @@ extension TezosOperation {
     }
     
     func sign(with key: Key.Secret, using crypto: Crypto) throws -> TezosOperation.Signed {
-        .init(branch: branch, content: content, signature: try key.sign(self, using: crypto))
+        .init(branch: branch, contents: contents, signature: try key.sign(self, using: crypto))
     }
 
     
@@ -45,7 +45,7 @@ extension TezosOperation.Unsigned {
     }
     
     func sign(with key: Key.Secret, using crypto: Crypto) throws -> TezosOperation.Signed {
-        .init(branch: branch, content: content, signature: try key.sign(asOperation(), using: crypto))
+        .init(branch: branch, contents: contents, signature: try key.sign(asOperation(), using: crypto))
     }
 }
 
@@ -55,7 +55,7 @@ extension TezosOperation.Signed {
     }
     
     func sign(with key: Key.Secret, using crypto: Crypto) throws -> TezosOperation.Signed {
-        .init(branch: branch, content: content, signature: try key.sign(asOperation(), using: crypto))
+        .init(branch: branch, contents: contents, signature: try key.sign(asOperation(), using: crypto))
     }
     
     public func verify(with key: Key.Public) throws -> Bool {

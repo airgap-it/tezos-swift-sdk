@@ -25,7 +25,7 @@ extension TezosOperation {
         public let payloadRound: Int32
         public let proofOfWorkNonce: HexString
         public let seedNonceHash: NonceHash?
-        public let liquidityBakingEscapeVote: Bool
+        public let liquidityBakingToggleVote: LiquidityBakingToggleVote
         public let signature: Signature
         
         public init(
@@ -41,7 +41,7 @@ extension TezosOperation {
             payloadRound: Int32,
             proofOfWorkNonce: HexString,
             seedNonceHash: NonceHash? = nil,
-            liquidityBakingEscapeVote: Bool,
+            liquidityBakingToggleVote: LiquidityBakingToggleVote,
             signature: Signature
         ) {
             self.level = level
@@ -56,8 +56,25 @@ extension TezosOperation {
             self.payloadRound = payloadRound
             self.proofOfWorkNonce = proofOfWorkNonce
             self.seedNonceHash = seedNonceHash
-            self.liquidityBakingEscapeVote = liquidityBakingEscapeVote
+            self.liquidityBakingToggleVote = liquidityBakingToggleVote
             self.signature = signature
+        }
+    }
+    
+    public enum LiquidityBakingToggleVote: BytesTagIterable {
+        case on
+        case off
+        case pass
+        
+        public var value: [UInt8] {
+            switch self {
+            case .on:
+                return [0]
+            case .off:
+                return [1]
+            case .pass:
+                return [2]
+            }
         }
     }
 }
@@ -78,6 +95,6 @@ public protocol ProtocolBlockHeaderProtocol {
     var payloadRound: Int32 { get }
     var proofOfWorkNonce: HexString { get }
     var seedNonceHash: NonceHash? { get }
-    var liquidityBakingEscapeVote: Bool { get }
+    var liquidityBakingToggleVote: TezosOperation.LiquidityBakingToggleVote { get }
     var signature: Signature { get }
 }

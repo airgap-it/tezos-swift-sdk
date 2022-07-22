@@ -7,9 +7,9 @@
 
 import Foundation
 
-// MARK: RPCVoteToggle
+// MARK: RPCLiquidityBakingToggleVote
 
-public enum RPCVoteToggle: String, Codable {
+public enum RPCLiquidityBakingToggleVote: String, Codable {
     case off
     case on
     case pass

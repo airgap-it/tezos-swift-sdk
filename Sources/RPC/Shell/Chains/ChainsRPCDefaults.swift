@@ -11,10 +11,10 @@ import TezosCore
 // MARK: Chains
 
 public extension Chains {
-    var main: ChainsChain { self(chainID: .main) }
-    var test: ChainsChain { self(chainID: .test) }
+    var main: ChainRPC { self(chainID: .main) }
+    var test: ChainRPC { self(chainID: .test) }
     
-    func callAsFunction(chainID: ChainID) -> ChainsChain {
+    func callAsFunction(chainID: ChainID) -> ChainRPC {
         self(chainID: .id(chainID))
     }
 }
@@ -30,13 +30,13 @@ public extension ChainsChain {
 // MARK: ChainsChainBlocks
 
 public extension ChainsChainBlocks {
-    var head: Block { self(blockID: .head) }
+    var head: BlockRPC { self(blockID: .head) }
     
     func get() async throws -> [BlockHash] {
         try await get(configuredWith: .init())
     }
     
-    func callAsFunction(blockID: BlockHash) -> Block {
+    func callAsFunction(blockID: BlockHash) -> BlockRPC {
         self(blockID: .hash(blockID))
     }
 }

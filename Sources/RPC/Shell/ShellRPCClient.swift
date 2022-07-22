@@ -8,11 +8,11 @@
 import Foundation
 import TezosCore
 
-struct ShellSimplifiedRPCClient: ShellSimplifiedRPC {
-    private let chains: Chains
-    private let injection: Injection
+struct ShellSimplifiedRPCClient<ChainsRPC: Chains, InjectionRPC: Injection>: ShellSimplifiedRPC {
+    private let chains: ChainsRPC
+    private let injection: InjectionRPC
     
-    init(chains: Chains, injection: Injection) {
+    init(chains: ChainsRPC, injection: InjectionRPC) {
         self.chains = chains
         self.injection = injection
     }

@@ -53,14 +53,14 @@ extension TezosOperation: Forgeable {
 extension TezosOperation.Unsigned: ForgeableConsuming {
     init(fromForgedConsuming bytes: inout [UInt8]) throws {
         let branch = try BlockHash(fromConsuming: &bytes)
-        let content = try unforgeContent(from: &bytes)
+        let contents = try unforgeContent(from: &bytes)
         
-        self.init(branch: branch, content: content)
+        self.init(branch: branch, contents: contents)
     }
     
     public func forge() throws -> [UInt8] {
         let branchBytes = try branch.encodeToBytes()
-        let contentsBytes = try forgeContent(content)
+        let contentsBytes = try forgeContent(contents)
         
         return branchBytes + contentsBytes
     }
@@ -69,7 +69,7 @@ extension TezosOperation.Unsigned: ForgeableConsuming {
 extension TezosOperation.Signed: ToForged {
     public func forge() throws -> [UInt8] {
         let branchBytes = try branch.encodeToBytes()
-        let contentsBytes = try forgeContent(content)
+        let contentsBytes = try forgeContent(contents)
         
         return branchBytes + contentsBytes
     }
@@ -694,7 +694,10 @@ private extension TezosOperation.BlockHeader {
         let seedNonceHashPresence = Bool(fromConsuming: &bytes) ?? false
         let seedNonceHash = seedNonceHashPresence ? try NonceHash(fromConsuming: &bytes) : nil
 
-        let liquidityBakingEscapeVote = Bool(fromConsuming: &bytes) ?? false
+        guard let liquidityBakingToggleVote = TezosOperation.LiquidityBakingToggleVote(fromConsuming: &bytes) else {
+            throw TezosError.invalidValue("Invalid encoded OperationContent value.")
+        }
+        
         let signature = try Signature(fromConsuming: &bytes)
 
         self.init(
@@ -710,7 +713,7 @@ private extension TezosOperation.BlockHeader {
             payloadRound: payloadRound,
             proofOfWorkNonce: proofOfWorkNonce,
             seedNonceHash: seedNonceHash,
-            liquidityBakingEscapeVote: liquidityBakingEscapeVote,
+            liquidityBakingToggleVote: liquidityBakingToggleVote,
             signature: signature
         )
     }
@@ -739,7 +742,7 @@ private extension TezosOperation.BlockHeader {
         let seedNonceHashBytes = try seedNonceHash?.encodeToBytes() ?? []
         let seedNonceHashPresence = try (!seedNonceHashBytes.isEmpty).encodeToBytes()
 
-        let liquidityBankingEscapeVoteBytes = try liquidityBakingEscapeVote.encodeToBytes()
+        let liquidityBakingToggleVoteBytes = liquidityBakingToggleVote.encodeToBytes()
         let signatureBytes = try signature.encodeToBytes()
 
         return levelBytes +
@@ -756,7 +759,7 @@ private extension TezosOperation.BlockHeader {
             proofOfWorkNonceBytes +
             seedNonceHashPresence +
             seedNonceHashBytes +
-            liquidityBankingEscapeVoteBytes +
+            liquidityBakingToggleVoteBytes +
             signatureBytes
     }
 }
@@ -844,6 +847,21 @@ private extension TezosOperation.Content.Ballot.Kind {
         
         let _ = bytes.consumeSubrange(0..<kind.value.count)
         self = kind
+    }
+    
+    func encodeToBytes() -> [UInt8] {
+        value
+    }
+}
+
+private extension TezosOperation.LiquidityBakingToggleVote {
+    init?(fromConsuming bytes: inout [UInt8]) {
+        guard let toggleVote = Self.allCases.first(where: { bytes.starts(with: $0.value) }) else {
+            return nil
+        }
+        
+        let _ = bytes.consumeSubrange(0..<toggleVote.value.count)
+        self = toggleVote
     }
     
     func encodeToBytes() -> [UInt8] {

@@ -363,10 +363,10 @@ extension TezosOperation {
             
             public init(
                 source: Address.Implicit,
-                fee: Mutez = try! .init(0),
+                fee: Mutez = .zero,
                 counter: TezosNat,
-                gasLimit: TezosNat = .init(0),
-                storageLimit: TezosNat = .init(0),
+                gasLimit: TezosNat = .zero,
+                storageLimit: TezosNat = .zero,
                 publicKey: Key.Public
             ) {
                 self.source = source
@@ -398,10 +398,10 @@ extension TezosOperation {
             
             public init(
                 source: Address.Implicit,
-                fee: Mutez = try! .init(0),
+                fee: Mutez = .zero,
                 counter: TezosNat,
-                gasLimit: TezosNat = .init(0),
-                storageLimit: TezosNat = .init(0),
+                gasLimit: TezosNat = .zero,
+                storageLimit: TezosNat = .zero,
                 amount: Mutez,
                 destination: Address,
                 parameters: Parameters? = nil
@@ -437,10 +437,10 @@ extension TezosOperation {
             
             public init(
                 source: Address.Implicit,
-                fee: Mutez = try! .init(0),
+                fee: Mutez = .zero,
                 counter: TezosNat,
-                gasLimit: TezosNat = .init(0),
-                storageLimit: TezosNat = .init(0),
+                gasLimit: TezosNat = .zero,
+                storageLimit: TezosNat = .zero,
                 balance: Mutez,
                 delegate: Address.Implicit?,
                 script: Script
@@ -474,10 +474,10 @@ extension TezosOperation {
             
             public init(
                 source: Address.Implicit,
-                fee: Mutez = try! .init(0),
+                fee: Mutez = .zero,
                 counter: TezosNat,
-                gasLimit: TezosNat = .init(0),
-                storageLimit: TezosNat = .init(0),
+                gasLimit: TezosNat = .zero,
+                storageLimit: TezosNat = .zero,
                 delegate: Address.Implicit? = nil
             ) {
                 self.source = source
@@ -507,10 +507,10 @@ extension TezosOperation {
             
             public init(
                 source: Address.Implicit,
-                fee: Mutez = try! .init(0),
+                fee: Mutez = .zero,
                 counter: TezosNat,
-                gasLimit: TezosNat = .init(0),
-                storageLimit: TezosNat = .init(0),
+                gasLimit: TezosNat = .zero,
+                storageLimit: TezosNat = .zero,
                 value: Micheline
             ) {
                 self.source = source
@@ -540,10 +540,10 @@ extension TezosOperation {
             
             public init(
                 source: Address.Implicit,
-                fee: Mutez = try! .init(0),
+                fee: Mutez = .zero,
                 counter: TezosNat,
-                gasLimit: TezosNat = .init(0),
-                storageLimit: TezosNat = .init(0),
+                gasLimit: TezosNat = .zero,
+                storageLimit: TezosNat = .zero,
                 limit: Mutez? = nil
             ) {
                 self.source = source
