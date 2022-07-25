@@ -52,10 +52,10 @@ let package = Package(
             name: "TezosTestUtils",
             dependencies: ["TezosCore", "TezosMichelson"],
             path: "Tests/_Utils"),
-        .testTarget(
-            name: "TezosCoreTests",
-            dependencies: ["TezosCore", "TezosTestUtils"],
-            path: "Tests/Core"),
+//        .testTarget(
+//            name: "TezosCoreTests",
+//            dependencies: ["TezosCore", "TezosTestUtils"],
+//            path: "Tests/Core"),
         .testTarget(
             name: "TezosMichelsonTests",
             dependencies: ["TezosCore", "TezosMichelson", "TezosTestUtils"],
