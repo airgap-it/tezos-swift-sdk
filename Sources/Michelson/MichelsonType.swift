@@ -9,7 +9,8 @@ import Foundation
 import TezosCore
 
 extension Michelson {
-    typealias _Type = `Type`
+    // TODO: refactor
+    public typealias _Type = `Type`
     
     public indirect enum `Type`: Hashable {
         public typealias `Protocol` = MichelsonTypeProtocol

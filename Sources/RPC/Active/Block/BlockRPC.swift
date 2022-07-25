@@ -147,9 +147,11 @@ public protocol BlockContextContractsContractManagerKey {
 // MARK: ../<block_id>/context/contracts/<contract_id>/script
 
 public protocol BlockContextContractsContractScript {
+    associatedtype NormalizedRPC: BlockContextContractsContractScriptNormalized
+    
     func get(configuredWith configuration: BlockContextContractsContractScriptGetConfiguration) async throws -> Script?
     
-    var normalized: BlockContextContractsContractScriptNormalized { get }
+    var normalized: NormalizedRPC { get }
 }
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/script/normalized
@@ -167,9 +169,11 @@ public protocol BlockContextContractsContractSingleSaplingGetDiff {
 // MARK: ../<block_id>/context/contracts/<contract_id>/storage
 
 public protocol BlockContextContractsContractStorage {
-    func get(configuredWith configuration: BlockContextContractsContractGetConfiguration) async throws -> Micheline?
+    associatedtype NormalizedRPC: BlockContextContractsContractStorageNormalized
     
-    var normalized: BlockContextContractsContractStorageNormalized { get }
+    func get(configuredWith configuration: BlockContextContractsContractStorageNormalizedPostConfiguration) async throws -> Micheline?
+    
+    var normalized: NormalizedRPC { get }
 }
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/storage/normalized
