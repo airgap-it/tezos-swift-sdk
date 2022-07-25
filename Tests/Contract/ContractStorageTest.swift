@@ -43,7 +43,7 @@ class ContractStorageTest: XCTestCase {
         }
     }
     
-    private var testCases: [StorageTestCase<BlockContextContractsContractMock>] {
+    private var testCases: [StorageTestCase] {
         [
             .init {
                 let type: Micheline = .prim(try! .init(
@@ -119,7 +119,7 @@ class ContractStorageTest: XCTestCase {
                     ]
                 ))
                 
-                let entry: Contract<BlockContextContractsContractMock>.Storage.Entry = .object(.init(
+                let entry: ContractStorageEntry = .object(.init(
                     value: value,
                     type: type,
                     elements: [
@@ -142,18 +142,18 @@ class ContractStorageTest: XCTestCase {
         ]
     }
     
-    private struct StorageTestCase<ContractRPC: BlockContextContractsContract> {
+    private struct StorageTestCase {
         let type: Micheline
         let value: Micheline
-        let entry: Contract<ContractRPC>.Storage.Entry
+        let entry: ContractStorageEntry
         
-        init(type: Micheline, value: Micheline, entry: Contract<ContractRPC>.Storage.Entry) {
+        init(type: Micheline, value: Micheline, entry: ContractStorageEntry) {
             self.type = type
             self.value = value
             self.entry = entry
         }
         
-        init(_ builder: () -> (Micheline, Micheline, Contract<ContractRPC>.Storage.Entry)) {
+        init(_ builder: () -> (Micheline, Micheline, ContractStorageEntry)) {
             let (type, value, entry) = builder()
             self.init(type: type, value: value, entry: entry)
         }

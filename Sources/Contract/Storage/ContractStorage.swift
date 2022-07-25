@@ -28,7 +28,7 @@ extension Contract {
             self.contract = contract
         }
         
-        public func get(configuredWith configuration: GetContractStorageConfiguration = .init()) async throws -> Entry? {
+        public func get(configuredWith configuration: GetContractStorageConfiguration = .init()) async throws -> ContractStorageEntry? {
             guard let value = try await contract.storage.getNormalized(headers: configuration.headers) else {
                 return nil
             }

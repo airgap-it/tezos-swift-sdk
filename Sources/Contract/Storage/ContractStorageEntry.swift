@@ -5,97 +5,96 @@
 //  Created by Julia Samol on 21.07.22.
 //
 
+import TezosCore
 import TezosMichelson
-
-extension Contract.Storage {
+import TezosRPC
     
-    public enum Entry: Hashable {
-        public typealias `Protocol` = ContractStorageEntryProtocol
-        
-        case value(Value)
-        case object(Object)
-        case sequence(Sequence)
-        case map(Map)
-        case bigMap(BigMap)
-        
-        public var names: Set<String> {
-            switch self {
-            case .value(let value):
-                return value.names
-            case .object(let object):
-                return object.names
-            case .sequence(let sequence):
-                return sequence.names
-            case .map(let map):
-                return map.names
-            case .bigMap(let bigMap):
-                return bigMap.names
-            }
+public enum ContractStorageEntry: Hashable {
+    public typealias `Protocol` = ContractStorageEntryProtocol
+    
+    case value(Value)
+    case object(Object)
+    case sequence(Sequence)
+    case map(Map)
+    case bigMap(BigMap)
+    
+    public var names: Set<String> {
+        switch self {
+        case .value(let value):
+            return value.names
+        case .object(let object):
+            return object.names
+        case .sequence(let sequence):
+            return sequence.names
+        case .map(let map):
+            return map.names
+        case .bigMap(let bigMap):
+            return bigMap.names
         }
-        
-        public var value: Micheline {
-            switch self {
-            case .value(let value):
-                return value.value
-            case .object(let object):
-                return object.value
-            case .sequence(let sequence):
-                return sequence.value
-            case .map(let map):
-                return map.value
-            case .bigMap(let bigMap):
-                return bigMap.value
-            }
+    }
+    
+    public var value: Micheline {
+        switch self {
+        case .value(let value):
+            return value.value
+        case .object(let object):
+            return object.value
+        case .sequence(let sequence):
+            return sequence.value
+        case .map(let map):
+            return map.value
+        case .bigMap(let bigMap):
+            return bigMap.value
         }
-        
-        public var type: Micheline {
-            switch self {
-            case .value(let value):
-                return value.type
-            case .object(let object):
-                return object.type
-            case .sequence(let sequence):
-                return sequence.type
-            case .map(let map):
-                return map.type
-            case .bigMap(let bigMap):
-                return bigMap.type
-            }
+    }
+    
+    public var type: Micheline {
+        switch self {
+        case .value(let value):
+            return value.type
+        case .object(let object):
+            return object.type
+        case .sequence(let sequence):
+            return sequence.type
+        case .map(let map):
+            return map.type
+        case .bigMap(let bigMap):
+            return bigMap.type
         }
-        
-        init(from value: Micheline, type: Micheline) throws {
-            if let bigMapType = try? type.asPrim(Michelson._Type.BigMap.self),
-               case let .literal(integer) = value,
-               case let .integer(bigMapValue) = integer
-            {
-                self = .bigMap(.init(from: bigMapValue, type: bigMapType))
-            } else if let sequenceType = try? type.asPrim(Michelson._Type.List.self, Michelson._Type.Set.self),
-                      sequenceType.args.count == 1,
-                      case let .sequence(sequenceValue) = value
-            {
-                self = .sequence(try .init(from: sequenceValue, type: sequenceType, elementType: sequenceType.args[0]))
-            } else if let lambdaType = try? type.asPrim(Michelson._Type.Lambda.self),
-                      case let .sequence(lambdaValue) = value
-            {
-                self = .sequence(try .init(from: lambdaValue, type: lambdaType))
-            } else if let mapType = try? type.asPrim(Michelson._Type.Map.self),
-                      case let .sequence(mapValue) = value
-            {
-                self = .map(try .init(from: mapValue, type: mapType))
-            } else if let primType = try? type.asPrim(), primType.args.isEmpty {
-                self = .value(.init(from: value, type: primType))
-            } else if let primType = try? type.asPrim(), let primValue = try? value.asPrim() {
-                self = .object(try .init(from: primValue, type: primType))
-            } else {
-                throw TezosContractError.invalidType("storage type")
-            }
+    }
+    
+    init(from value: Micheline, type: Micheline) throws {
+        if let bigMapType = try? type.asPrim(Michelson._Type.BigMap.self),
+           case let .literal(integer) = value,
+           case let .integer(bigMapValue) = integer
+        {
+            self = .bigMap(.init(from: bigMapValue, type: bigMapType))
+        } else if let sequenceType = try? type.asPrim(Michelson._Type.List.self, Michelson._Type.Set.self),
+                  sequenceType.args.count == 1,
+                  case let .sequence(sequenceValue) = value
+        {
+            self = .sequence(try .init(from: sequenceValue, type: sequenceType, elementType: sequenceType.args[0]))
+        } else if let lambdaType = try? type.asPrim(Michelson._Type.Lambda.self),
+                  case let .sequence(lambdaValue) = value
+        {
+            self = .sequence(try .init(from: lambdaValue, type: lambdaType))
+        } else if let mapType = try? type.asPrim(Michelson._Type.Map.self),
+                  case let .sequence(mapValue) = value
+        {
+            self = .map(try .init(from: mapValue, type: mapType))
+        } else if let primType = try? type.asPrim(), primType.args.isEmpty {
+            self = .value(.init(from: value, type: primType))
+        } else if let primType = try? type.asPrim(), let primValue = try? value.asPrim() {
+            self = .object(try .init(from: primValue, type: primType))
+        } else {
+            throw TezosContractError.invalidType("storage type")
         }
     }
 }
 
-// MARK: Contract.Storage.Entry.Value
+// MARK: ContractStorageEntry.Value
 
-extension Contract.Storage.Entry {
+extension ContractStorageEntry {
     
     public struct Value: `Protocol`, Hashable {
         public let value: Micheline
@@ -112,16 +111,16 @@ extension Contract.Storage.Entry {
     }
 }
 
-// MARK: Contract.Storage.Entry.Object
+// MARK: ContractStorageEntry.Object
 
-extension Contract.Storage.Entry {
+extension ContractStorageEntry {
     
     public struct Object: `Protocol`, Hashable {
         public let value: Micheline
         public let type: Micheline
         
-        public let elements: [Contract.Storage.Entry]
-        private let dict: [String: Contract.Storage.Entry]
+        public let elements: [ContractStorageEntry]
+        private let dict: [String: ContractStorageEntry]
         
         init(from value: Micheline.PrimitiveApplication, type: Micheline.PrimitiveApplication) throws {
             guard value.args.count == type.args.count else {
@@ -129,9 +128,9 @@ extension Contract.Storage.Entry {
             }
 
             let elements = try zip(value.args, type.args)
-                .flatMap { (value) -> [Contract.Storage.Entry] in
+                .flatMap { (value) -> [ContractStorageEntry] in
                     let (v, t) = value
-                    let entry = try Contract.Storage.Entry(from: v, type: t)
+                    let entry = try ContractStorageEntry(from: v, type: t)
                     
                     if case let .object(object) = entry, object.names.isEmpty {
                         return .init(object.elements)
@@ -143,12 +142,12 @@ extension Contract.Storage.Entry {
             self.init(value: .prim(value), type: .prim(type), elements: elements)
         }
         
-        init(value: Micheline, type: Micheline, elements: [Contract.Storage.Entry]) {
+        init(value: Micheline, type: Micheline, elements: [ContractStorageEntry]) {
             self.value = value
             self.type = type
             self.elements = elements
             self.dict = elements
-                .flatMap { (entry) -> [(String, Contract.Storage.Entry)] in
+                .flatMap { (entry) -> [(String, ContractStorageEntry)] in
                     return entry.names.map { name in (name, entry) }
                 }
                 .reduce(into: [:]) { (dict, next) in
@@ -156,31 +155,31 @@ extension Contract.Storage.Entry {
                 }
         }
         
-        subscript(key: String) -> Contract.Storage.Entry? {
+        subscript(key: String) -> ContractStorageEntry? {
             dict[key]
         }
     }
 }
 
-// MARK: Contract.Storage.Entry.Sequence
+// MARK: ContractStorageEntry.Sequence
 
-extension Contract.Storage.Entry {
+extension ContractStorageEntry {
     
     public struct Sequence: `Protocol`, Hashable {
         public let value: Micheline
         public let type: Micheline
         
-        public let elements: [Contract.Storage.Entry]
+        public let elements: [ContractStorageEntry]
         
         init(from value: Micheline.Sequence, type: Micheline.PrimitiveApplication, elementType: Micheline? = nil) throws {
             let values = try value.map {
-                try Contract.Storage.Entry(from: $0, type: elementType ?? .prim(type))
+                try ContractStorageEntry(from: $0, type: elementType ?? .prim(type))
             }
             
             self.init(value: .sequence(value), type: .prim(type), values: values)
         }
         
-        init(value: Micheline, type: Micheline, values: [Contract.Storage.Entry]) {
+        init(value: Micheline, type: Micheline, values: [ContractStorageEntry]) {
             self.value = value
             self.type = type
             self.elements = values
@@ -188,28 +187,28 @@ extension Contract.Storage.Entry {
     }
 }
 
-// MARK: Contract.Storage.Entry.Map
+// MARK: ContractStorageEntry.Map
 
-extension Contract.Storage.Entry {
+extension ContractStorageEntry {
     
     public struct Map: `Protocol`, Hashable {
         public let value: Micheline
         public let type: Micheline
         
-        private let dict: [Contract.Storage.Entry: Contract.Storage.Entry]
+        private let dict: [ContractStorageEntry: ContractStorageEntry]
         
         init(from value: Micheline.Sequence, type: Micheline.PrimitiveApplication) throws {
             guard type.args.count == 2 else {
                 throw TezosContractError.invalidType("storage map")
             }
             
-            let dict: [Contract.Storage.Entry: Contract.Storage.Entry] = try value.reduce(into: [:]) { (dict, next) in
+            let dict: [ContractStorageEntry: ContractStorageEntry] = try value.reduce(into: [:]) { (dict, next) in
                 guard let elt = try? next.asPrim(Michelson.Data.Elt.self), elt.args.count == 2 else {
                     throw TezosContractError.invalidType("storage map value")
                 }
                 
-                let key = try Contract.Storage.Entry(from: elt.args[0], type: type.args[0])
-                let value = try Contract.Storage.Entry(from: elt.args[1], type: type.args[1])
+                let key = try ContractStorageEntry(from: elt.args[0], type: type.args[0])
+                let value = try ContractStorageEntry(from: elt.args[1], type: type.args[1])
                 
                 dict[key] = value
             }
@@ -217,23 +216,23 @@ extension Contract.Storage.Entry {
             self.init(value: .sequence(value), type: .prim(type), dict: dict)
         }
         
-        init(value: Micheline, type: Micheline, dict: [Contract.Storage.Entry: Contract.Storage.Entry]) {
+        init(value: Micheline, type: Micheline, dict: [ContractStorageEntry: ContractStorageEntry]) {
             self.value = value
             self.type = type
             self.dict = dict
         }
         
-        subscript(key: Contract.Storage.Entry) -> Contract.Storage.Entry? {
+        subscript(key: ContractStorageEntry) -> ContractStorageEntry? {
             dict[key]
         }
     }
 }
 
-// MARK: Contract.Storage.Entry.BigMap
+// MARK: ContractStorageEntry.BigMap
 
-extension Contract.Storage.Entry {
+extension ContractStorageEntry {
     
-    public struct BigMap: `Protocol`, Hashable {
+    public struct BigMap: `Protocol`, BigMapHandler, Hashable {
         public let id: String
         
         public let value: Micheline
@@ -258,7 +257,7 @@ public protocol ContractStorageEntryProtocol {
     var type: Micheline { get }
 }
 
-public extension Contract.Storage.Entry.`Protocol` {
+public extension ContractStorageEntry.`Protocol` {
     
     var names: Set<String> {
         guard let type = try? type.asPrim() else {

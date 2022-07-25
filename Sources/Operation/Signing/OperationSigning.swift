@@ -15,7 +15,7 @@ extension TezosOperation {
         fatalError("TODO: Inject crypto")
     }
     
-    func sign(with key: Key.Secret, using crypto: Crypto) throws -> TezosOperation.Signed {
+    func sign<Provider: CryptoProvider>(with key: Key.Secret, using crypto: Crypto<Provider>) throws -> TezosOperation.Signed {
         .init(branch: branch, contents: contents, signature: try key.sign(self, using: crypto))
     }
 
@@ -29,7 +29,7 @@ extension TezosOperation {
         }
     }
     
-    func verify(with key: Key.Public, using crypto: Crypto) throws -> Bool {
+    func verify<Provider: CryptoProvider>(with key: Key.Public, using crypto: Crypto<Provider>) throws -> Bool {
         switch self {
         case .unsigned(_):
             return false
@@ -44,7 +44,7 @@ extension TezosOperation.Unsigned {
         fatalError("TODO: Inject crypto")
     }
     
-    func sign(with key: Key.Secret, using crypto: Crypto) throws -> TezosOperation.Signed {
+    func sign<Provider: CryptoProvider>(with key: Key.Secret, using crypto: Crypto<Provider>) throws -> TezosOperation.Signed {
         .init(branch: branch, contents: contents, signature: try key.sign(asOperation(), using: crypto))
     }
 }
@@ -54,7 +54,7 @@ extension TezosOperation.Signed {
         fatalError("TODO: Inject crypto")
     }
     
-    func sign(with key: Key.Secret, using crypto: Crypto) throws -> TezosOperation.Signed {
+    func sign<Provider: CryptoProvider>(with key: Key.Secret, using crypto: Crypto<Provider>) throws -> TezosOperation.Signed {
         .init(branch: branch, contents: contents, signature: try key.sign(asOperation(), using: crypto))
     }
     
@@ -62,7 +62,7 @@ extension TezosOperation.Signed {
         try key.verify(self)
     }
     
-    func verify(with key: Key.Public, using crypto: Crypto) throws -> Bool {
+    func verify<Provider: CryptoProvider>(with key: Key.Public, using crypto: Crypto<Provider>) throws -> Bool {
         try key.verify(self, using: crypto)
     }
 }

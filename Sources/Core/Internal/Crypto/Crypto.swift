@@ -7,10 +7,10 @@
 
 import Foundation
 
-public class Crypto {
-    private let provider: CryptoProvider
+public class Crypto<Provider: CryptoProvider> {
+    private let provider: Provider
     
-    init(provider: CryptoProvider) {
+    init(provider: Provider) {
         self.provider = provider
     }
     
