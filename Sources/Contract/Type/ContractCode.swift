@@ -7,14 +7,11 @@
 
 import TezosMichelson
 import TezosRPC
-
-extension Contract {
     
-    public struct Code {
-        public let parameter: Micheline
-        public let storage: Micheline
-        public let code: Micheline
-        
-        typealias Lazy = Cached<Code>
-    }
+public struct ContractCode {
+    public let parameter: Micheline
+    public let storage: Micheline
+    public let code: Micheline
+    
+    typealias Lazy = Cached<ContractCode>
 }
