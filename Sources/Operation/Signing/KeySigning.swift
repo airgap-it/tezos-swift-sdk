@@ -15,7 +15,7 @@ extension Key.Secret {
         fatalError("TODO: Inject crypto")
     }
     
-    func sign(_ operation: TezosOperation, using crypto: Crypto) throws -> Signature {
+    func sign<Provider: CryptoProvider>(_ operation: TezosOperation, using crypto: Crypto<Provider>) throws -> Signature {
         try signOperation(try operation.forge(), with: self, using: crypto)
     }
 }
@@ -27,7 +27,7 @@ extension Ed25519SecretKey {
         fatalError("TODO: Inject crypto")
     }
     
-    func sign(_ operation: TezosOperation, using crypto: Crypto) throws -> Ed25519Signature {
+    func sign<Provider: CryptoProvider>(_ operation: TezosOperation, using crypto: Crypto<Provider>) throws -> Ed25519Signature {
         try signOperationEd25519(try operation.forge(), with: self, using: crypto)
     }
 }
@@ -39,7 +39,7 @@ extension Secp256K1SecretKey {
         fatalError("TODO: Inject crypto")
     }
     
-    func sign(_ operation: TezosOperation, using crypto: Crypto) throws -> Secp256K1Signature {
+    func sign<Provider: CryptoProvider>(_ operation: TezosOperation, using crypto: Crypto<Provider>) throws -> Secp256K1Signature {
         try signOperationSecp256K1(try operation.forge(), with: self, using: crypto)
     }
 }
@@ -51,7 +51,7 @@ extension P256SecretKey {
         fatalError("TODO: Inject crypto")
     }
     
-    func sign(_ operation: TezosOperation, using crypto: Crypto) throws -> P256Signature {
+    func sign<Provider: CryptoProvider>(_ operation: TezosOperation, using crypto: Crypto<Provider>) throws -> P256Signature {
         try signOperationP256(try operation.forge(), with: self, using: crypto)
     }
 }
@@ -63,7 +63,7 @@ extension Key.Public {
         fatalError("TODO: Inject crypto")
     }
     
-    func verify(_ operation: TezosOperation.Signed, using crypto: Crypto) throws -> Bool {
+    func verify<Provider: CryptoProvider>(_ operation: TezosOperation.Signed, using crypto: Crypto<Provider>) throws -> Bool {
         try verifySignature(operation.signature, forOperation: operation.forge(), with: self, using: crypto)
     }
 }
@@ -75,7 +75,7 @@ extension Ed25519PublicKey {
         fatalError("TODO: Inject crypto")
     }
     
-    func verify(_ operation: TezosOperation.Signed, using crypto: Crypto) throws -> Bool {
+    func verify<Provider: CryptoProvider>(_ operation: TezosOperation.Signed, using crypto: Crypto<Provider>) throws -> Bool {
         try verifySignature(operation.signature, forOperation: operation.forge(), with: asPublicKey(), using: crypto)
     }
 }
@@ -87,7 +87,7 @@ extension Secp256K1PublicKey {
         fatalError("TODO: Inject crypto")
     }
     
-    func verify(_ operation: TezosOperation.Signed, using crypto: Crypto) throws -> Bool {
+    func verify<Provider: CryptoProvider>(_ operation: TezosOperation.Signed, using crypto: Crypto<Provider>) throws -> Bool {
         try verifySignature(operation.signature, forOperation: operation.forge(), with: asPublicKey(), using: crypto)
     }
 }
@@ -99,14 +99,14 @@ extension P256PublicKey {
         fatalError("TODO: Inject crypto")
     }
     
-    func verify(_ operation: TezosOperation.Signed, using crypto: Crypto) throws -> Bool {
+    func verify<Provider: CryptoProvider>(_ operation: TezosOperation.Signed, using crypto: Crypto<Provider>) throws -> Bool {
         try verifySignature(operation.signature, forOperation: operation.forge(), with: asPublicKey(), using: crypto)
     }
 }
 
 // MARK: Utilities: Sign
 
-private func signOperation(_ operation: [UInt8], with key: Key.Secret, using crypto: Crypto) throws -> Signature {
+private func signOperation<Provider: CryptoProvider>(_ operation: [UInt8], with key: Key.Secret, using crypto: Crypto<Provider>) throws -> Signature {
     switch key {
     case .edsk(let ed25519SecretKey):
         return try signOperationEd25519(operation, with: ed25519SecretKey, using: crypto).asSignature()
@@ -117,25 +117,25 @@ private func signOperation(_ operation: [UInt8], with key: Key.Secret, using cry
     }
 }
 
-private func signOperationEd25519(_ operation: [UInt8], with key: Ed25519SecretKey, using crypto: Crypto) throws -> Ed25519Signature {
+private func signOperationEd25519<Provider: CryptoProvider>(_ operation: [UInt8], with key: Ed25519SecretKey, using crypto: Crypto<Provider>) throws -> Ed25519Signature {
     let signatureBytes = try signOperation(operation, withKey: try key.encodeToBytes(), using: crypto, and: crypto.signEd25519(_:with:))
     return try Ed25519Signature(from: signatureBytes)
 }
 
-private func signOperationSecp256K1(_ operation: [UInt8], with key: Secp256K1SecretKey, using crypto: Crypto) throws -> Secp256K1Signature {
+private func signOperationSecp256K1<Provider: CryptoProvider>(_ operation: [UInt8], with key: Secp256K1SecretKey, using crypto: Crypto<Provider>) throws -> Secp256K1Signature {
     let signatureBytes = try signOperation(operation, withKey: try key.encodeToBytes(), using: crypto, and: crypto.signSecp256K1(_:with:))
     return try Secp256K1Signature(from: signatureBytes)
 }
 
-private func signOperationP256(_ operation: [UInt8], with key: P256SecretKey, using crypto: Crypto) throws -> P256Signature {
+private func signOperationP256<Provider: CryptoProvider>(_ operation: [UInt8], with key: P256SecretKey, using crypto: Crypto<Provider>) throws -> P256Signature {
     let signatureBytes = try signOperation(operation, withKey: try key.encodeToBytes(), using: crypto, and: crypto.signP256(_:with:))
     return try P256Signature(from: signatureBytes)
 }
 
-private func signOperation(
+private func signOperation<Provider: CryptoProvider>(
     _ operation: [UInt8],
     withKey key: [UInt8],
-    using crypto: Crypto,
+    using crypto: Crypto<Provider>,
     and signer: (_ message: [UInt8], _ key: [UInt8]) throws -> [UInt8]
 ) throws -> [UInt8] {
     try signer(try hashOperation(operation, using: crypto), key)
@@ -143,7 +143,7 @@ private func signOperation(
 
 // MARK: Utilities: Verify
 
-private func verifySignature(_ signature: Signature, forOperation operation: [UInt8], with key: Key.Public, using crypto: Crypto) throws -> Bool {
+private func verifySignature<Provider: CryptoProvider>(_ signature: Signature, forOperation operation: [UInt8], with key: Key.Public, using crypto: Crypto<Provider>) throws -> Bool {
     let signature = try specifySignature(signature, for: key)
     
     switch (signature, key) {
@@ -158,38 +158,38 @@ private func verifySignature(_ signature: Signature, forOperation operation: [UI
     }
 }
 
-private func verifyEd25519Signature(
+private func verifyEd25519Signature<Provider: CryptoProvider>(
     _ signature: Ed25519Signature,
     forOperation operation: [UInt8],
     with key: Ed25519PublicKey,
-    using crypto: Crypto
+    using crypto: Crypto<Provider>
 ) throws -> Bool {
     try verifySignature(try signature.encodeToBytes(), forOperation: operation, withKey: try key.encodeToBytes(), using: crypto, and: crypto.verifyEd25519(_:withSignature:using:))
 }
 
-private func verifySecp256K1Signature(
+private func verifySecp256K1Signature<Provider: CryptoProvider>(
     _ signature: Secp256K1Signature,
     forOperation operation: [UInt8],
     with key: Secp256K1PublicKey,
-    using crypto: Crypto
+    using crypto: Crypto<Provider>
 ) throws -> Bool {
     try verifySignature(try signature.encodeToBytes(), forOperation: operation, withKey: try key.encodeToBytes(), using: crypto, and: crypto.verifySecp256K1(_:withSignature:using:))
 }
 
-private func verifyP256Signature(
+private func verifyP256Signature<Provider: CryptoProvider>(
     _ signature: P256Signature,
     forOperation operation: [UInt8],
     with key: P256PublicKey,
-    using crypto: Crypto
+    using crypto: Crypto<Provider>
 ) throws -> Bool {
     try verifySignature(try signature.encodeToBytes(), forOperation: operation, withKey: try key.encodeToBytes(), using: crypto, and: crypto.verifyP256(_:withSignature:using:))
 }
 
-private func verifySignature(
+private func verifySignature<Provider: CryptoProvider>(
     _ signature: [UInt8],
     forOperation operation: [UInt8],
     withKey key: [UInt8],
-    using crypto: Crypto,
+    using crypto: Crypto<Provider>,
     and verifier: (_ message: [UInt8], _ signature: [UInt8], _ key: [UInt8]) throws -> Bool
 ) throws -> Bool {
     try verifier(try hashOperation(operation, using: crypto), signature, key)
@@ -212,6 +212,6 @@ private func specifySignature(_ signature: Signature, for key: Key.Public) throw
 
 // MARK: Utilities
 
-private func hashOperation(_ operation: [UInt8], using crypto: Crypto) throws -> [UInt8] {
+private func hashOperation<Provider: CryptoProvider>(_ operation: [UInt8], using crypto: Crypto<Provider>) throws -> [UInt8] {
     try crypto.hash(Watermark.genericOperation + operation, ofSize: 32)
 }

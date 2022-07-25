@@ -281,7 +281,7 @@ class BlockContextContractsContractScriptClient<HTTPClient: HTTP>: BlockContextC
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
     
-    lazy var normalized: BlockContextContractsContractScriptNormalized = BlockContextContractsContractScriptNormalizedClient(parentURL: baseURL, http: http)
+    lazy var normalized: BlockContextContractsContractScriptNormalizedClient = .init(parentURL: baseURL, http: http)
 }
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/script/normalized
@@ -345,7 +345,7 @@ class BlockContextContractsContractStorageClient<HTTPClient: HTTP>: BlockContext
         try await http.get(baseURL: baseURL, endpoint: "/", headers: configuration.headers, parameters: [])
     }
     
-    lazy var normalized: BlockContextContractsContractStorageNormalized = BlockContextContractsContractStorageNormalizedClient(parentURL: baseURL, http: http)
+    lazy var normalized: BlockContextContractsContractStorageNormalizedClient = .init(parentURL: baseURL, http: http)
 }
 
 // MARK: ../<block_id>/context/contracts/<contract_id>/storage/normalized
