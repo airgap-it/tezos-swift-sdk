@@ -10,14 +10,22 @@ import TezosMichelson
 import TezosOperation
 import TezosRPC
 
-public class Contract<ContractRPC: BlockContextContractsContract> {
+public class Contract<
+    BlockRPC: Block,
+    ContractRPC: BlockContextContractsContract,
+    OperationFeeEstimator: FeeEstimator
+> where OperationFeeEstimator.FeeApplicable == TezosOperation {
     public let address: ContractHash
     
+    private let block: BlockRPC
     private let contract: ContractRPC
+    private let feeEstimator: OperationFeeEstimator
     
-    init(address: ContractHash, contract: ContractRPC) {
+    init(address: ContractHash, block: BlockRPC, contract: ContractRPC, feeEstimator: OperationFeeEstimator) {
         self.address = address
+        self.block = block
         self.contract = contract
+        self.feeEstimator = feeEstimator
     }
     
     public lazy var storage: ContractStorage<ContractRPC> = .init(from: codeCached, contract: contract)
@@ -25,7 +33,7 @@ public class Contract<ContractRPC: BlockContextContractsContract> {
     private lazy var entrypointsCached: Cached<[String: Micheline]> = .init{ [unowned self] in
         try await self.contract.entrypoints.get(configuredWith: .init(headers: $0)).entrypoints.mapValues { try $0.normalized() }
     }
-    public func entrypoint(_ entrypoint: Entrypoint = .default) async -> ContractEntrypoint<ContractRPC> {
+    public func entrypoint(_ entrypoint: Entrypoint = .default) async -> ContractEntrypoint<BlockRPC, OperationFeeEstimator> {
         let entrypointsLazy: Cached<Micheline> = entrypointsCached.combine(with: codeCached).map {
             let (entrypoints, code) = $0
             
@@ -38,7 +46,7 @@ public class Contract<ContractRPC: BlockContextContractsContract> {
             }
         }
         
-        return await .init(from: entrypointsLazy, contract: contract)
+        return await .init(from: entrypointsLazy, entrypoint: entrypoint, contractAddress: address, block: block, feeEstimator: feeEstimator)
     }
     
     private lazy var codeCached: Cached<ContractCode> = .init { [unowned self] in
