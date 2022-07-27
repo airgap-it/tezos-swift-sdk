@@ -69,6 +69,15 @@ public struct ContractEntrypoint<BlockRPC: Block, OperationFeeEstimator: FeeEsti
         }
     }
     
+    public func callAsFunction(
+        source: Address.Implicit,
+        parameters: ContractEntrypointParameter,
+        configuredWith configuration: EntrypointCallConfiguration = .init()
+    ) async throws -> TezosOperation.Unsigned {
+        let code = try await code.get(headers: configuration.headers)
+        return try await self(source: source, parameters: .init(from: parameters, code: code), configuredWith: configuration)
+    }
+    
     private func returnOrFetch<T>(_ value: T?, fetch: () async throws -> T) async rethrows -> T {
         if let value = value {
             return value
@@ -77,5 +86,3 @@ public struct ContractEntrypoint<BlockRPC: Block, OperationFeeEstimator: FeeEsti
         }
     }
 }
-
-
