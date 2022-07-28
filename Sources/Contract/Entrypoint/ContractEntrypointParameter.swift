@@ -5,6 +5,7 @@
 //  Created by Julia Samol on 27.07.22.
 //
 
+import OrderedCollections
 import TezosMichelson
 
 public enum ContractEntrypointParameter: ContractEntrypointParameterProtocol, Hashable {
@@ -90,10 +91,10 @@ extension ContractEntrypointParameter {
 extension ContractEntrypointParameter {
     
     public struct Map: `Protocol`, Hashable {
-        public let elements: [ContractEntrypointParameter: ContractEntrypointParameter]
+        public let elements: OrderedDictionary<ContractEntrypointParameter, ContractEntrypointParameter>
         public let name: String?
         
-        public init(_ elements: [ContractEntrypointParameter: ContractEntrypointParameter], name: String? = nil) {
+        public init(_ elements: OrderedDictionary<ContractEntrypointParameter, ContractEntrypointParameter>, name: String? = nil) {
             self.elements = elements
             self.name = name
         }

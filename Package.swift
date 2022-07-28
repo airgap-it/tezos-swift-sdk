@@ -19,6 +19,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-collections.git", .upToNextMajor(from: "1.0.0")),
         .package(url: "https://github.com/keefertaylor/Base58Swift.git", .upToNextMajor(from: "2.1.0")),
         .package(url: "https://github.com/attaswift/BigInt.git", .upToNextMajor(from: "5.3.0")),
         .package(url: "https://github.com/jedisct1/swift-sodium.git", .upToNextMajor(from: "0.9.1")),
@@ -44,7 +45,13 @@ let package = Package(
             path: "Sources/RPC"),
         .target(
             name: "TezosContract",
-            dependencies: ["TezosCore", "TezosMichelson", "TezosOperation", "TezosRPC"],
+            dependencies: [
+                "TezosCore",
+                "TezosMichelson",
+                "TezosOperation",
+                "TezosRPC",
+                .product(name: "OrderedCollections", package: "swift-collections")
+            ],
             path: "Sources/Contract"),
         
         // Tests
