@@ -5,7 +5,6 @@
 //  Created by Julia Samol on 04.07.22.
 //
 
-import Foundation
 import TezosCore
 
 public enum TezosOperation: Hashable {

@@ -5,7 +5,6 @@
 //  Created by Julia Samol on 14.06.22.
 //
 
-import Foundation
 import BigInt
 
 public extension BigNatWrapper {

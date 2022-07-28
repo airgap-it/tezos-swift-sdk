@@ -5,7 +5,6 @@
 //  Created by Julia Samol on 19.07.22.
 //
 
-import Foundation
 import TezosCore
 
 public enum RPCBlockID: RawRepresentable, Hashable {

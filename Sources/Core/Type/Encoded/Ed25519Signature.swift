@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct Ed25519Signature: Signature.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "edsig"
     public static let base58Bytes: [UInt8] = [9, 245, 205, 134, 18]

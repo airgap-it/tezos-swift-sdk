@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 13.07.22.
 //
 
-import Foundation
-
 // MARK: ../<block_id>/context/contracts/<contract_id>/script/normalized
 
 public struct GetContractNormalizedScriptRequest: Hashable, Codable {

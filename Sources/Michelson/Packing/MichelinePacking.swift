@@ -5,7 +5,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
 import TezosCore
 
 // MARK: Micheline

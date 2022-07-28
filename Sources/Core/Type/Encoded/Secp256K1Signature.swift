@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct Secp256K1Signature: Signature.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "spsig1"
     public static let base58Bytes: [UInt8] = [13, 115, 101, 19, 63]

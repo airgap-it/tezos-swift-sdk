@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 14.06.22.
 //
 
-import Foundation
-
 // MARK: Non-mutating
 
 public extension Array {

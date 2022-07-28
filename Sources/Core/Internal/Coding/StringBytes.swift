@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 14.06.22.
 //
 
-import Foundation
-
 public extension String {
     init(fromConsuming bytes: inout [UInt8], count: Int? = nil) throws {
         let count = count ?? bytes.count

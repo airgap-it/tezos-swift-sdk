@@ -5,7 +5,6 @@
 //  Created by Julia Samol on 09.06.22.
 //
 
-import Foundation
 import TezosCore
 
 extension Michelson {

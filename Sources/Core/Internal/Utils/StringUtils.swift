@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 09.06.22.
 //
 
-import Foundation
-
 public extension String {
     
     func removingPrefix(_ prefix: String) -> String {

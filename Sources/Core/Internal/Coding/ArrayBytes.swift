@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 14.06.22.
 //
 
-import Foundation
-
 public extension Array {
     init(fromConsuming bytes: inout [UInt8], decodingWith decoder: (inout [UInt8]) throws -> Element) rethrows {
         self = try decodeArray(fromConsuming: &bytes, decoded: [], decodingWith: decoder)

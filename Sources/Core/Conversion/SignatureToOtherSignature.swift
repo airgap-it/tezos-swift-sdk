@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 07.07.22.
 //
 
-import Foundation
-
 // MARK: Signature
 
 extension Signature {

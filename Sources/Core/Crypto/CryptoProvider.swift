@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 06.07.22.
 //
 
-import Foundation
-
 public protocol CryptoProvider {
     func blake2b(message: [UInt8], ofSize size: Int) throws -> [UInt8]
     

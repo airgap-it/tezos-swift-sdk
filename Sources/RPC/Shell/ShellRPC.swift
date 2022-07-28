@@ -5,7 +5,6 @@
 //  Created by Julia Samol on 07.07.22.
 //
 
-import Foundation
 import TezosCore
 
 public protocol ShellSimplifiedRPC {

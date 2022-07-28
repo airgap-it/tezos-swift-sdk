@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 14.07.22.
 //
 
-import Foundation
-
 public struct TxRollupHash: EncodedValue {
     public static let base58Prefix: String = "txr1"
     public static let base58Bytes: [UInt8] = [1, 128, 120, 31]

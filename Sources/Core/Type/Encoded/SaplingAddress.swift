@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct SaplingAddress: EncodedValue {
     public static let base58Prefix: String = "zet1"
     public static let base58Bytes: [UInt8] = [18, 71, 40, 223]

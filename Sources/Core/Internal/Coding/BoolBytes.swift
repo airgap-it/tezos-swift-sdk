@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 05.07.22.
 //
 
-import Foundation
-
 extension Bool {
     public init?(fromConsuming bytes: inout [UInt8]) {
         let byte = bytes.consume(at: 0)

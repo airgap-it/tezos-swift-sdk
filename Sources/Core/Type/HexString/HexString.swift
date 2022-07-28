@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 09.06.22.
 //
 
-import Foundation
-
 public struct HexString: Hashable, Codable {
     fileprivate static let prefix: String = "0x"
     

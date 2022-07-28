@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 extension Signature: BytesCodable {
     public init(fromConsuming bytes: inout [UInt8]) throws {
         self = .sig(try .init(fromConsuming: &bytes))

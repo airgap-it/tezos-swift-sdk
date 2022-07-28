@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 13.06.22.
 //
 
-import Foundation
-
 // MARK: From Michelson
 
 extension Micheline: ConvertibleFromMichelson {

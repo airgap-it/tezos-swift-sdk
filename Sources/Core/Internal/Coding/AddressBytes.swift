@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 // MARK: Address
 
 extension Address: BytesCodable {   

@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 07.07.22.
 //
 
-import Foundation
-
 public enum Watermark: BytesTag {    
     case blockHeader(_ chainID: [UInt8])
     case endorsement(_ chainID: [UInt8])

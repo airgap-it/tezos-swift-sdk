@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 05.07.22.
 //
 
-import Foundation
-
 public struct TezosNat: Hashable, BigNatWrapper {
     public static var zero: TezosNat {
         self.init(UInt(0))

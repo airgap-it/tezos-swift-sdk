@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 06.07.22.
 //
 
-import Foundation
-
 public class Crypto<Provider: CryptoProvider> {
     private let provider: Provider
     

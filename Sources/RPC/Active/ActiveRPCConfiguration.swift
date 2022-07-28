@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 13.07.22.
 //
 
-import Foundation
-
 public typealias GetBlockConfiguration = BlockGetConfiguration
 
 public typealias GetBigMapConfiguration = BlockContextBigMapsBigMapGetConfiguration

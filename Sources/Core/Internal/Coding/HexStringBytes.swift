@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 05.07.22.
 //
 
-import Foundation
-
 public extension HexString {
     init(fromConsuming bytes: inout [UInt8], count: Int? = nil) throws {
         let count = count ?? bytes.count

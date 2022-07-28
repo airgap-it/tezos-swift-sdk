@@ -13,7 +13,7 @@ import TezosTestUtils
 @testable import TezosOperation
 
 class OperationSigningTest: XCTestCase {
-    private var crypto: Crypto!
+    private var crypto: Crypto<SodiumCryptoProvider>!
     
     override func setUpWithError() throws {
         crypto = .init(provider: SodiumCryptoProvider())
