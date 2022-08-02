@@ -9,7 +9,7 @@ import TezosCore
 import TezosMichelson
 import TezosOperation
 
-extension Contract.Code {
+extension ContractCode {
     
     init(from script: Script) throws {
         guard case let .sequence(contractCode) = script.code else {

@@ -48,6 +48,28 @@ public extension Array {
         return element
     }
     
+    mutating func consume(where predicate: (Element) -> Bool) -> Element? {
+        guard let offsetAndElement = enumerated().first(where: { predicate($0.element) }) else {
+            return nil
+        }
+        
+        let (offset, element) = offsetAndElement
+        remove(at: offset)
+        
+        return element
+    }
+    
+    mutating func consumeAll(where predicate: (Element) -> Bool) -> [Element] {
+        let filtered = enumerated().filter { predicate($0.element) }
+        let offsets = Set(filtered.map({ $0.offset }))
+        
+        self = enumerated()
+            .filter { !offsets.contains($0.offset) }
+            .map { $0.element }
+        
+        return filtered.map { $0.element }
+    }
+    
     mutating func consumeSubrange(_ bounds: Range<Index>) -> Self {
         let safeBounds = bounds.upperBound <= self.indices.upperBound ? bounds : bounds.lowerBound..<self.count
         let subarray = self[safeBounds]

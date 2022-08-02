@@ -55,6 +55,11 @@ public enum TezosOperation: Hashable {
         public let branch: BlockHash
         public let contents: [Content]
         
+        public init(branch: BlockHash, contents: [Content]) {
+            self.branch = branch
+            self.contents = contents
+        }
+        
         public func asOperation() -> TezosOperation {
             .unsigned(self)
         }
@@ -66,6 +71,12 @@ public enum TezosOperation: Hashable {
         public let branch: BlockHash
         public let contents: [Content]
         public let signature: Signature
+        
+        public init(branch: BlockHash, contents: [Content], signature: Signature) {
+            self.branch = branch
+            self.contents = contents
+            self.signature = signature
+        }
         
         public func asOperation() -> TezosOperation {
             .signed(self)

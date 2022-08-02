@@ -25,17 +25,36 @@ public class Cached<T> {
         return value
     }
     
-    public func map<R>(_ transform: @escaping (T) throws -> R) rethrows -> Cached<R> {
+    public func map<R>(_ transform: @escaping (T) throws -> R) -> Cached<R> {
         let value = value
         let fetch = fetch
         
         return .init {
-            if let value = value {
-                return try transform(value)
-            } else {
-                let value = try await fetch($0)
-                return try transform(value)
-            }
+            let value = try await getValue(valueOrNil: value, fetch: fetch, headers: $0)
+            return try transform(value)
         }
+    }
+    
+    public func combine<S>(with other: Cached<S>) -> Cached<(T, S)> {
+        let selfValue = value
+        let selfFetch = fetch
+        
+        let otherValue = other.value
+        let otherFetch = other.fetch
+        
+        return .init {
+            let first: T = try await getValue(valueOrNil: selfValue, fetch: selfFetch, headers: $0)
+            let second: S = try await getValue(valueOrNil: otherValue, fetch: otherFetch, headers: $0)
+            
+            return (first, second)
+        }
+    }
+}
+
+private func getValue<T>(valueOrNil: T?, fetch: (_ headers: [HTTPHeader]) async throws -> T, headers: [HTTPHeader]) async throws -> T {
+    if let value = valueOrNil {
+        return value
+    } else {
+        return try await fetch(headers)
     }
 }

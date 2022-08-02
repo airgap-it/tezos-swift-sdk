@@ -51,7 +51,7 @@ public protocol AddressProtocol {
 
 extension Address {
     
-    public enum Implicit: EncodedGroup {
+    public enum Implicit: EncodedGroup, Address.`Protocol` {
         public typealias `Protocol` = ImplicitAddressProtocol
         
         case tz1(Ed25519PublicKeyHash)
@@ -92,6 +92,10 @@ extension Address {
                 throw TezosError.invalidValue("Invalid implicit address base58 encoded value (\(base58).")
             }
         }
+        
+        public func asAddress() -> Address {
+            .implicit(self)
+        }
     }
 }
 
@@ -109,7 +113,7 @@ extension Address.Implicit.`Protocol` {
 
 extension Address {
     
-    public enum Originated: EncodedGroup {
+    public enum Originated: EncodedGroup, Address.`Protocol` {
         public typealias `Protocol` = OriginatedAddressProtocol
         
         case contract(ContractHash)
@@ -135,6 +139,10 @@ extension Address {
             } else {
                 throw TezosError.invalidValue("Invalid originated address base58 encoded value (\(base58).")
             }
+        }
+        
+        public func asAddress() -> Address {
+            .originated(self)
         }
     }
 }
