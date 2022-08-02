@@ -26,7 +26,7 @@ class ContractStorageTest: XCTestCase {
     func testCreatesContractStorageEntryFromStorageValues() async throws {
         for testCase in testCases {
             let contractRPC = BlockContextContractsContractMock(value: testCase.value)
-            let contractStorage = try Contract.Storage(
+            let contractStorage = ContractStorage(
                 from: .init { _ in
                     .init(
                         parameter: .sequence([]),

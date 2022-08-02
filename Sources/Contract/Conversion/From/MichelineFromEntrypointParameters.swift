@@ -132,7 +132,7 @@ private extension Micheline {
                 throw TezosError.invalidValue("value and type mismatched")
             }
             
-            guard let first = try meta.createArgMicheline(from: &object), let second = try meta.createArgMicheline(from: &object) else {
+            guard let first = try meta.elements[0].createArgMicheline(from: &object), let second = try meta.elements[1].createArgMicheline(from: &object) else {
                 throw TezosError.invalidValue("value and type mismatched")
             }
             
@@ -241,7 +241,7 @@ private extension ContractEntrypointParameter {
                 throw TezosError.invalidValue("entrypoint code")
             }
             
-            try self.init(from: primCode)
+            try self.init(from: primCode, trace: trace)
         }
         
         private init(from code: Micheline.PrimitiveApplication, trace: Micheline.Trace = .root()) throws {
@@ -276,7 +276,7 @@ private extension ContractEntrypointParameter {
                 self = .object(.init(
                     type: .prim(type),
                     trace: trace,
-                    elements: try type.args.enumerated().map { try .init(from: $1, trace: .node(.init($0))) }
+                    elements: try type.args.enumerated().map { try .init(from: $0.element, trace: .node(.init($0.offset))) }
                 ))
             } else {
                 throw TezosError.invalidValue("entrypoint code")

@@ -38,13 +38,21 @@ public struct ContractEntrypoint<BlockRPC: Block, OperationFeeEstimator: FeeEsti
         parameters: Micheline,
         configuredWith configuration: EntrypointCallConfiguration = .init()
     ) async throws -> TezosOperation.Unsigned {
-        let branch = try await returnOrFetch(configuration.branch) {
-            try await block.header.get(configuredWith: .init(headers: configuration.headers)).hash
-        }
+        let branch: BlockHash = try await {
+            if let branch = configuration.branch {
+                return branch
+            } else {
+                return try await block.header.get(configuredWith: .init(headers: configuration.headers)).hash
+            }
+        }()
         
-        let counter = try await returnOrFetch(configuration.counter) {
-            try await block.context.contracts(contractID: source.asAddress()).counter.get(configuredWith: .init(headers: configuration.headers))
-        }
+        let counter: String? = try await {
+            if let counter = configuration.counter {
+                return counter
+            } else {
+                return try await block.context.contracts(contractID: source.asAddress()).counter.get(configuredWith: .init(headers: configuration.headers))
+            }
+        }()
         
         let operation = TezosOperation.Unsigned(
             branch: branch,
@@ -76,13 +84,5 @@ public struct ContractEntrypoint<BlockRPC: Block, OperationFeeEstimator: FeeEsti
     ) async throws -> TezosOperation.Unsigned {
         let code = try await code.get(headers: configuration.headers)
         return try await self(source: source, parameters: .init(from: parameters, code: code), configuredWith: configuration)
-    }
-    
-    private func returnOrFetch<T>(_ value: T?, fetch: () async throws -> T) async rethrows -> T {
-        if let value = value {
-            return value
-        } else {
-            return try await fetch()
-        }
     }
 }
