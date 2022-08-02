@@ -9,7 +9,9 @@ import TezosCore
 
 extension Micheline {
     
-    public struct PrimitiveApplication: Hashable, Codable {
+    public struct PrimitiveApplication: MichelinePrimitiveApplicationProtocol, Hashable, Codable {
+        public typealias `Protocol` = MichelinePrimitiveApplicationProtocol
+        
         public let prim: String
         public let args: [Micheline]
         public let annots: [String]
@@ -26,6 +28,10 @@ extension Micheline {
             self.prim = prim
             self.args = args
             self.annots = annots
+        }
+        
+        public func asMicheline() -> Micheline {
+            .prim(self)
         }
         
         // MARK: Codable
@@ -61,6 +67,10 @@ extension Micheline {
             case annots
         }
     }
+}
+
+public protocol MichelinePrimitiveApplicationProtocol: Micheline.`Protocol` {
+    
 }
 
 // MARK: Convinience Constructors

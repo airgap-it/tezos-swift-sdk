@@ -7,32 +7,18 @@
 
 // MARK: Address
 
-extension Address: BytesCodable {   
-    public init(fromConsuming bytes: inout [UInt8]) throws {
-        guard let tag = Tag(from: bytes) else {
-            throw TezosError.invalidValue("Bytes `\(bytes)` are not valid Tezos address bytes.")
-        }
-        
-        bytes.removeSubrange(0..<tag.value.count)
-        
-        switch tag {
-        case .implicit:
-            self = .implicit(try .init(fromConsuming: &bytes))
-        case .originated:
-            self = .originated(try .init(fromConsuming: &bytes))
-        }
-    }
+extension Address: BytesTaggedCodable {
     
-    public func encodeToBytes() throws -> [UInt8] {
+    func encodeRawToBytes() throws -> [UInt8] {
         switch self {
         case .implicit(let implicit):
-            return Tag.implicit + (try implicit.encodeToBytes())
+            return try implicit.encodeToBytes()
         case .originated(let originated):
-            return Tag.originated + (try originated.encodeToBytes())
+            return try originated.encodeToBytes()
         }
     }
     
-    private enum Tag: BytesTagIterable {
+    enum Tag: BytesCodableTag {
         case implicit
         case originated
         
@@ -53,48 +39,42 @@ extension Address: BytesCodable {
             self = found
         }
         
-        init?(fromConsuming bytes: inout [UInt8]) {
-            guard let found = Self.recognize(fromConsuming: &bytes) else {
-                return nil
+        init(from value: Address) {
+            switch value {
+            case .implicit(_):
+                self = .implicit
+            case .originated(_):
+                self = .originated
             }
-            
-            self = found
+        }
+        
+        func create(fromConsuming bytes: inout [UInt8]) throws -> Address {
+            switch self {
+            case .implicit:
+                return .implicit(try .init(fromConsuming: &bytes))
+            case .originated:
+                return .originated(try .init(fromConsuming: &bytes))
+            }
         }
     }
 }
 
 // MARK: ImplicitAddress
 
-extension Address.Implicit: BytesCodable {
-    public init(fromConsuming bytes: inout [UInt8]) throws {
-        guard let tag = Tag(from: bytes) else {
-            throw TezosError.invalidValue("Bytes `\(bytes)` are not valid Tezos implicit address bytes.")
-        }
-        
-        bytes.removeSubrange(0..<tag.value.count)
-        
-        switch tag {
-        case .tz1:
-            self = .tz1(try .init(fromConsuming: &bytes))
-        case .tz2:
-            self = .tz2(try .init(fromConsuming: &bytes))
-        case .tz3:
-            self = .tz3(try .init(fromConsuming: &bytes))
-        }
-    }
+extension Address.Implicit: BytesTaggedCodable {
     
-    public func encodeToBytes() throws -> [UInt8] {
+    func encodeRawToBytes() throws -> [UInt8] {
         switch self {
         case .tz1(let ed25519PublicKeyHash):
-            return Tag.tz1 + (try ed25519PublicKeyHash.encodeToBytes())
+            return try ed25519PublicKeyHash.encodeToBytes()
         case .tz2(let secp256K1PublicKeyHash):
-            return Tag.tz2 + (try secp256K1PublicKeyHash.encodeToBytes())
+            return try secp256K1PublicKeyHash.encodeToBytes()
         case .tz3(let p256PublicKeyHash):
-            return Tag.tz3 + (try p256PublicKeyHash.encodeToBytes())
+            return try p256PublicKeyHash.encodeToBytes()
         }
     }
     
-    private enum Tag: BytesTagIterable {
+    enum Tag: BytesCodableTag {
         case tz1
         case tz2
         case tz3
@@ -118,12 +98,26 @@ extension Address.Implicit: BytesCodable {
             self = found
         }
         
-        init?(fromConsuming bytes: inout [UInt8]) {
-            guard let found = Self.recognize(fromConsuming: &bytes) else {
-                return nil
+        init(from value: Address.Implicit) {
+            switch value {
+            case .tz1(_):
+                self = .tz1
+            case .tz2(_):
+                self = .tz2
+            case .tz3(_):
+                self = .tz3
             }
-            
-            self = found
+        }
+        
+        func create(fromConsuming bytes: inout [UInt8]) throws -> Address.Implicit {
+            switch self {
+            case .tz1:
+                return .tz1(try .init(fromConsuming: &bytes))
+            case .tz2:
+                return .tz2(try .init(fromConsuming: &bytes))
+            case .tz3:
+                return .tz3(try .init(fromConsuming: &bytes))
+            }
         }
     }
 }
@@ -153,7 +147,7 @@ extension Address.Originated: BytesCodable {
 }
 
 private extension Array where Element == UInt8 {
-    func isPadded<T: EncodedValue>(forKind kind: T.Type) -> Bool {
+    func isPadded<T: EncodedValue & Address.Originated.`Protocol`>(forKind kind: T.Type) -> Bool {
         guard count >= Address.Originated.targetSize else {
             return false
         }
@@ -162,11 +156,11 @@ private extension Array where Element == UInt8 {
         return self[kind.bytesLength..<upperBound].allSatisfy { $0 == Address.Originated.paddingValue }
     }
     
-    mutating func consumePadding<T: EncodedValue>(forKind kind: T.Type) {
+    mutating func consumePadding<T: EncodedValue & Address.Originated.`Protocol`>(forKind kind: T.Type) {
         let _ = consumeSubrange(0..<kind.paddingLength)
     }
 }
 
-private extension EncodedValue {
+private extension EncodedValue where Self: Address.Originated.`Protocol` {
     static var paddingLength: Int { Address.Originated.targetSize - Self.bytesLength }
 }

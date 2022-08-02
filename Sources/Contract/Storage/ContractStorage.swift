@@ -14,7 +14,7 @@ public struct ContractStorage<ContractRPC: BlockContextContractsContract> {
     
     init(from code: ContractCode.Lazy, contract: ContractRPC) {
         let type: Cached<Micheline> = code.map {
-            guard let storage = try? $0.storage.asPrim(Michelson._Type.Storage.self), storage.args.count == 1 else {
+            guard let storage = try? $0.storage.asPrim(Michelson.Type_.Storage.self), storage.args.count == 1 else {
                 throw TezosContractError.invalidType("storage")
             }
             

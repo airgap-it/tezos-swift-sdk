@@ -9,7 +9,7 @@ import TezosCore
 
 extension Michelson {
 
-    public indirect enum Data: Hashable {
+    public indirect enum Data: MichelsonDataProtocol, Hashable {
         public typealias `Protocol` = MichelsonDataProtocol
         
         case int(IntConstant)
@@ -28,10 +28,18 @@ extension Michelson {
         case map(Map)
         case instruction(Instruction)
         
+        public var annotations: [Michelson.Annotation] {
+            common.annotations
+        }
+        
+        public func asMichelsonData() -> Data {
+            self
+        }
+        
         // MARK: IntConstant
         
         public struct IntConstant: `Protocol`, BigIntWrapper, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .int(self)
             }
             
@@ -49,7 +57,7 @@ extension Michelson {
         // MARK: NaturalNumberConstant
         
         public struct NaturalNumberConstant: `Protocol`, BigNatWrapper, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .nat(self)
             }
             
@@ -67,7 +75,7 @@ extension Michelson {
         // MARK: StringConstant
         
         public struct StringConstant: `Protocol`, StringWrapper, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .string(self)
             }
             
@@ -87,7 +95,7 @@ extension Michelson {
         // MARK: ByteSequenceConstant
         
         public struct ByteSequenceConstant: `Protocol`, BytesWrapper, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .bytes(self)
             }
             
@@ -111,7 +119,7 @@ extension Michelson {
         // MARK: Unit
         
         public struct Unit: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .unit(self)
             }
             
@@ -132,7 +140,7 @@ extension Michelson {
         // MARK: True
         
         public struct True: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .true(self)
             }
             
@@ -153,7 +161,7 @@ extension Michelson {
         // MARK: False
         
         public struct False: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .false(self)
             }
             
@@ -174,7 +182,7 @@ extension Michelson {
         // MARK: Pair
         
         public struct Pair: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .pair(self)
             }
             
@@ -212,7 +220,7 @@ extension Michelson {
         // MARK: Left
         
         public struct Left: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .left(self)
             }
             
@@ -243,7 +251,7 @@ extension Michelson {
         // MARK: Right
         
         public struct Right: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .right(self)
             }
             
@@ -274,7 +282,7 @@ extension Michelson {
         // MARK: Some
         
         public struct Some: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .some(self)
             }
             
@@ -305,7 +313,7 @@ extension Michelson {
         // MARK: None
         
         public struct None: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .none(self)
             }
             
@@ -326,7 +334,7 @@ extension Michelson {
         // MARK: Sequence
         
         public struct Sequence: `Protocol`, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .sequence(self)
             }
             
@@ -344,7 +352,7 @@ extension Michelson {
         // MARK: Map
         
         public struct Map: `Protocol`, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .map(self)
             }
             
@@ -391,12 +399,12 @@ extension Michelson {
 }
 
 public protocol MichelsonDataProtocol: Michelson.`Protocol` {
-    func asData() -> Michelson.Data
+    func asMichelsonData() -> Michelson.Data
 }
 
 public extension Michelson.Data.`Protocol` {
     func asMichelson() -> Michelson {
-        .data(asData())
+        .data(asMichelsonData())
     }
 }
 
@@ -421,3 +429,43 @@ extension Michelson.Data {
 }
 
 public protocol MichelsonDataPrimProtocol: Michelson.Prim {}
+
+// MARK: Utility Extensions
+
+extension Michelson.Data {
+    
+    var common: `Protocol` {
+        switch self {
+        case .int(let int):
+            return int
+        case .nat(let nat):
+            return nat
+        case .string(let string):
+            return string
+        case .bytes(let bytes):
+            return bytes
+        case .unit(let unit):
+            return unit
+        case .true(let `true`):
+            return `true`
+        case .false(let `false`):
+            return `false`
+        case .pair(let pair):
+            return pair
+        case .left(let left):
+            return left
+        case .right(let right):
+            return right
+        case .some(let some):
+            return some
+        case .none(let none):
+            return none
+        case .sequence(let sequence):
+            return sequence
+        case .map(let map):
+            return map
+        case .instruction(let instruction):
+            return instruction.common
+        }
+    }
+}

@@ -7,8 +7,8 @@
 
 // MARK: Signature
 
-extension Signature {
-    public func toGenericSignature() throws -> GenericSignature {
+public extension Signature {
+    func toGenericSignature() throws -> GenericSignature {
         switch self {
         case .edsig(let ed25519Signature):
             return try GenericSignature(from: try ed25519Signature.encodeToBytes())
@@ -24,16 +24,16 @@ extension Signature {
 
 // MARK: GenericSignature
 
-extension GenericSignature {
-    public func toEd25519Signature() throws -> Ed25519Signature {
+public extension GenericSignature {
+    func toEd25519Signature() throws -> Ed25519Signature {
         try Ed25519Signature(from: try encodeToBytes())
     }
     
-    public func toSecp256K1Signature() throws -> Secp256K1Signature {
+    func toSecp256K1Signature() throws -> Secp256K1Signature {
         try Secp256K1Signature(from: try encodeToBytes())
     }
     
-    public func toP256Signature() throws -> P256Signature {
+    func toP256Signature() throws -> P256Signature {
         try P256Signature(from: try encodeToBytes())
     }
 }

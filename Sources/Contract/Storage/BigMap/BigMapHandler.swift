@@ -28,7 +28,7 @@ public extension BigMapHandler {
         and rpc: BigMapsRPC,
         configuredWith configuration: BigMapGetConfiguration
     ) async throws -> ContractStorageEntry? {
-        guard let type = try? type.asPrim(Michelson._Type.BigMap.self), type.args.count == 2 else {
+        guard let type = try? type.asPrim(Michelson.Type_.BigMap.self), type.args.count == 2 else {
             throw TezosContractError.invalidType("storage big map")
         }
         

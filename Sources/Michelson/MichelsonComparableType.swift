@@ -9,7 +9,7 @@ import TezosCore
 
 extension Michelson {
     
-    public indirect enum ComparableType: Hashable {
+    public indirect enum ComparableType: MichelsonComparableTypeProtocol, Hashable {
         public typealias `Protocol` = MichelsonComparableTypeProtocol
         
         case unit(Unit)
@@ -30,10 +30,18 @@ extension Michelson {
         case or(Or)
         case pair(Pair)
         
+        public var metadata: Metadata {
+            common.metadata
+        }
+        
+        public func asMichelsonComparableType() -> ComparableType {
+            self
+        }
+        
         // MARK: unit
         
         public struct Unit: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .unit(self)
             }
             
@@ -62,7 +70,7 @@ extension Michelson {
         // MARK: never
         
         public struct Never: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .never(self)
             }
             
@@ -91,7 +99,7 @@ extension Michelson {
         // MARK: bool
         
         public struct Bool: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .bool(self)
             }
             
@@ -120,7 +128,7 @@ extension Michelson {
         // MARK: int
         
         public struct Int: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .int(self)
             }
             
@@ -149,7 +157,7 @@ extension Michelson {
         // MARK: nat
         
         public struct Nat: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .nat(self)
             }
             
@@ -178,7 +186,7 @@ extension Michelson {
         // MARK: string
         
         public struct String: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .string(self)
             }
             
@@ -207,7 +215,7 @@ extension Michelson {
         // MARK: chain_id
         
         public struct ChainID: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .chainID(self)
             }
             
@@ -236,7 +244,7 @@ extension Michelson {
         // MARK: bytes
         
         public struct Bytes: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .bytes(self)
             }
             
@@ -265,7 +273,7 @@ extension Michelson {
         // MARK: mutez
         
         public struct Mutez: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .mutez(self)
             }
             
@@ -294,7 +302,7 @@ extension Michelson {
         // MARK: keyhash
         
         public struct KeyHash: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .keyHash(self)
             }
             
@@ -323,7 +331,7 @@ extension Michelson {
         // MARK: key
         
         public struct Key: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .key(self)
             }
             
@@ -352,7 +360,7 @@ extension Michelson {
         // MARK: signature
         
         public struct Signature: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .signature(self)
             }
             
@@ -381,7 +389,7 @@ extension Michelson {
         // MARK: timestamp
         
         public struct Timestamp: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .timestamp(self)
             }
             
@@ -410,7 +418,7 @@ extension Michelson {
         // MARK: address
         
         public struct Address: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .address(self)
             }
             
@@ -441,7 +449,7 @@ extension Michelson {
         // MARK: option
         
         public struct Option: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .option(self)
             }
             
@@ -482,7 +490,7 @@ extension Michelson {
         // MARK: or
         
         public struct Or: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .or(self)
             }
             
@@ -526,7 +534,7 @@ extension Michelson {
         // MARK: pair
         
         public struct Pair: `Protocol`, Prim, Hashable {
-            public func asComparableType() -> ComparableType {
+            public func asMichelsonComparableType() -> ComparableType {
                 .pair(self)
             }
             
@@ -571,15 +579,15 @@ extension Michelson {
     }
 }
 
-public protocol MichelsonComparableTypeProtocol: Michelson.`Type`.`Protocol` {
+public protocol MichelsonComparableTypeProtocol: MichelsonTypeProtocol {
     var metadata: Michelson.ComparableType.Metadata { get }
     
-    func asComparableType() -> Michelson.ComparableType
+    func asMichelsonComparableType() -> Michelson.ComparableType
 }
 
 public extension Michelson.ComparableType.`Protocol` {
-    func asType() -> Michelson.`Type` {
-        .comparable(asComparableType())
+    func asMichelsonType() -> Michelson.`Type` {
+        .comparable(asMichelsonComparableType())
     }
 }
 
@@ -621,7 +629,42 @@ extension Michelson.ComparableType {
 // MARK: Utility Extensions
 
 extension Michelson.ComparableType {
-    var metadata: Metadata {
-        asProtocol().metadata
+    var common: `Protocol` {
+        switch self {
+        case .unit(let unit):
+            return unit
+        case .never(let never):
+            return never
+        case .bool(let bool):
+            return bool
+        case .int(let int):
+            return int
+        case .nat(let nat):
+            return nat
+        case .string(let string):
+            return string
+        case .chainID(let chainID):
+            return chainID
+        case .bytes(let bytes):
+            return bytes
+        case .mutez(let mutez):
+            return mutez
+        case .keyHash(let keyHash):
+            return keyHash
+        case .key(let key):
+            return key
+        case .signature(let signature):
+            return signature
+        case .timestamp(let timestamp):
+            return timestamp
+        case .address(let address):
+            return address
+        case .option(let option):
+            return option
+        case .or(let or):
+            return or
+        case .pair(let pair):
+            return pair
+        }
     }
 }

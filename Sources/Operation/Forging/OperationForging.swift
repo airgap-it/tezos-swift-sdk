@@ -8,30 +8,6 @@
 import TezosCore
 import TezosMichelson
 
-// MARK: Protocol
-
-public protocol ToForged {
-    func forge() throws -> [UInt8]
-}
-
-public protocol FromForged {
-    init(fromForged bytes: [UInt8]) throws
-}
-
-protocol FromForgedConsuming: FromForged {
-    init(fromForgedConsuming bytes: inout [UInt8]) throws
-}
-
-extension FromForgedConsuming {
-    public init(fromForged bytes: [UInt8]) throws {
-        var bytes = bytes
-        try self.init(fromForgedConsuming: &bytes)
-    }
-}
-
-public typealias Forgeable = FromForged & ToForged
-typealias ForgeableConsuming = FromForgedConsuming & ToForged
-
 // MARK: TezosOperation
 
 extension TezosOperation: Forgeable {
@@ -83,7 +59,7 @@ extension TezosOperation.Content: ForgeableConsuming {
             throw TezosError.invalidValue("Invalid encoded Operation.Content value.")
         }
         
-        self = try kind.rawValue.init(fromForgedConsuming: &bytes).asContent()
+        self = try kind.rawValue.init(fromForgedConsuming: &bytes).asOperationContent()
     }
     
     public func forge() throws -> [UInt8] {
@@ -359,7 +335,7 @@ extension TezosOperation.Content.Transaction: ForgeableConsuming {
         let amount = try Mutez(fromConsuming: &bytes)
         let destination = try Address(fromConsuming: &bytes)
         
-        let parametersPresence = Bool(fromConsuming: &bytes) ?? false
+        let parametersPresence = (try? Bool(fromConsuming: &bytes)) ?? false
         let parameters = parametersPresence ? try Parameters(fromConsuming: &bytes) : nil
             
         self.init(
@@ -395,7 +371,7 @@ extension TezosOperation.Content.Origination: ForgeableConsuming {
         let (source, fee, counter, gasLimit, storageLimit) = try unforgeManagerOperation(fromConsuming: &bytes)
         let balance = try Mutez(fromConsuming: &bytes)
         
-        let delegatePresence = Bool(fromConsuming: &bytes) ?? false
+        let delegatePresence = (try? Bool(fromConsuming: &bytes)) ?? false
         let delegate = delegatePresence ? try Address.Implicit(fromConsuming: &bytes) : nil
         
         let script = try Script(fromConsuming: &bytes)
@@ -433,7 +409,7 @@ extension TezosOperation.Content.Delegation: ForgeableConsuming {
         
         let (source, fee, counter, gasLimit, storageLimit) = try unforgeManagerOperation(fromConsuming: &bytes)
         
-        let delegatePresence = Bool(fromConsuming: &bytes) ?? false
+        let delegatePresence = (try? Bool(fromConsuming: &bytes)) ?? false
         let delegate = delegatePresence ? try Address.Implicit(fromConsuming: &bytes) : nil
             
         self.init(
@@ -496,7 +472,7 @@ extension TezosOperation.Content.SetDepositsLimit: ForgeableConsuming {
         
         let (source, fee, counter, gasLimit, storageLimit) = try unforgeManagerOperation(fromConsuming: &bytes)
         
-        let limitPresence = Bool(fromConsuming: &bytes) ?? false
+        let limitPresence = (try? Bool(fromConsuming: &bytes)) ?? false
         let limit = limitPresence ? try Mutez(fromConsuming: &bytes) : nil
             
         self.init(
@@ -690,7 +666,7 @@ private extension TezosOperation.BlockHeader {
         let payloadRound = try Int32(fromConsuming: &bytes)
         let proofOfWorkNonce = try HexString(fromConsuming: &bytes, count: 8)
 
-        let seedNonceHashPresence = Bool(fromConsuming: &bytes) ?? false
+        let seedNonceHashPresence = (try? Bool(fromConsuming: &bytes)) ?? false
         let seedNonceHash = seedNonceHashPresence ? try NonceHash(fromConsuming: &bytes) : nil
 
         guard let liquidityBakingToggleVote = TezosOperation.LiquidityBakingToggleVote(fromConsuming: &bytes) else {

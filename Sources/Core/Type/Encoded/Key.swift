@@ -7,7 +7,7 @@
 
 // MARK: Key
 
-public enum Key: EncodedGroup {
+public enum Key: KeyProtocol, EncodedGroup {
     public typealias `Protocol` = KeyProtocol
     
     case secret(Secret)
@@ -40,6 +40,10 @@ public enum Key: EncodedGroup {
             throw TezosError.invalidValue("Invalid key base58 encoded value (\(base58).")
         }
     }
+    
+    public func asKey() -> Key {
+        self
+    }
 }
 
 public protocol KeyProtocol {
@@ -50,7 +54,7 @@ public protocol KeyProtocol {
 
 extension Key {
     
-    public enum Secret: EncodedGroup {
+    public enum Secret: SecretKeyProtocol, EncodedGroup {
         public typealias `Protocol` = SecretKeyProtocol
         
         case edsk(Ed25519SecretKey)
@@ -91,6 +95,10 @@ extension Key {
                 throw TezosError.invalidValue("Invalid secret key base58 encoded value (\(base58).")
             }
         }
+        
+        public func asSecretKey() -> Key.Secret {
+            self
+        }
     }
 }
 
@@ -108,7 +116,7 @@ extension Key.Secret.`Protocol` {
 
 extension Key {
     
-    public enum Public: EncodedGroup {
+    public enum Public: PublicKeyProtocol, EncodedGroup {
         public typealias `Protocol` = PublicKeyProtocol
         
         case edpk(Ed25519PublicKey)
@@ -148,6 +156,10 @@ extension Key {
             } else {
                 throw TezosError.invalidValue("Invalid public key base58 encoded value (\(base58).")
             }
+        }
+        
+        public func asPublicKey() -> Key.Public {
+            self
         }
     }
 }

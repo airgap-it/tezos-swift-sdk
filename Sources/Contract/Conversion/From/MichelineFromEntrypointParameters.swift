@@ -50,11 +50,11 @@ private extension Micheline {
     }
     
     init(from parameter: ContractEntrypointParameter, meta: ContractEntrypointParameter.Meta.Object) throws {
-        if let _ = try? meta.type.asPrim(Michelson._Type.Pair.self, Michelson.ComparableType.Pair.self) {
+        if let _ = try? meta.type.asPrim(Michelson.Type_.Pair.self, Michelson.ComparableType.Pair.self) {
             try self.init(from: parameter, pairMeta: meta)
-        } else if let _ = try? meta.type.asPrim(Michelson._Type.Option.self, Michelson.ComparableType.Option.self) {
+        } else if let _ = try? meta.type.asPrim(Michelson.Type_.Option.self, Michelson.ComparableType.Option.self) {
             try self.init(from: parameter, optionMeta: meta)
-        } else if let _ = try? meta.type.asPrim(Michelson._Type.Or.self, Michelson.ComparableType.Or.self) {
+        } else if let _ = try? meta.type.asPrim(Michelson.Type_.Or.self, Michelson.ComparableType.Or.self) {
             try self.init(from: parameter, orMeta: meta)
         } else {
             try self.init(from: parameter, simpleObjectMeta: meta)
@@ -245,9 +245,9 @@ private extension ContractEntrypointParameter {
         }
         
         private init(from code: Micheline.PrimitiveApplication, trace: Micheline.Trace = .root()) throws {
-            if code.args.isEmpty || (try? code.asPrim(Michelson._Type.BigMap.self, Michelson._Type.Lambda.self)) != nil {
+            if code.args.isEmpty || (try? code.asPrim(Michelson.Type_.BigMap.self, Michelson.Type_.Lambda.self)) != nil {
                 self = .value(.init(type: .prim(code), trace: trace))
-            } else if let type = try? code.asPrim(Michelson._Type.List.self, Michelson._Type.Set.self) {
+            } else if let type = try? code.asPrim(Michelson.Type_.List.self, Michelson.Type_.Set.self) {
                 guard type.args.count == 1 else {
                     throw TezosError.invalidValue("entrypoint code")
                 }
@@ -257,7 +257,7 @@ private extension ContractEntrypointParameter {
                     trace: trace,
                     elements: [try .init(from: type.args[0], trace: .node(.init(0)))]
                 ))
-            } else if let type = try? code.asPrim(Michelson._Type.Map.self) {
+            } else if let type = try? code.asPrim(Michelson.Type_.Map.self) {
                 guard type.args.count == 2 else {
                     throw TezosError.invalidValue("entrypoint code")
                 }
@@ -268,7 +268,7 @@ private extension ContractEntrypointParameter {
                     key: try .init(from: type.args[0], trace: .node(.init(0))),
                     value: try .init(from: type.args[1], trace: .node(.init(1)))
                 ))
-            } else if let type = try? code.asPrim(Michelson._Type.allPrims), !type.args.isEmpty {
+            } else if let type = try? code.asPrim(Michelson.Type_.allPrims), !type.args.isEmpty {
                 guard type.args.count <= 2 else {
                     throw TezosError.invalidValue("entrypoint code")
                 }

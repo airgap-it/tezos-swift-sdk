@@ -7,11 +7,19 @@
 
 import TezosCore
 
-public indirect enum Michelson: Hashable {
+public indirect enum Michelson: MichelsonProtocol, Hashable {
     public typealias `Protocol` = MichelsonProtocol
     
     case data(Data)
     case type(`Type`)
+    
+    public var annotations: [Annotation] {
+        common.annotations
+    }
+    
+    public func asMichelson() -> Michelson {
+        self
+    }
 }
 
 public protocol MichelsonProtocol {
@@ -101,6 +109,17 @@ public protocol MichelsonAnnotationProtocol {
 }
 
 // MARK: Utility Extensions
+
+extension Michelson {
+    var common: `Protocol` {
+        switch self {
+        case .data(let data):
+            return data.common
+        case .type(let type):
+            return type.common
+        }
+    }
+}
 
 public extension Michelson.`Protocol` {
     var annotations: [Michelson.Annotation] { [] }

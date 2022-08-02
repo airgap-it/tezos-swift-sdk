@@ -5,8 +5,8 @@
 //  Created by Julia Samol on 05.07.22.
 //
 
-extension Bool {
-    public init?(fromConsuming bytes: inout [UInt8]) {
+extension Bool: BytesCodable {
+    public init(fromConsuming bytes: inout [UInt8]) throws {
         let byte = bytes.consume(at: 0)
         switch byte {
         case 255:
@@ -14,7 +14,7 @@ extension Bool {
         case 0:
             self = false
         default:
-            return nil
+            throw TezosError.invalidValue("Invalid encoded Bool.")
         }
     }
     

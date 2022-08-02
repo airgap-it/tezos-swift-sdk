@@ -9,9 +9,9 @@ import TezosCore
 
 extension Michelson {
     // TODO: refactor
-    public typealias _Type = `Type`
+    public typealias Type_ = `Type`
     
-    public indirect enum `Type`: Hashable {
+    public indirect enum `Type`: MichelsonTypeProtocol, Hashable {
         public typealias `Protocol` = MichelsonTypeProtocol
         
         case parameter(Parameter)
@@ -37,10 +37,18 @@ extension Michelson {
         case chestKey(ChestKey)
         case comparable(ComparableType)
         
+        public var metadata: Metadata {
+            common.metadata
+        }
+        
+        public func asMichelsonType() -> `Type` {
+            self
+        }
+        
         // MARK: parameter
         
         public struct Parameter: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .parameter(self)
             }
             
@@ -73,7 +81,7 @@ extension Michelson {
         // MARK: storage
         
         public struct Storage: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .storage(self)
             }
             
@@ -106,7 +114,7 @@ extension Michelson {
         // MARK: code
         
         public struct Code: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .code(self)
             }
             
@@ -139,7 +147,7 @@ extension Michelson {
         // MARK: option
         
         public struct Option: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .option(self)
             }
             
@@ -180,7 +188,7 @@ extension Michelson {
         // MARK: list
         
         public struct List: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .list(self)
             }
             
@@ -213,7 +221,7 @@ extension Michelson {
         // MARK: set
         
         public struct Set: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .set(self)
             }
             
@@ -246,7 +254,7 @@ extension Michelson {
         // MARK: operation
         
         public struct Operation: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .operation(self)
             }
             
@@ -275,7 +283,7 @@ extension Michelson {
         // MARK: contract
         
         public struct Contract: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .contract(self)
             }
             
@@ -308,7 +316,7 @@ extension Michelson {
         // MARK: ticket
         
         public struct Ticket: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .ticket(self)
             }
             
@@ -341,7 +349,7 @@ extension Michelson {
         // MARK: pair
         
         public struct Pair: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .pair(self)
             }
             
@@ -388,7 +396,7 @@ extension Michelson {
         // MARK: or
         
         public struct Or: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .or(self)
             }
             
@@ -434,7 +442,7 @@ extension Michelson {
         // MARK: lambda
         
         public struct Lambda: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .lambda(self)
             }
             
@@ -474,7 +482,7 @@ extension Michelson {
         // MARK: map
         
         public struct Map: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .map(self)
             }
             
@@ -514,7 +522,7 @@ extension Michelson {
         // MARK: big_map
         
         public struct BigMap: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .bigMap(self)
             }
             
@@ -554,7 +562,7 @@ extension Michelson {
         // MARK: bls12_381_g1
         
         public struct Bls12_381G1: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .bls12_381G1(self)
             }
             
@@ -583,7 +591,7 @@ extension Michelson {
         // MARK: bls12_381_g2
         
         public struct Bls12_381G2: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .bls12_381G2(self)
             }
             
@@ -612,7 +620,7 @@ extension Michelson {
         // MARK: bls12_381_fr
         
         public struct Bls12_381Fr: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .bls12_381Fr(self)
             }
             
@@ -641,7 +649,7 @@ extension Michelson {
         // MARK: sapling_transaction
         
         public struct SaplingTransaction: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .saplingTransaction(self)
             }
             
@@ -681,7 +689,7 @@ extension Michelson {
         // MARK: sapling_state
         
         public struct SaplingState: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .saplingState(self)
             }
             
@@ -721,7 +729,7 @@ extension Michelson {
         // MARK: chest
         
         public struct Chest: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .chest(self)
             }
             
@@ -750,7 +758,7 @@ extension Michelson {
         // MARK: chest_key
         
         public struct ChestKey: `Protocol`, Prim, Hashable {
-            public func asType() -> `Type` {
+            public func asMichelsonType() -> `Type` {
                 .chestKey(self)
             }
             
@@ -781,12 +789,17 @@ extension Michelson {
 public protocol MichelsonTypeProtocol: Michelson.`Protocol` {
     var metadata: Michelson.`Type`.Metadata { get }
     
-    func asType() -> Michelson.`Type`
+    func asMichelsonType() -> Michelson.`Type`
 }
 
 public extension Michelson.`Type`.`Protocol` {
+    var annotations: [Michelson.Annotation] {
+        let annotations: [Michelson.Annotation?] = [metadata.typeName, metadata.fieldName]
+        return annotations.compactMap { $0 }
+    }
+    
     func asMichelson() -> Michelson {
-        .type(asType())
+        .type(asMichelsonType())
     }
 }
 
@@ -840,16 +853,54 @@ extension Michelson.`Type` {
 
 // MARK: Utility Extensions
 
-public extension Michelson.`Type` {
-    var annotations: [Michelson.Annotation] {
-        let annotations: [Michelson.Annotation?] = [metadata.typeName, metadata.fieldName]
-        return annotations.compactMap { $0 }
-    }
-}
-
 extension Michelson.`Type` {
-    var metadata: Metadata {
-        asProtocol().metadata
+    var common: `Protocol` {
+        switch self {
+        case .parameter(let parameter):
+            return parameter
+        case .storage(let storage):
+            return storage
+        case .code(let code):
+            return code
+        case .option(let option):
+            return option
+        case .list(let list):
+            return list
+        case .set(let set):
+            return set
+        case .operation(let operation):
+            return operation
+        case .contract(let contract):
+            return contract
+        case .ticket(let ticket):
+            return ticket
+        case .pair(let pair):
+            return pair
+        case .or(let or):
+            return or
+        case .lambda(let lambda):
+            return lambda
+        case .map(let map):
+            return map
+        case .bigMap(let bigMap):
+            return bigMap
+        case .bls12_381G1(let bls12_381G1):
+            return bls12_381G1
+        case .bls12_381G2(let bls12_381G2):
+            return bls12_381G2
+        case .bls12_381Fr(let bls12_381Fr):
+            return bls12_381Fr
+        case .saplingTransaction(let saplingTransaction):
+            return saplingTransaction
+        case .saplingState(let saplingState):
+            return saplingState
+        case .chest(let chest):
+            return chest
+        case .chestKey(let chestKey):
+            return chestKey
+        case .comparable(let comparableType):
+            return comparableType.common
+        }
     }
 }
 

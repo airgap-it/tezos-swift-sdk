@@ -5,16 +5,22 @@
 //  Created by Julia Samol on 14.06.22.
 //
 
+// MARK: BytesTag
+
 public protocol BytesTag {
     var value: [UInt8] { get }
 }
-
-public protocol BytesTagIterable: BytesTag, CaseIterable {}
 
 public extension BytesTag {
     static func +(lhs: Self, rhs: [UInt8]) -> [UInt8] {
         lhs.value + rhs
     }
+}
+
+// MARK: BytesTagIterable
+
+public protocol BytesTagIterable: BytesTag, CaseIterable {
+    
 }
 
 public extension BytesTagIterable {

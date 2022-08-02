@@ -7,10 +7,16 @@
 
 import TezosCore
 
-public indirect enum Micheline: Hashable, Codable {
+public indirect enum Micheline: Hashable, Codable, MichelineProtocol {
+    public typealias `Protocol` = MichelineProtocol
+    
     case literal(Literal)
     case prim(PrimitiveApplication)
     case sequence(Sequence)
+    
+    public func asMicheline() -> Micheline {
+        self
+    }
     
     // MARK: Codable
     
@@ -45,6 +51,10 @@ public indirect enum Micheline: Hashable, Codable {
         case bytes
         case prim
     }
+}
+
+public protocol MichelineProtocol {
+    func asMicheline() -> Micheline
 }
 
 // MARK: Utility Extensions

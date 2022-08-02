@@ -333,7 +333,7 @@ class MichelinePackingTests: XCTestCase {
                 valuesWithSchemas: [
                     (.init(42), .prim(
                         .init(
-                            prim: Michelson._Type.BigMap.self,
+                            prim: Michelson.Type_.BigMap.self,
                             args: [
                                 .prim(try! .init(prim: "unit")),
                                 .prim(try! .init(prim: "unit"))
@@ -1660,7 +1660,7 @@ class MichelinePackingTests: XCTestCase {
             ("00", nil),
             ("00020000000f0743075e036c036c0200000002034f", .prim(
                 .init(
-                    prim: Michelson._Type.Lambda.self,
+                    prim: Michelson.Type_.Lambda.self,
                     args: [
                         .prim(try! .init(prim: "unit")),
                         .prim(try! .init(prim: "unit"))
@@ -1669,7 +1669,7 @@ class MichelinePackingTests: XCTestCase {
             )),
             ("050743075e036c036c0200000002034f", .prim(
                 .init(
-                    prim: Michelson._Type.Lambda.self,
+                    prim: Michelson.Type_.Lambda.self,
                     args: [
                         .prim(try! .init(prim: "unit")),
                         .prim(try! .init(prim: "unit"))

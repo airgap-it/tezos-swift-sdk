@@ -13,11 +13,11 @@ public extension Micheline {
     func normalized() throws -> Micheline {
         switch self {
         case .literal(let literal):
-            return .literal(literal.normalized())
+            return literal.normalized().asMicheline()
         case .prim(let primitiveApplication):
-            return .prim(try primitiveApplication.normalized())
+            return try primitiveApplication.normalized().asMicheline()
         case .sequence(let sequence):
-            return .sequence(try sequence.normalized())
+            return try sequence.normalized().asMicheline()
         }
     }
 }
@@ -38,7 +38,7 @@ public extension Micheline.PrimitiveApplication {
     }
     
     private func normalizedArgs() throws -> [Micheline] {
-        guard let pair = try? asPrim(Michelson.Data.Pair.self, Michelson._Type.Pair.self, Michelson.ComparableType.Pair.self), pair.args.count > 2 else {
+        guard let pair = try? asPrim(Michelson.Data.Pair.self, Michelson.Type_.Pair.self, Michelson.ComparableType.Pair.self), pair.args.count > 2 else {
             return try args.map({ try $0.normalized() })
         }
         

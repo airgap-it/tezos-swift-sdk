@@ -64,21 +64,21 @@ public enum ContractStorageEntry: Hashable {
     }
     
     init(from value: Micheline, type: Micheline) throws {
-        if let bigMapType = try? type.asPrim(Michelson._Type.BigMap.self),
+        if let bigMapType = try? type.asPrim(Michelson.Type_.BigMap.self),
            case let .literal(integer) = value,
            case let .integer(bigMapValue) = integer
         {
             self = .bigMap(.init(from: bigMapValue, type: bigMapType))
-        } else if let sequenceType = try? type.asPrim(Michelson._Type.List.self, Michelson._Type.Set.self),
+        } else if let sequenceType = try? type.asPrim(Michelson.Type_.List.self, Michelson.Type_.Set.self),
                   sequenceType.args.count == 1,
                   case let .sequence(sequenceValue) = value
         {
             self = .sequence(try .init(from: sequenceValue, type: sequenceType, elementType: sequenceType.args[0]))
-        } else if let lambdaType = try? type.asPrim(Michelson._Type.Lambda.self),
+        } else if let lambdaType = try? type.asPrim(Michelson.Type_.Lambda.self),
                   case let .sequence(lambdaValue) = value
         {
             self = .sequence(try .init(from: lambdaValue, type: lambdaType))
-        } else if let mapType = try? type.asPrim(Michelson._Type.Map.self),
+        } else if let mapType = try? type.asPrim(Michelson.Type_.Map.self),
                   case let .sequence(mapValue) = value
         {
             self = .map(try .init(from: mapValue, type: mapType))
