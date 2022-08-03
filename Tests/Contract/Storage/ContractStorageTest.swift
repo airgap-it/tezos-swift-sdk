@@ -30,7 +30,7 @@ class ContractStorageTest: XCTestCase {
                 from: .init { _ in
                     .init(
                         parameter: .sequence([]),
-                        storage: .prim(try! .init(prim: "storage", args: [testCase.type])),
+                        storage: .type(prim: .storage, args: [testCase.type]),
                         code: .sequence([])
                     )
                 },
@@ -46,78 +46,78 @@ class ContractStorageTest: XCTestCase {
     private var testCases: [StorageTestCase] {
         [
             .init {
-                let type: Micheline = .prim(try! .init(
-                    prim: "pair",
+                let type: Micheline = .type(
+                    prim: .pair,
                     args: [
-                        .prim(try! .init(
-                            prim: "big_map",
+                        try! .type(
+                            prim: .bigMap,
                             args: [
-                                .prim(try! .init(prim: "address")),
-                                .prim(try! .init(prim: "nat", annots: [":balance"]))
+                                .comparableType(prim: .address),
+                                try! .comparableType(prim: .nat, annots: [":balance"])
                             ],
                             annots: ["%ledger"]
-                        )),
-                        .prim(try! .init(
-                            prim: "pair",
+                        ),
+                        .type(
+                            prim: .pair,
                             args: [
-                                .prim(try! .init(
-                                    prim: "big_map",
+                                try! .type(
+                                    prim: .bigMap,
                                     args: [
-                                        .prim(try! .init(
-                                            prim: "pair",
+                                        .comparableType(
+                                            prim: .pair,
                                             args: [
-                                                .prim(try! .init(prim: "address", annots: [":owner"])),
-                                                .prim(try! .init(prim: "address", annots: [":spender"]))
+                                                try! .comparableType(prim: .address, annots: [":owner"]),
+                                                try! .comparableType(prim: .address, annots: [":spender"])
                                             ]
-                                        )),
-                                        .prim(try! .init(prim: "nat"))
+                                        ),
+                                              .comparableType(prim: .nat)
                                     ],
                                     annots: ["%approvals"]
-                                )),
-                                .prim(try! .init(
-                                    prim: "pair",
+                                ),
+                                try! .comparableType(
+                                    prim: .pair,
                                     args: [
-                                        .prim(try! .init(prim: "address", annots: ["%admin"])),
-                                        .prim(try! .init(
-                                            prim: "pair",
+                                        try! .comparableType(prim: .address, annots: ["%admin"]),
+                                        .comparableType(
+                                            prim: .pair,
                                             args: [
-                                                .prim(try! .init(prim: "bool", annots: ["%paused"])),
-                                                .prim(try! .init(prim: "nat", annots: ["%totalSupply"]))
+                                                try! .comparableType(prim: .bool, annots: ["%paused"]),
+                                                try! .comparableType(prim: .nat, annots: ["%totalSupply"])
                                             ]
-                                        ))
+                                        )
                                     ],
                                     annots: ["%fields"]
-                                ))
+                                )
                             ]
-                        ))
+                        )
                     ]
-                ))
+                )
                 
-                let value: Micheline = .prim(try! .init(
-                    prim: "Pair",
+                let value: Micheline = .data(
+                    prim: .pair,
                     args: [
-                        .literal(.integer(.init(51296))),
-                        .prim(try! .init(
-                            prim: "Pair",
+                        .int(51296),
+                        .data(
+                            prim: .pair,
                             args: [
-                                .literal(.integer(.init(51297))),
-                                .prim(try! .init(
-                                    prim: "Pair",
+                                .int(51297),
+                                .data(
+                                    prim: .pair,
                                     args: [
-                                        .literal(.bytes(try! .init("0x0000a7848de3b1fce76a7ffce2c7ce40e46be33aed7c"))),
-                                        .prim(try! .init(
-                                            prim: "Pair",
+                                        try! .bytes("0x0000a7848de3b1fce76a7ffce2c7ce40e46be33aed7c"),
+                                        .data(
+                                            prim: .pair,
                                             args: [
-                                                .prim(try! .init(prim: "True")),
-                                                .literal(.integer(.init(20)))
+                                                .data(prim: .true),
+                                                .int(20)
                                             ]
-                                        ))
+                                        )
                                     ]
-                                ))
+                                )
                             ]
-                        ))
+                        )
                     ]
-                ))
+                )
                 
                 let entry: ContractStorageEntry = .object(.init(
                     value: value,

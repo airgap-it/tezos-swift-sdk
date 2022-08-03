@@ -40,7 +40,7 @@ extension Michelson {
         
         // MARK: unit
         
-        public struct Unit: `Protocol`, Prim, Hashable {
+        public struct Unit: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .unit(self)
             }
@@ -69,7 +69,7 @@ extension Michelson {
         
         // MARK: never
         
-        public struct Never: `Protocol`, Prim, Hashable {
+        public struct Never: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .never(self)
             }
@@ -98,7 +98,7 @@ extension Michelson {
         
         // MARK: bool
         
-        public struct Bool: `Protocol`, Prim, Hashable {
+        public struct Bool: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .bool(self)
             }
@@ -127,7 +127,7 @@ extension Michelson {
         
         // MARK: int
         
-        public struct Int: `Protocol`, Prim, Hashable {
+        public struct Int: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .int(self)
             }
@@ -156,7 +156,7 @@ extension Michelson {
         
         // MARK: nat
         
-        public struct Nat: `Protocol`, Prim, Hashable {
+        public struct Nat: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .nat(self)
             }
@@ -185,7 +185,7 @@ extension Michelson {
         
         // MARK: string
         
-        public struct String: `Protocol`, Prim, Hashable {
+        public struct String: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .string(self)
             }
@@ -214,7 +214,7 @@ extension Michelson {
         
         // MARK: chain_id
         
-        public struct ChainID: `Protocol`, Prim, Hashable {
+        public struct ChainID: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .chainID(self)
             }
@@ -243,7 +243,7 @@ extension Michelson {
         
         // MARK: bytes
         
-        public struct Bytes: `Protocol`, Prim, Hashable {
+        public struct Bytes: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .bytes(self)
             }
@@ -272,7 +272,7 @@ extension Michelson {
         
         // MARK: mutez
         
-        public struct Mutez: `Protocol`, Prim, Hashable {
+        public struct Mutez: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .mutez(self)
             }
@@ -301,7 +301,7 @@ extension Michelson {
         
         // MARK: keyhash
         
-        public struct KeyHash: `Protocol`, Prim, Hashable {
+        public struct KeyHash: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .keyHash(self)
             }
@@ -330,7 +330,7 @@ extension Michelson {
         
         // MARK: key
         
-        public struct Key: `Protocol`, Prim, Hashable {
+        public struct Key: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .key(self)
             }
@@ -359,7 +359,7 @@ extension Michelson {
         
         // MARK: signature
         
-        public struct Signature: `Protocol`, Prim, Hashable {
+        public struct Signature: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .signature(self)
             }
@@ -388,7 +388,7 @@ extension Michelson {
         
         // MARK: timestamp
         
-        public struct Timestamp: `Protocol`, Prim, Hashable {
+        public struct Timestamp: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .timestamp(self)
             }
@@ -417,7 +417,7 @@ extension Michelson {
         
         // MARK: address
         
-        public struct Address: `Protocol`, Prim, Hashable {
+        public struct Address: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .address(self)
             }
@@ -448,7 +448,7 @@ extension Michelson {
         
         // MARK: option
         
-        public struct Option: `Protocol`, Prim, Hashable {
+        public struct Option: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .option(self)
             }
@@ -489,7 +489,7 @@ extension Michelson {
         
         // MARK: or
         
-        public struct Or: `Protocol`, Prim, Hashable {
+        public struct Or: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .or(self)
             }
@@ -533,7 +533,7 @@ extension Michelson {
         
         // MARK: pair
         
-        public struct Pair: `Protocol`, Prim, Hashable {
+        public struct Pair: `Protocol`, Prim.`Protocol`, Hashable {
             public func asMichelsonComparableType() -> ComparableType {
                 .pair(self)
             }
@@ -594,31 +594,114 @@ public extension Michelson.ComparableType.`Protocol` {
 // MARK: Prim
 
 extension Michelson.ComparableType {
-    public typealias Prim = MichelsonComparableTypePrimProtocol
     
-    public static var allPrims: [Prim.Type] {
-        [
-            Unit.self,
-            Never.self,
-            Bool.self,
-            Int.self,
-            Nat.self,
-            String.self,
-            ChainID.self,
-            Bytes.self,
-            Mutez.self,
-            KeyHash.self,
-            Key.self,
-            Signature.self,
-            Timestamp.self,
-            Option.self,
-            Or.self,
-            Pair.self,
-        ]
+    public enum Prim: Hashable, RawRepresentable, CaseIterable {
+        public typealias `Protocol` = MichelsonComparableTypePrimProtocol
+        public typealias RawValue = `Protocol`.Type
+        
+        case unit
+        case never
+        case bool
+        case int
+        case nat
+        case string
+        case chainID
+        case bytes
+        case mutez
+        case keyHash
+        case key
+        case signature
+        case timestamp
+        case address
+        case option
+        case or
+        case pair
+        
+        public static let allRawValues: [RawValue] = allCases.map { $0.rawValue }
+        
+        public init?(rawValue: RawValue) {
+            switch rawValue {
+            case is Unit.Type:
+                self = .unit
+            case is Never.Type:
+                self = .never
+            case is Bool.Type:
+                self = .bool
+            case is Int.Type:
+                self = .int
+            case is Nat.Type:
+                self = .nat
+            case is String.Type:
+                self = .string
+            case is ChainID.Type:
+                self = .chainID
+            case is Bytes.Type:
+                self = .bytes
+            case is Mutez.Type:
+                self = .mutez
+            case is KeyHash.Type:
+                self = .keyHash
+            case is Key.Type:
+                self = .key
+            case is Signature.Type:
+                self = .signature
+            case is Timestamp.Type:
+                self = .timestamp
+            case is Address.Type:
+                self = .address
+            case is Option.Type:
+                self = .option
+            case is Or.Type:
+                self = .or
+            case is Pair.Type:
+                self = .pair
+            default:
+                return nil
+            }
+        }
+        
+        public var rawValue: RawValue {
+            switch self {
+            case .unit:
+                return Unit.self
+            case .never:
+                return Never.self
+            case .bool:
+                return Bool.self
+            case .int:
+                return Int.self
+            case .nat:
+                return Nat.self
+            case .string:
+                return String.self
+            case .chainID:
+                return ChainID.self
+            case .bytes:
+                return Bytes.self
+            case .mutez:
+                return Mutez.self
+            case .keyHash:
+                return KeyHash.self
+            case .key:
+                return Key.self
+            case .signature:
+                return Signature.self
+            case .timestamp:
+                return Timestamp.self
+            case .address:
+                return Address.self
+            case .option:
+                return Option.self
+            case .or:
+                return Or.self
+            case .pair:
+                return Pair.self
+            }
+        }
     }
 }
 
-public protocol MichelsonComparableTypePrimProtocol: Michelson.`Type`.Prim {}
+public protocol MichelsonComparableTypePrimProtocol: Michelson.`Type`.Prim.`Protocol` {}
 
 // MARK: Metadata
 

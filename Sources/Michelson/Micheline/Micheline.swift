@@ -23,14 +23,14 @@ public indirect enum Micheline: Hashable, Codable, MichelineProtocol {
     public init(from decoder: Decoder) throws {
         if let container = try? decoder.container(keyedBy: CodingKeys.self) {
             if container.contains(.prim) {
-                self = .prim(try PrimitiveApplication(from: decoder))
+                self = .prim(try .init(from: decoder))
             } else if container.containsAny(.int, .string, .bytes) {
-                self = .literal(try Literal(from: decoder))
+                self = .literal(try .init(from: decoder))
             } else {
                 throw TezosError.invalidValue("Unknown Micheline encoded value.")
             }
         } else {
-            self = .sequence(try Sequence(from: decoder))
+            self = .sequence(try .init(from: decoder))
         }
     }
     

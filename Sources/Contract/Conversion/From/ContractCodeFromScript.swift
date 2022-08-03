@@ -20,9 +20,9 @@ extension ContractCode {
             throw TezosError.invalidValue("Unkown contract code type.")
         }
         
-        let parameter = try contractCode[0].asPrim(Michelson.Type_.Parameter.self)
-        let storage = try contractCode[1].asPrim(Michelson.Type_.Storage.self)
-        let code = try contractCode[2].asPrim(Michelson.Type_.Code.self)
+        let parameter = try contractCode[0].asPrim(.type(.parameter))
+        let storage = try contractCode[1].asPrim(.type(.storage))
+        let code = try contractCode[2].asPrim(.type(.code))
         
         self.init(parameter: .prim(parameter), storage: .prim(storage), code: .prim(code))
     }

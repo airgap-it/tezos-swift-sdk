@@ -89,7 +89,7 @@ private extension ContractCode {
     
     func findEntrypoint(_ entrypoint: Entrypoint) -> Micheline? {
         guard case .default = entrypoint,
-              let parameter = try? parameter.asPrim(Michelson.Type_.Parameter.self),
+              let parameter = try? parameter.asPrim(.type(.parameter)),
               parameter.args.count == 1
         else {
             return nil

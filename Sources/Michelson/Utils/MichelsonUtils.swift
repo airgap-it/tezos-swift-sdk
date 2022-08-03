@@ -6,11 +6,11 @@
 //
 
 extension Michelson {
-    static func recognizePrim(_ prim: String) -> [Prim.Type] {
-        allPrims.filter { $0.name == prim }
+    static func recognizePrim(_ prim: String) -> [Prim] {
+        Prim.allRawValues.filter { $0.name == prim }.compactMap { .init(rawValue: $0) }
     }
     
-    static func recognizePrim(_ tag: [UInt8]) -> [Prim.Type] {
-        allPrims.filter { $0.tag == tag }
+    static func recognizePrim(_ tag: [UInt8]) -> [Prim] {
+        Prim.allRawValues.filter { $0.tag == tag }.compactMap { .init(rawValue: $0) }
     }
 }

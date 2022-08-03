@@ -64,21 +64,21 @@ public enum ContractStorageEntry: Hashable {
     }
     
     init(from value: Micheline, type: Micheline) throws {
-        if let bigMapType = try? type.asPrim(Michelson.Type_.BigMap.self),
+        if let bigMapType = try? type.asPrim(.type(.bigMap)),
            case let .literal(integer) = value,
            case let .integer(bigMapValue) = integer
         {
             self = .bigMap(.init(from: bigMapValue, type: bigMapType))
-        } else if let sequenceType = try? type.asPrim(Michelson.Type_.List.self, Michelson.Type_.Set.self),
+        } else if let sequenceType = try? type.asPrim(.type(.list), .type(.set)),
                   sequenceType.args.count == 1,
                   case let .sequence(sequenceValue) = value
         {
             self = .sequence(try .init(from: sequenceValue, type: sequenceType, elementType: sequenceType.args[0]))
-        } else if let lambdaType = try? type.asPrim(Michelson.Type_.Lambda.self),
+        } else if let lambdaType = try? type.asPrim(.type(.lambda)),
                   case let .sequence(lambdaValue) = value
         {
             self = .sequence(try .init(from: lambdaValue, type: lambdaType))
-        } else if let mapType = try? type.asPrim(Michelson.Type_.Map.self),
+        } else if let mapType = try? type.asPrim(.type(.map)),
                   case let .sequence(mapValue) = value
         {
             self = .map(try .init(from: mapValue, type: mapType))
@@ -203,7 +203,7 @@ extension ContractStorageEntry {
             }
             
             let dict: [ContractStorageEntry: ContractStorageEntry] = try value.reduce(into: [:]) { (dict, next) in
-                guard let elt = try? next.asPrim(Michelson.Data.Elt.self), elt.args.count == 2 else {
+                guard let elt = try? next.asPrim(.data(.elt)), elt.args.count == 2 else {
                     throw TezosContractError.invalidType("storage map value")
                 }
                 

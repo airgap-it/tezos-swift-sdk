@@ -80,17 +80,21 @@ public extension Micheline.PrimitiveApplication {
         try self.init(prim: prim, args: args.map({ $0.toMicheline() }), annots: annots)
     }
     
-    init<T : Michelson.Prim>(prim: T.Type, args: [Micheline] = [], annots: [String]) throws {
-        try self.init(prim: prim.name, args: args, annots: annots)
+    init(prim: Michelson.Prim, args: [Micheline] = [], annots: [String]) throws {
+        try self.init(prim: prim.rawValue.name, args: args, annots: annots)
     }
     
-    init<T : Michelson.Prim>(prim: T.Type, args: [Micheline] = []) {
-        self.prim = prim.name
+    init(prim: Michelson.Prim, args: [Micheline] = []) {
+        self.prim = prim.rawValue.name
         self.args = args
         self.annots = []
     }
     
-    init<T : Michelson.Prim>(prim: T.Type, args: [ConvertibleToMicheline]) {
+    init(prim: Michelson.Prim, args: [ConvertibleToMicheline], annots: [String]) throws {
+        try self.init(prim: prim, args: args.map({ $0.toMicheline() }), annots: annots)
+    }
+    
+    init(prim: Michelson.Prim, args: [ConvertibleToMicheline]) {
         self.init(prim: prim, args: args.map({ $0.toMicheline() }))
     }
 }

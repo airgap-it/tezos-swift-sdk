@@ -38,7 +38,7 @@ public extension Micheline.PrimitiveApplication {
     }
     
     private func normalizedArgs() throws -> [Micheline] {
-        guard let pair = try? asPrim(Michelson.Data.Pair.self, Michelson.Type_.Pair.self, Michelson.ComparableType.Pair.self), pair.args.count > 2 else {
+        guard let pair = try? asPrim(.data(.pair), .type(.pair), .type(.comparable(.pair))), pair.args.count > 2 else {
             return try args.map({ try $0.normalized() })
         }
         
