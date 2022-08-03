@@ -9,7 +9,7 @@ import TezosCore
 import TezosMichelson
 import TezosRPC
     
-public enum ContractStorageEntry: Hashable {
+public enum ContractStorageEntry: ContractStorageEntryProtocol, Hashable {
     public typealias `Protocol` = ContractStorageEntryProtocol
     
     case value(Value)
@@ -19,48 +19,15 @@ public enum ContractStorageEntry: Hashable {
     case bigMap(BigMap)
     
     public var names: Set<String> {
-        switch self {
-        case .value(let value):
-            return value.names
-        case .object(let object):
-            return object.names
-        case .sequence(let sequence):
-            return sequence.names
-        case .map(let map):
-            return map.names
-        case .bigMap(let bigMap):
-            return bigMap.names
-        }
+        common.names
     }
     
     public var value: Micheline {
-        switch self {
-        case .value(let value):
-            return value.value
-        case .object(let object):
-            return object.value
-        case .sequence(let sequence):
-            return sequence.value
-        case .map(let map):
-            return map.value
-        case .bigMap(let bigMap):
-            return bigMap.value
-        }
+        common.value
     }
     
     public var type: Micheline {
-        switch self {
-        case .value(let value):
-            return value.type
-        case .object(let object):
-            return object.type
-        case .sequence(let sequence):
-            return sequence.type
-        case .map(let map):
-            return map.type
-        case .bigMap(let bigMap):
-            return bigMap.type
-        }
+        common.type
     }
     
     init(from value: Micheline, type: Micheline) throws {
@@ -90,6 +57,28 @@ public enum ContractStorageEntry: Hashable {
             throw TezosContractError.invalidType("storage type")
         }
     }
+    
+    public func asStorageEntry() -> ContractStorageEntry {
+        self
+    }
+}
+
+public protocol ContractStorageEntryProtocol {
+    var value: Micheline { get }
+    var type: Micheline { get }
+    
+    func asStorageEntry() -> ContractStorageEntry
+}
+
+public extension ContractStorageEntry.`Protocol` {
+    
+    var names: Set<String> {
+        guard let type = try? type.asPrim() else {
+            return []
+        }
+        
+        return .init(type.annots.map { $0 })
+    }
 }
 
 // MARK: ContractStorageEntry.Value
@@ -107,6 +96,10 @@ extension ContractStorageEntry {
         init(value: Micheline, type: Micheline) {
             self.value = value
             self.type = type
+        }
+        
+        public func asStorageEntry() -> ContractStorageEntry {
+            .value(self)
         }
     }
 }
@@ -158,6 +151,10 @@ extension ContractStorageEntry {
         subscript(key: String) -> ContractStorageEntry? {
             dict[key]
         }
+        
+        public func asStorageEntry() -> ContractStorageEntry {
+            .object(self)
+        }
     }
 }
 
@@ -183,6 +180,10 @@ extension ContractStorageEntry {
             self.value = value
             self.type = type
             self.elements = values
+        }
+        
+        public func asStorageEntry() -> ContractStorageEntry {
+            .sequence(self)
         }
     }
 }
@@ -225,6 +226,10 @@ extension ContractStorageEntry {
         subscript(key: ContractStorageEntry) -> ContractStorageEntry? {
             dict[key]
         }
+        
+        public func asStorageEntry() -> ContractStorageEntry {
+            .map(self)
+        }
     }
 }
 
@@ -247,23 +252,28 @@ extension ContractStorageEntry {
             self.value = value
             self.type = type
         }
+        
+        public func asStorageEntry() -> ContractStorageEntry {
+            .bigMap(self)
+        }
     }
 }
 
-// MARK: Protocol
+// MARK: Utility Extensions
 
-public protocol ContractStorageEntryProtocol {
-    var value: Micheline { get }
-    var type: Micheline { get }
-}
-
-public extension ContractStorageEntry.`Protocol` {
-    
-    var names: Set<String> {
-        guard let type = try? type.asPrim() else {
-            return []
+private extension ContractStorageEntry {
+    var common: `Protocol` {
+        switch self {
+        case .value(let value):
+            return value
+        case .object(let object):
+            return object
+        case .sequence(let sequence):
+            return sequence
+        case .map(let map):
+            return map
+        case .bigMap(let bigMap):
+            return bigMap
         }
-        
-        return .init(type.annots.map { $0 })
     }
 }
