@@ -397,12 +397,5 @@ class OperationSigningTest: XCTestCase {
         enum Error: Swift.Error {
             case sodium(Int)
         }
-        
-        private var p256KeyPair: (P256SecretKey, P256PublicKey) {
-            (
-                try! .init(base58: "p2sk2rVhhi5EfEdhJ3wQGsdc4ZEN3i7Z8f73Bn1xp1JKjETNyJ85oW"),
-                try! .init(base58: "p2pk67fo5oy6byruqDtzVixbM7L3cVBDRMcFhA33XD5w2HF4fRXDJhw")
-            )
-        }
     }
 }

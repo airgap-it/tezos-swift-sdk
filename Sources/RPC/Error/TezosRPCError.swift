@@ -5,10 +5,9 @@
 //  Created by Julia Samol on 20.07.22.
 //
 
-public struct TezosRPCError: Error {
-    let errors: [RPCError]
-    
-    public var description: String {
-        "Operation failed with errors \(errors)."
-    }
+public enum TezosRPCError: Error {
+    case rpc([RPCError])
+    case invalidURL(String)
+    case http(Int)
+    case unknown
 }
