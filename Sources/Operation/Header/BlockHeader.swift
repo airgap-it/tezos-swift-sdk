@@ -5,14 +5,11 @@
 //  Created by Julia Samol on 05.07.22.
 //
 
-import Foundation
 import TezosCore
 
 extension TezosOperation {
-    public typealias ShellBlockHeader = ShellBlockHeaderProtocol
-    public typealias ProtocolBlockHeader = ProtocolBlockHeaderProtocol
     
-    public struct BlockHeader: Hashable, ShellBlockHeader, ProtocolBlockHeader {
+    public struct BlockHeader: Hashable {
         public let level: Int32
         public let proto: UInt8
         public let predecessor: BlockHash
@@ -77,24 +74,4 @@ extension TezosOperation {
             }
         }
     }
-}
-
-public protocol ShellBlockHeaderProtocol {
-    var level: Int32 { get }
-    var proto: UInt8 { get }
-    var predecessor: BlockHash { get }
-    var timestamp: Timestamp { get }
-    var validationPass: UInt8 { get }
-    var operationsHash: OperationListListHash { get }
-    var fitness: [HexString] { get }
-    var context: ContextHash { get }
-}
-
-public protocol ProtocolBlockHeaderProtocol {
-    var payloadHash: BlockPayloadHash { get }
-    var payloadRound: Int32 { get }
-    var proofOfWorkNonce: HexString { get }
-    var seedNonceHash: NonceHash? { get }
-    var liquidityBakingToggleVote: TezosOperation.LiquidityBakingToggleVote { get }
-    var signature: Signature { get }
 }

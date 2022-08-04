@@ -5,14 +5,14 @@
 //  Created by Julia Samol on 06.07.22.
 //
 
-import Foundation
 import TezosCore
+import TezosCryptoDefault
 
 // MARK: TezosOperation
 
 extension TezosOperation {
     public func sign(with key: Key.Secret) throws -> TezosOperation.Signed {
-        fatalError("TODO: Inject crypto")
+        try sign(with: key, using: .init(provider: DefaultCryptoProvider()))
     }
     
     func sign<Provider: CryptoProvider>(with key: Key.Secret, using crypto: Crypto<Provider>) throws -> TezosOperation.Signed {
@@ -41,7 +41,7 @@ extension TezosOperation {
 
 extension TezosOperation.Unsigned {
     public func sign(with key: Key.Secret) throws -> TezosOperation.Signed {
-        fatalError("TODO: Inject crypto")
+        try sign(with: key, using: .init(provider: DefaultCryptoProvider()))
     }
     
     func sign<Provider: CryptoProvider>(with key: Key.Secret, using crypto: Crypto<Provider>) throws -> TezosOperation.Signed {
@@ -51,7 +51,7 @@ extension TezosOperation.Unsigned {
 
 extension TezosOperation.Signed {
     public func sign(with key: Key.Secret) throws -> TezosOperation.Signed {
-        fatalError("TODO: Inject crypto")
+        try sign(with: key, using: .init(provider: DefaultCryptoProvider()))
     }
     
     func sign<Provider: CryptoProvider>(with key: Key.Secret, using crypto: Crypto<Provider>) throws -> TezosOperation.Signed {
@@ -59,7 +59,7 @@ extension TezosOperation.Signed {
     }
     
     public func verify(with key: Key.Public) throws -> Bool {
-        try key.verify(self)
+        try verify(with: key, using: .init(provider: DefaultCryptoProvider()))
     }
     
     func verify<Provider: CryptoProvider>(with key: Key.Public, using crypto: Crypto<Provider>) throws -> Bool {

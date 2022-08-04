@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct P256Signature: Signature.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "p2sig"
     public static let base58Bytes: [UInt8] = [54, 240, 44, 52]

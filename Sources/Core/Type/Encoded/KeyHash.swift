@@ -5,11 +5,9 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 // MARK: KeyHash
 
-public enum KeyHash: EncodedGroup {
+public enum KeyHash: KeyHashProtocol, EncodedGroup {
     public typealias `Protocol` = KeyHashProtocol
     
     case `public`(Public)
@@ -37,6 +35,10 @@ public enum KeyHash: EncodedGroup {
             throw TezosError.invalidValue("Invalid key hash base58 encoded value (\(base58).")
         }
     }
+    
+    public func asKeyHash() -> KeyHash {
+        self
+    }
 }
 
 public protocol KeyHashProtocol {
@@ -47,7 +49,7 @@ public protocol KeyHashProtocol {
 
 extension KeyHash {
     
-    public enum Public: EncodedGroup {
+    public enum Public: PublicKeyHashProtocol, EncodedGroup {
         public typealias `Protocol` = PublicKeyHashProtocol
         
         case tz1(Ed25519PublicKeyHash)
@@ -88,6 +90,10 @@ extension KeyHash {
                 throw TezosError.invalidValue("Invalid public key hash base58 encoded value (\(base58).")
             }
         }
+        
+        public func asPublicKeyHash() -> KeyHash.Public {
+            self
+        }
     }
 }
 
@@ -103,7 +109,7 @@ public extension KeyHash.Public.`Protocol` {
 
 // MARK: BlindedKeyHash
 
-public enum BlindedKeyHash: EncodedGroup {
+public enum BlindedKeyHash: BlindedKeyHashProtocol, EncodedGroup {
     public typealias `Protocol` = BlindedKeyHashProtocol
     
     case `public`(Public)
@@ -131,6 +137,10 @@ public enum BlindedKeyHash: EncodedGroup {
             throw TezosError.invalidValue("Invalid blinded key hash base58 encoded value (\(base58).")
         }
     }
+    
+    public func asBlindedKeyHash() -> BlindedKeyHash {
+        self
+    }
 }
 
 public protocol BlindedKeyHashProtocol {
@@ -141,7 +151,7 @@ public protocol BlindedKeyHashProtocol {
 
 extension BlindedKeyHash {
     
-    public enum Public: EncodedGroup {
+    public enum Public: PublicBlindedKeyHashProtocol, EncodedGroup {
         public typealias `Protocol` = PublicBlindedKeyHashProtocol
         
         case btz1(Ed25519BlindedPublicKeyHash)
@@ -167,6 +177,10 @@ extension BlindedKeyHash {
             } else {
                 throw TezosError.invalidValue("Invalid blinded public key hash base58 encoded value (\(base58).")
             }
+        }
+        
+        public func asPublicBlindedKeyHash() -> BlindedKeyHash.Public {
+            self
         }
     }
 }

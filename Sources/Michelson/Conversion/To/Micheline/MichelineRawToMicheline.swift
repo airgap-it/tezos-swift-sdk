@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 16.06.22.
 //
 
-import Foundation
-
 // MARK: Micheline.Literal
 
 extension Micheline.Literal: ConvertibleToMicheline {

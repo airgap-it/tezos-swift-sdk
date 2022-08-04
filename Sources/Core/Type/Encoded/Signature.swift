@@ -5,11 +5,9 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 // MARK: Signature
     
-public enum Signature: EncodedGroup {
+public enum Signature: SignatureProtocol, EncodedGroup {
     public typealias `Protocol` = SignatureProtocol
     
     case edsig(Ed25519Signature)
@@ -56,6 +54,10 @@ public enum Signature: EncodedGroup {
         } else {
             throw TezosError.invalidValue("Invalid signature base58 encoded value (\(base58).")
         }
+    }
+    
+    public func asSignature() -> Signature {
+        self
     }
 }
 

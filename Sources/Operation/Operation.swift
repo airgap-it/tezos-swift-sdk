@@ -5,10 +5,9 @@
 //  Created by Julia Samol on 04.07.22.
 //
 
-import Foundation
 import TezosCore
 
-public enum TezosOperation: Hashable {
+public enum TezosOperation: OperationProtocol, Hashable {
     public typealias `Protocol` = OperationProtocol
     
     case unsigned(Unsigned)
@@ -23,21 +22,11 @@ public enum TezosOperation: Hashable {
     }
     
     public var branch: BlockHash {
-        switch self {
-        case .unsigned(let unsigned):
-            return unsigned.branch
-        case .signed(let signed):
-            return signed.branch
-        }
+        common.branch
     }
     
     public var contents: [Content] {
-        switch self {
-        case .unsigned(let unsigned):
-            return unsigned.contents
-        case .signed(let signed):
-            return signed.contents
-        }
+        common.contents
     }
     
     public var signature: Signature? {
@@ -47,6 +36,10 @@ public enum TezosOperation: Hashable {
         case .signed(let signed):
             return signed.signature
         }
+    }
+    
+    public func asOperation() -> TezosOperation {
+        self
     }
     
     // MARK: Unsigned
@@ -84,11 +77,22 @@ public enum TezosOperation: Hashable {
     }
 }
 
-// MARK: Protocol
-
 public protocol OperationProtocol {
     var branch: BlockHash { get }
     var contents: [TezosOperation.Content] { get }
     
     func asOperation() -> TezosOperation
+}
+
+// MARK: Utility Extensions
+
+private extension TezosOperation {
+    var common: `Protocol` {
+        switch self {
+        case .unsigned(let unsigned):
+            return unsigned
+        case .signed(let signed):
+            return signed
+        }
+    }
 }

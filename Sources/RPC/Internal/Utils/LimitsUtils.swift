@@ -156,7 +156,7 @@ extension RPCOperationResult {
     
     private func assertApplied() throws {
         if let errors = errors {
-            throw TezosRPCError(errors: errors)
+            throw TezosRPCError.rpc(errors)
         }
     }
 }

@@ -5,27 +5,32 @@
 //  Created by Julia Samol on 13.06.22.
 //
 
-import Foundation
 import TezosCore
 
-public indirect enum Micheline: Hashable, Codable {
+public indirect enum Micheline: Hashable, Codable, MichelineProtocol {
+    public typealias `Protocol` = MichelineProtocol
+    
     case literal(Literal)
     case prim(PrimitiveApplication)
     case sequence(Sequence)
+    
+    public func asMicheline() -> Micheline {
+        self
+    }
     
     // MARK: Codable
     
     public init(from decoder: Decoder) throws {
         if let container = try? decoder.container(keyedBy: CodingKeys.self) {
             if container.contains(.prim) {
-                self = .prim(try PrimitiveApplication(from: decoder))
+                self = .prim(try .init(from: decoder))
             } else if container.containsAny(.int, .string, .bytes) {
-                self = .literal(try Literal(from: decoder))
+                self = .literal(try .init(from: decoder))
             } else {
                 throw TezosError.invalidValue("Unknown Micheline encoded value.")
             }
         } else {
-            self = .sequence(try Sequence(from: decoder))
+            self = .sequence(try .init(from: decoder))
         }
     }
     
@@ -46,6 +51,10 @@ public indirect enum Micheline: Hashable, Codable {
         case bytes
         case prim
     }
+}
+
+public protocol MichelineProtocol {
+    func asMicheline() -> Micheline
 }
 
 // MARK: Utility Extensions

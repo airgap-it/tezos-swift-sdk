@@ -50,11 +50,11 @@ private extension Micheline {
     }
     
     init(from parameter: ContractEntrypointParameter, meta: ContractEntrypointParameter.Meta.Object) throws {
-        if let _ = try? meta.type.asPrim(Michelson._Type.Pair.self, Michelson.ComparableType.Pair.self) {
+        if let _ = try? meta.type.asPrim(.type(.pair), .type(.comparable(.pair))) {
             try self.init(from: parameter, pairMeta: meta)
-        } else if let _ = try? meta.type.asPrim(Michelson._Type.Option.self, Michelson.ComparableType.Option.self) {
+        } else if let _ = try? meta.type.asPrim(.type(.option), .type(.comparable(.option))) {
             try self.init(from: parameter, optionMeta: meta)
-        } else if let _ = try? meta.type.asPrim(Michelson._Type.Or.self, Michelson.ComparableType.Or.self) {
+        } else if let _ = try? meta.type.asPrim(.type(.or), .type(.comparable(.or))) {
             try self.init(from: parameter, orMeta: meta)
         } else {
             try self.init(from: parameter, simpleObjectMeta: meta)
@@ -89,7 +89,7 @@ private extension Micheline {
     init(from parameter: ContractEntrypointParameter, meta: ContractEntrypointParameter.Meta.Map) throws {
         switch parameter {
         case .value(let value):
-            guard let value = value.asSequence(of: Michelson.Data.Elt.self) else {
+            guard let value = value.asSequence(of: .data(.elt)) else {
                 throw TezosError.invalidValue("value and type mismatched")
             }
             
@@ -102,13 +102,13 @@ private extension Micheline {
             self = try .init(from: named, meta: meta)
         case .map(let sequence):
             self = .sequence(try sequence.elements.map({
-                .prim(.init(
-                    prim: Michelson.Data.Elt.self,
+                .data(
+                    prim: .elt,
                     args: [
                         try .init(from: $0.key, meta: meta.key),
                         try .init(from: $0.value, meta: meta.value)
                     ]
-                ))
+                )
             }))
         case .sequence(_):
             throw TezosError.invalidValue("value and type mismatched")
@@ -118,7 +118,7 @@ private extension Micheline {
     init(from parameter: ContractEntrypointParameter, pairMeta meta: ContractEntrypointParameter.Meta.Object) throws {
         switch parameter {
         case .value(let value):
-            if let value = try? value.value?.asPrim(Michelson.Data.Pair.self) {
+            if let value = try? value.value?.asPrim(.data(.pair)) {
                 self = .prim(value)
             } else {
                 guard let namedMeta = value.findNextMeta(meta) else {
@@ -136,10 +136,10 @@ private extension Micheline {
                 throw TezosError.invalidValue("value and type mismatched")
             }
             
-            self = .prim(.init(
-                prim: Michelson.Data.Pair.self,
+            self = .data(
+                prim: .pair,
                 args: [first, second]
-            ))
+            )
         default:
             throw TezosError.invalidValue("value and type mismatched")
         }
@@ -149,12 +149,12 @@ private extension Micheline {
         switch parameter {
         case .value(let value):
             if let value = value.value {
-                self = .prim(.init(
-                    prim: Michelson.Data.Some.self,
+                self = .data(
+                    prim: .some,
                     args: [value]
-                ))
+                )
             } else {
-                self = .prim(.init(prim: Michelson.Data.None.self))
+                self = .data(prim: .none)
             }
         case .object(var object):
             guard meta.elements.count == 1 else {
@@ -168,14 +168,14 @@ private extension Micheline {
                 
                 return try meta.elements[0].createArgMicheline(from: &object)
             }() else {
-                self = .prim(.init(prim: Michelson.Data.None.self))
+                self = .data(prim: .none)
                 return
             }
             
-            self = .prim(.init(
-                prim: Michelson.Data.Some.self,
+            self = .data(
+                prim: .some,
                 args: [arg]
-            ))
+            )
         default:
             throw TezosError.invalidValue("value and type mismatched")
         }
@@ -184,7 +184,7 @@ private extension Micheline {
     init(from parameter: ContractEntrypointParameter, orMeta meta: ContractEntrypointParameter.Meta.Object) throws {
         switch parameter {
         case .value(let value):
-            if let value = try? value.value?.asPrim(Michelson.Data.Left.self, Michelson.Data.Right.self) {
+            if let value = try? value.value?.asPrim(.data(.left), .data(.right)) {
                 self = .prim(value)
             } else {
                 guard let namedMeta = value.findNextMeta(meta) else {
@@ -245,9 +245,9 @@ private extension ContractEntrypointParameter {
         }
         
         private init(from code: Micheline.PrimitiveApplication, trace: Micheline.Trace = .root()) throws {
-            if code.args.isEmpty || (try? code.asPrim(Michelson._Type.BigMap.self, Michelson._Type.Lambda.self)) != nil {
+            if code.args.isEmpty || (try? code.asPrim(.type(.bigMap), .type(.lambda))) != nil {
                 self = .value(.init(type: .prim(code), trace: trace))
-            } else if let type = try? code.asPrim(Michelson._Type.List.self, Michelson._Type.Set.self) {
+            } else if let type = try? code.asPrim(.type(.list), .type(.set)) {
                 guard type.args.count == 1 else {
                     throw TezosError.invalidValue("entrypoint code")
                 }
@@ -257,7 +257,7 @@ private extension ContractEntrypointParameter {
                     trace: trace,
                     elements: [try .init(from: type.args[0], trace: .node(.init(0)))]
                 ))
-            } else if let type = try? code.asPrim(Michelson._Type.Map.self) {
+            } else if let type = try? code.asPrim(.type(.map)) {
                 guard type.args.count == 2 else {
                     throw TezosError.invalidValue("entrypoint code")
                 }
@@ -268,7 +268,7 @@ private extension ContractEntrypointParameter {
                     key: try .init(from: type.args[0], trace: .node(.init(0))),
                     value: try .init(from: type.args[1], trace: .node(.init(1)))
                 ))
-            } else if let type = try? code.asPrim(Michelson._Type.allPrims), !type.args.isEmpty {
+            } else if let type = try? code.asPrim(Michelson.Type_.Prim.allRawValues), !type.args.isEmpty {
                 guard type.args.count <= 2 else {
                     throw TezosError.invalidValue("entrypoint code")
                 }
@@ -557,7 +557,7 @@ private extension ContractEntrypointParameter.`Protocol` {
 
 private extension ContractEntrypointParameter.Value {
     
-    func asSequence(of prim: Michelson.Prim.Type? = nil) -> Micheline? {
+    func asSequence(of prim: Michelson.Prim? = nil) -> Micheline? {
         guard let value = value, case let .sequence(sequence) = value else {
             return nil
         }
@@ -656,8 +656,8 @@ private extension ContractEntrypointParameter.Meta.`Protocol` {
             throw TezosError.invalidValue("entrypoint code")
         }
         
-        return .prim(try .init(
-            prim: prim.name,
+        return .prim(.init(
+            prim: prim,
             args: [
                 try .init(from: value, meta: asMeta())
             ]
@@ -708,16 +708,16 @@ private extension ContractEntrypointParameter.Meta.Object {
 
 private extension Micheline.Trace {
     
-    func directedPrim() -> Michelson.Prim.Type? {
+    func directedPrim() -> Michelson.Prim? {
         switch self {
         case .root(_):
             return nil
         case .node(let node):
             switch node.direction {
             case .left:
-                return Michelson.Data.Left.self
+                return .data(.left)
             case .right:
-                return Michelson.Data.Right.self
+                return .data(.right)
             }
         }
     }

@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct GenericSignature: Signature.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "sig"
     public static let base58Bytes: [UInt8] = [4, 130, 43]

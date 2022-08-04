@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct BlockMetadataHash: EncodedValue {
     public static let base58Prefix: String = "bm"
     public static let base58Bytes: [UInt8] = [234, 249]

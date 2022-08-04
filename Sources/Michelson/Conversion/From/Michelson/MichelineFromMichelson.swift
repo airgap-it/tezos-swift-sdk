@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 13.06.22.
 //
 
-import Foundation
-
 // MARK: From Michelson
 
 extension Micheline: ConvertibleFromMichelson {
@@ -43,37 +41,36 @@ extension Micheline: ConvertibleFromMichelsonData {
         case .pair(let content):
             self = .prim(try .init(
                 from: content,
-                args: try content.values.map { try Micheline(from: $0) }
+                args: try content.values.map { try .init(from: $0) }
             ))
         case .left(let content):
             self = .prim(try .init(
                 from: content,
-                args: [Micheline(from: content.value)]
+                args: [.init(from: content.value)]
             ))
         case .right(let content):
             self = .prim(try .init(
                 from: content,
-                args: [Micheline(from: content.value)]
+                args: [.init(from: content.value)]
             ))
         case .some(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.value)]
+                args: [try .init(from: content.value)]
             ))
         case .none(let content):
             self = .prim(try .init(from: content))
         case .sequence(let content):
-            self = .sequence(try content.values.map({ try Micheline(from: $0 )}))
+            self = .sequence(try content.values.map({ try .init(from: $0 )}))
         case .map(let content):
             self = .sequence(try content.values.map({ elt in
-                .prim(try .init(
-                    prim: Michelson.Data.Elt.self,
+                .data(
+                    prim: .elt,
                     args: [
-                        try Micheline(from: elt.key),
-                        try Micheline(from: elt.value)
-                    ],
-                    annots: [String]()
-                ))
+                        try .init(from: elt.key),
+                        try .init(from: elt.value)
+                    ]
+                )
             }))
         case .instruction(let instruction):
             try self.init(from: instruction)
@@ -88,35 +85,35 @@ extension Micheline: ConvertibleFromMichelsonInstruction {
     public init(from instruction: Michelson.Instruction) throws {
         switch instruction {
         case .sequence(let content):
-            self = .sequence(try content.instructions.map({ try Micheline(from: $0 )}))
+            self = .sequence(try content.instructions.map({ try .init(from: $0 )}))
         case .drop(let content):
             self = .prim(try .init(
                 from: content,
-                args: [content.n].compactMap { $0 }.map { try Micheline(from: Michelson.Data.nat($0)) }
+                args: [content.n].compactMap { $0 }.map { try .init(from: Michelson.Data.nat($0)) }
             ))
         case .dup(let content):
             self = .prim(try .init(
                 from: content,
-                args: [content.n].compactMap { $0 }.map { try Micheline(from: Michelson.Data.nat($0)) }
+                args: [content.n].compactMap { $0 }.map { try .init(from: Michelson.Data.nat($0)) }
             ))
         case .swap(let content):
             self = .prim(try .init(from: content))
         case .dig(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: Michelson.Data.nat(content.n))]
+                args: [try .init(from: Michelson.Data.nat(content.n))]
             ))
         case .dug(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: Michelson.Data.nat(content.n))]
+                args: [try .init(from: Michelson.Data.nat(content.n))]
             ))
         case .push(let content):
             self = .prim(try .init(
                 from: content,
                 args: [
-                    try Micheline(from: content.type),
-                    try Micheline(from: content.value),
+                    try .init(from: content.type),
+                    try .init(from: content.value),
                 ]
             ))
         case .some(let content):
@@ -124,7 +121,7 @@ extension Micheline: ConvertibleFromMichelsonInstruction {
         case .none(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.type)]
+                args: [try .init(from: content.type)]
             ))
         case .unit(let content):
             self = .prim(try .init(from: content))
@@ -134,14 +131,14 @@ extension Micheline: ConvertibleFromMichelsonInstruction {
             self = .prim(try .init(
                 from: content,
                 args: [
-                    try Micheline(from: Michelson.Instruction.sequence(content.ifBranch)),
-                    try Micheline(from: Michelson.Instruction.sequence(content.elseBranch)),
+                    try .init(from: Michelson.Instruction.sequence(content.ifBranch)),
+                    try .init(from: Michelson.Instruction.sequence(content.elseBranch)),
                 ]
             ))
         case .pair(let content):
             self = .prim(try .init(
                 from: content,
-                args: [content.n].compactMap { $0 }.map { try Micheline(from: Michelson.Data.nat($0)) }
+                args: [content.n].compactMap { $0 }.map { try .init(from: Michelson.Data.nat($0)) }
             ))
         case .car(let content):
             self = .prim(try .init(from: content))
@@ -150,30 +147,30 @@ extension Micheline: ConvertibleFromMichelsonInstruction {
         case .unpair(let content):
             self = .prim(try .init(
                 from: content,
-                args: [content.n].compactMap { $0 }.map { try Micheline(from: Michelson.Data.nat($0)) }
+                args: [content.n].compactMap { $0 }.map { try .init(from: Michelson.Data.nat($0)) }
             ))
         case .left(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.type)]
+                args: [try .init(from: content.type)]
             ))
         case .right(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.type)]
+                args: [try .init(from: content.type)]
             ))
         case .ifLeft(let content):
             self = .prim(try .init(
                 from: content,
                 args: [
-                    try Micheline(from: Michelson.Instruction.sequence(content.ifBranch)),
-                    try Micheline(from: Michelson.Instruction.sequence(content.elseBranch)),
+                    try .init(from: Michelson.Instruction.sequence(content.ifBranch)),
+                    try .init(from: Michelson.Instruction.sequence(content.elseBranch)),
                 ]
             ))
         case .nil(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.type)]
+                args: [try .init(from: content.type)]
             ))
         case .cons(let content):
             self = .prim(try .init(from: content))
@@ -181,8 +178,8 @@ extension Micheline: ConvertibleFromMichelsonInstruction {
             self = .prim(try .init(
                 from: content,
                 args: [
-                    try Micheline(from: Michelson.Instruction.sequence(content.ifBranch)),
-                    try Micheline(from: Michelson.Instruction.sequence(content.elseBranch)),
+                    try .init(from: Michelson.Instruction.sequence(content.ifBranch)),
+                    try .init(from: Michelson.Instruction.sequence(content.elseBranch)),
                 ]
             ))
         case .size(let content):
@@ -190,45 +187,45 @@ extension Micheline: ConvertibleFromMichelsonInstruction {
         case .emptySet(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.type)]
+                args: [try .init(from: content.type)]
             ))
         case .emptyMap(let content):
             self = .prim(try .init(
                 from: content,
                 args: [
-                    try Micheline(from: content.keyType),
-                    try Micheline(from: content.valueType)
+                    try .init(from: content.keyType),
+                    try .init(from: content.valueType)
                 ]
             ))
         case .emptyBigMap(let content):
             self = .prim(try .init(
                 from: content,
                 args: [
-                    try Micheline(from: content.keyType),
-                    try Micheline(from: content.valueType)
+                    try .init(from: content.keyType),
+                    try .init(from: content.valueType)
                 ]
             ))
         case .map(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: Michelson.Instruction.sequence(content.expression))]
+                args: [try .init(from: Michelson.Instruction.sequence(content.expression))]
             ))
         case .iter(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: Michelson.Instruction.sequence(content.expression))]
+                args: [try .init(from: Michelson.Instruction.sequence(content.expression))]
             ))
         case .mem(let content):
             self = .prim(try .init(from: content))
         case .get(let content):
             self = .prim(try .init(
                 from: content,
-                args: [content.n].compactMap { $0 }.map { try Micheline(from: Michelson.Data.nat($0)) }
+                args: [content.n].compactMap { $0 }.map { try .init(from: Michelson.Data.nat($0)) }
             ))
         case .update(let content):
             self = .prim(try .init(
                 from: content,
-                args: [content.n].compactMap { $0 }.map { try Micheline(from: Michelson.Data.nat($0)) }
+                args: [content.n].compactMap { $0 }.map { try .init(from: Michelson.Data.nat($0)) }
             ))
         case .getAndUpdate(let content):
             self = .prim(try .init(from: content))
@@ -237,20 +234,20 @@ extension Micheline: ConvertibleFromMichelsonInstruction {
         case .loop(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: Michelson.Instruction.sequence(content.body))]
+                args: [try .init(from: Michelson.Instruction.sequence(content.body))]
             ))
         case .loopLeft(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: Michelson.Instruction.sequence(content.body))]
+                args: [try .init(from: Michelson.Instruction.sequence(content.body))]
             ))
         case .lambda(let content):
             self = .prim(try .init(
                 from: content,
                 args: [
-                    try Micheline(from: content.parameterType),
-                    try Micheline(from: content.returnType),
-                    try Micheline(from: Michelson.Instruction.sequence(content.body))
+                    try .init(from: content.parameterType),
+                    try .init(from: content.returnType),
+                    try .init(from: Michelson.Instruction.sequence(content.body))
                 ]
             ))
         case .exec(let content):
@@ -260,8 +257,8 @@ extension Micheline: ConvertibleFromMichelsonInstruction {
         case .dip(let content):
             self = .prim(try .init(
                 from: content,
-                args: [content.n].compactMap { $0 }.map { try Micheline(from: Michelson.Data.nat($0)) }
-                    + [try Micheline(from: Michelson.Instruction.sequence(content.instruction))]
+                args: [content.n].compactMap { $0 }.map { try .init(from: Michelson.Data.nat($0)) }
+                + [try .init(from: Michelson.Instruction.sequence(content.instruction))]
             ))
         case .failwith(let content):
             self = .prim(try .init(from: content))
@@ -278,7 +275,7 @@ extension Micheline: ConvertibleFromMichelsonInstruction {
         case .unpack(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.type)]
+                args: [try .init(from: content.type)]
             ))
         case .add(let content):
             self = .prim(try .init(from: content))
@@ -329,7 +326,7 @@ extension Micheline: ConvertibleFromMichelsonInstruction {
         case .contract(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.type)]
+                args: [try .init(from: content.type)]
             ))
         case .transferTokens(let content):
             self = .prim(try .init(from: content))
@@ -339,9 +336,9 @@ extension Micheline: ConvertibleFromMichelsonInstruction {
             self = .prim(try .init(
                 from: content,
                 args: [
-                    try Micheline(from: content.parameterType),
-                    try Micheline(from: content.storageType),
-                    try Micheline(from: Michelson.Instruction.sequence(content.code))
+                    try .init(from: content.parameterType),
+                    try .init(from: content.storageType),
+                    try .init(from: Michelson.Instruction.sequence(content.code))
                 ]
             ))
         case .implicitAccount(let content):
@@ -385,7 +382,7 @@ extension Micheline: ConvertibleFromMichelsonInstruction {
         case .saplingEmptyState(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: Michelson.Data.nat(content.memoSize))]
+                args: [try .init(from: Michelson.Data.nat(content.memoSize))]
             ))
         case .saplingVerifyUpdate(let content):
             self = .prim(try .init(from: content))
@@ -412,80 +409,80 @@ extension Micheline: ConvertibleFromMichelsonType {
         case .parameter(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.type)]
+                args: [try .init(from: content.type)]
             ))
         case .storage(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.type)]
+                args: [try .init(from: content.type)]
             ))
         case .code(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.code)]
+                args: [try .init(from: content.code)]
             ))
         case .option(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.type)]
+                args: [try .init(from: content.type)]
             ))
         case .list(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.type)]
+                args: [try .init(from: content.type)]
             ))
         case .set(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.type)]
+                args: [try .init(from: content.type)]
             ))
         case .operation(let content):
             self = .prim(try .init(from: content))
         case .contract(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.type)]
+                args: [try .init(from: content.type)]
             ))
         case .ticket(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.type)]
+                args: [try .init(from: content.type)]
             ))
         case .pair(let content):
             self = .prim(try .init(
                 from: content,
-                args: try content.types.map { try Micheline(from: $0) }
+                args: try content.types.map { try .init(from: $0) }
             ))
         case .or(let content):
             self = .prim(try .init(
                 from: content,
                 args: [
-                    try Micheline(from: content.lhs),
-                    try Micheline(from: content.rhs),
+                    try .init(from: content.lhs),
+                    try .init(from: content.rhs),
                 ]
             ))
         case .lambda(let content):
             self = .prim(try .init(
                 from: content,
                 args: [
-                    try Micheline(from: content.parameterType),
-                    try Micheline(from: content.returnType),
+                    try .init(from: content.parameterType),
+                    try .init(from: content.returnType),
                 ]
             ))
         case .map(let content):
             self = .prim(try .init(
                 from: content,
                 args: [
-                    try Micheline(from: content.keyType),
-                    try Micheline(from: content.valueType),
+                    try .init(from: content.keyType),
+                    try .init(from: content.valueType),
                 ]
             ))
         case .bigMap(let content):
             self = .prim(try .init(
                 from: content,
                 args: [
-                    try Micheline(from: content.keyType),
-                    try Micheline(from: content.valueType),
+                    try .init(from: content.keyType),
+                    try .init(from: content.valueType),
                 ]
             ))
         case .bls12_381G1(let content):
@@ -497,12 +494,12 @@ extension Micheline: ConvertibleFromMichelsonType {
         case .saplingTransaction(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: Michelson.Data.nat(content.memoSize))]
+                args: [try .init(from: Michelson.Data.nat(content.memoSize))]
             ))
         case .saplingState(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: Michelson.Data.nat(content.memoSize))]
+                args: [try .init(from: Michelson.Data.nat(content.memoSize))]
             ))
         case .chest(let content):
             self = .prim(try .init(from: content))
@@ -551,20 +548,20 @@ extension Micheline: ConvertibleFromMichelsonComparableType {
         case .option(let content):
             self = .prim(try .init(
                 from: content,
-                args: [try Micheline(from: content.type)]
+                args: [try .init(from: content.type)]
             ))
         case .or(let content):
             self = .prim(try .init(
                 from: content,
                 args: [
-                    try Micheline(from: content.lhs),
-                    try Micheline(from: content.rhs),
+                    try .init(from: content.lhs),
+                    try .init(from: content.rhs),
                 ]
             ))
         case .pair(let content):
             self = .prim(try .init(
                 from: content,
-                args: try content.types.map { try Micheline(from: $0) }
+                args: try content.types.map { try .init(from: $0) }
             ))
         }
     }
@@ -573,11 +570,7 @@ extension Micheline: ConvertibleFromMichelsonComparableType {
 // MARK: Utility Extensions
 
 private extension Micheline.PrimitiveApplication {
-    init<T: Michelson.`Protocol` & Michelson.Prim>(from michelson: T, args: [Micheline] = []) throws {
+    init<T: Michelson.`Protocol` & Michelson.Prim.`Protocol`>(from michelson: T, args: [Micheline] = []) throws {
         try self.init(prim: T.name, args: args, annots: michelson.annotations.map({ $0.value }))
-    }
-    
-    init<T: Michelson.Prim>(prim: T.Type, args: [Micheline] = [], annots: [Michelson.Annotation] = []) throws {
-        try self.init(prim: prim, args: args, annots: annots.map({ $0.value }))
     }
 }

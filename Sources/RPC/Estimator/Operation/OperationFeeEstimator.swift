@@ -9,18 +9,18 @@ import BigInt
 import TezosCore
 import TezosOperation
 
-class OperationFeeEstimator<ChainsRPC: Chains>: FeeEstimator {
+public class OperationFeeEstimator<ChainsRPC: Chains>: FeeEstimator {
     private let chains: ChainsRPC
     
     private lazy var chainIDCached: CachedMap<RPCChainID, ChainID> = .init { [unowned self] in
         try await self.chains(chainID: $0).chainID.get(configuredWith: .init(headers: $1))
     }
     
-    init(chains: ChainsRPC) {
+    public init(chains: ChainsRPC) {
         self.chains = chains
     }
     
-    func minFee(chainID: RPCChainID, operation: TezosOperation, configuredWith configuration: MinFeeConfiguration) async throws -> TezosOperation {
+    public func minFee(chainID: RPCChainID, operation: TezosOperation, configuredWith configuration: MinFeeConfiguration) async throws -> TezosOperation {
         let chainID = try await resolveChainID(from: chainID, with: configuration.headers)
         let runnableOperation = RPCRunnableOperation(from: try operation.apply(limits: configuration.limits), chainID: chainID)
         

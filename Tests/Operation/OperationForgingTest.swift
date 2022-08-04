@@ -290,9 +290,9 @@ class OperationForgingTests: XCTestCase {
                 .reveal(.init(
                     source: try! .init(base58: "tz1SZ2CmbQB7MMXgcMSmyyVXpya1rkb9UGUE"),
                     fee: try! .init(135675),
-                    counter: .init(154),
-                    gasLimit: .init(23675),
-                    storageLimit: .init(34152),
+                    counter: .init(UInt(154)),
+                    gasLimit: .init(UInt(23675)),
+                    storageLimit: .init(UInt(34152)),
                     publicKey: try! .init(base58: "edpkuaARNJPQygG82X1xed6Z2kDutT8XjL3Fmv1XPBbca1uARirj55")
                 )),
                 "6b004bd66485632a18d61068fc940772dec8add5ff93fba3089a01fbb801e88a02007a79d89acb296dd9ec2be8fba817702dc41adf19e28bb250a337f840eb263c69"
@@ -301,9 +301,9 @@ class OperationForgingTests: XCTestCase {
                 .transaction(.init(
                     source: try! .init(base58: "tz1i8xLzLPQHknc5jmeFc3qxijar2HLG2W4Z"),
                     fee: try! .init(135675),
-                    counter: .init(154),
-                    gasLimit: .init(23675),
-                    storageLimit: .init(34152),
+                    counter: .init(UInt(154)),
+                    gasLimit: .init(UInt(23675)),
+                    storageLimit: .init(UInt(34152)),
                     amount: try! .init(763243),
                     destination: .originated(try! .init(base58: "KT1GFYUFQRT4RsNbtG2NU23woUyMp5tx9gx2"))
                 )),
@@ -313,9 +313,9 @@ class OperationForgingTests: XCTestCase {
                 .transaction(.init(
                     source: try! .init(base58: "tz1i8xLzLPQHknc5jmeFc3qxijar2HLG2W4Z"),
                     fee: try! .init(135675),
-                    counter: .init(154),
-                    gasLimit: .init(23675),
-                    storageLimit: .init(34152),
+                    counter: .init(UInt(154)),
+                    gasLimit: .init(UInt(23675)),
+                    storageLimit: .init(UInt(34152)),
                     amount: try! .init(763243),
                     destination: .implicit(.tz1(try! .init(base58: "tz1YbTdYqmpLatAqLb1sm67qqXMXyRB3UYiz"))),
                     parameters: .init(
@@ -329,9 +329,9 @@ class OperationForgingTests: XCTestCase {
                 .transaction(.init(
                     source: try! .init(base58: "tz1i8xLzLPQHknc5jmeFc3qxijar2HLG2W4Z"),
                     fee: try! .init(135675),
-                    counter: .init(154),
-                    gasLimit: .init(23675),
-                    storageLimit: .init(34152),
+                    counter: .init(UInt(154)),
+                    gasLimit: .init(UInt(23675)),
+                    storageLimit: .init(UInt(34152)),
                     amount: try! .init(763243),
                     destination: .implicit(.tz1(try! .init(base58: "tz1YbTdYqmpLatAqLb1sm67qqXMXyRB3UYiz"))),
                     parameters: .init(
@@ -345,9 +345,9 @@ class OperationForgingTests: XCTestCase {
                 .transaction(.init(
                     source: try! .init(base58: "tz1i8xLzLPQHknc5jmeFc3qxijar2HLG2W4Z"),
                     fee: try! .init(135675),
-                    counter: .init(154),
-                    gasLimit: .init(23675),
-                    storageLimit: .init(34152),
+                    counter: .init(UInt(154)),
+                    gasLimit: .init(UInt(23675)),
+                    storageLimit: .init(UInt(34152)),
                     amount: try! .init(763243),
                     destination: .implicit(.tz1(try! .init(base58: "tz1YbTdYqmpLatAqLb1sm67qqXMXyRB3UYiz"))),
                     parameters: .init(
@@ -361,9 +361,9 @@ class OperationForgingTests: XCTestCase {
                 .transaction(.init(
                     source: try! .init(base58: "tz1i8xLzLPQHknc5jmeFc3qxijar2HLG2W4Z"),
                     fee: try! .init(135675),
-                    counter: .init(154),
-                    gasLimit: .init(23675),
-                    storageLimit: .init(34152),
+                    counter: .init(UInt(154)),
+                    gasLimit: .init(UInt(23675)),
+                    storageLimit: .init(UInt(34152)),
                     amount: try! .init(763243),
                     destination: .implicit(.tz1(try! .init(base58: "tz1YbTdYqmpLatAqLb1sm67qqXMXyRB3UYiz"))),
                     parameters: .init(
@@ -377,9 +377,9 @@ class OperationForgingTests: XCTestCase {
                 .transaction(.init(
                     source: try! .init(base58: "tz1i8xLzLPQHknc5jmeFc3qxijar2HLG2W4Z"),
                     fee: try! .init(135675),
-                    counter: .init(154),
-                    gasLimit: .init(23675),
-                    storageLimit: .init(34152),
+                    counter: .init(UInt(154)),
+                    gasLimit: .init(UInt(23675)),
+                    storageLimit: .init(UInt(34152)),
                     amount: try! .init(763243),
                     destination: .implicit(.tz1(try! .init(base58: "tz1YbTdYqmpLatAqLb1sm67qqXMXyRB3UYiz"))),
                     parameters: .init(
@@ -393,9 +393,9 @@ class OperationForgingTests: XCTestCase {
                 .transaction(.init(
                     source: try! .init(base58: "tz1i8xLzLPQHknc5jmeFc3qxijar2HLG2W4Z"),
                     fee: try! .init(135675),
-                    counter: .init(154),
-                    gasLimit: .init(23675),
-                    storageLimit: .init(34152),
+                    counter: .init(UInt(154)),
+                    gasLimit: .init(UInt(23675)),
+                    storageLimit: .init(UInt(34152)),
                     amount: try! .init(763243),
                     destination: .implicit(.tz1(try! .init(base58: "tz1YbTdYqmpLatAqLb1sm67qqXMXyRB3UYiz"))),
                     parameters: .init(
@@ -409,9 +409,9 @@ class OperationForgingTests: XCTestCase {
                 .origination(.init(
                     source: try! .init(base58: "tz1LdF7qHCJg8Efa6Cx4LZrRPkvbh61H8tZq"),
                     fee: try! .init(135675),
-                    counter: .init(154),
-                    gasLimit: .init(23675),
-                    storageLimit: .init(34152),
+                    counter: .init(UInt(154)),
+                    gasLimit: .init(UInt(23675)),
+                    storageLimit: .init(UInt(34152)),
                     balance: try! .init(763243),
                     delegate: nil,
                     script: .init(
@@ -425,9 +425,9 @@ class OperationForgingTests: XCTestCase {
                 .origination(.init(
                     source: try! .init(base58: "tz1LdF7qHCJg8Efa6Cx4LZrRPkvbh61H8tZq"),
                     fee: try! .init(135675),
-                    counter: .init(154),
-                    gasLimit: .init(23675),
-                    storageLimit: .init(34152),
+                    counter: .init(UInt(154)),
+                    gasLimit: .init(UInt(23675)),
+                    storageLimit: .init(UInt(34152)),
                     balance: try! .init(763243),
                     delegate: .tz1(try! .init(base58: "tz1RY8er4ybXszZBbhtQDrYhA5AYY3VQXiKn")),
                     script: .init(
@@ -441,9 +441,9 @@ class OperationForgingTests: XCTestCase {
                 .delegation(.init(
                     source: try! .init(base58: "tz1QVAraV1JDRsPikcqJVE4VccvW7vDWCJHy"),
                     fee: try! .init(135675),
-                    counter: .init(154),
-                    gasLimit: .init(23675),
-                    storageLimit: .init(34152),
+                    counter: .init(UInt(154)),
+                    gasLimit: .init(UInt(23675)),
+                    storageLimit: .init(UInt(34152)),
                     delegate: nil
                 )),
                 "6e00352bb30ffdb72d101083a4fc5cd156f007705f5dfba3089a01fbb801e88a0200"
@@ -452,9 +452,9 @@ class OperationForgingTests: XCTestCase {
                 .delegation(.init(
                     source: try! .init(base58: "tz1QVAraV1JDRsPikcqJVE4VccvW7vDWCJHy"),
                     fee: try! .init(135675),
-                    counter: .init(154),
-                    gasLimit: .init(23675),
-                    storageLimit: .init(34152),
+                    counter: .init(UInt(154)),
+                    gasLimit: .init(UInt(23675)),
+                    storageLimit: .init(UInt(34152)),
                     delegate: .tz1(try! .init(base58: "tz1dStZpfk5bWsvYvuktDJgDEbpuqDc7ipvi"))
                 )),
                 "6e00352bb30ffdb72d101083a4fc5cd156f007705f5dfba3089a01fbb801e88a02ff00c356e7cb9943f6ef4168bea7915c7f88152e6c37"
@@ -463,9 +463,9 @@ class OperationForgingTests: XCTestCase {
                 .registerGlobalConstant(.init(
                     source: try! .init(base58: "tz1brHnNaHcpxqHDhqwmAXDq1i4F2A4Xaepz"),
                     fee: try! .init(135675),
-                    counter: .init(154),
-                    gasLimit: .init(23675),
-                    storageLimit: .init(34152),
+                    counter: .init(UInt(154)),
+                    gasLimit: .init(UInt(23675)),
+                    storageLimit: .init(UInt(34152)),
                     value: .sequence([])
                 )),
                 "6f00b1d399df432bbbdbd45cb6b454699ea96d77dabffba3089a01fbb801e88a02000000050200000000"
@@ -474,9 +474,9 @@ class OperationForgingTests: XCTestCase {
                 .setDepositsLimit(.init(
                     source: try! .init(base58: "tz1gxabEuUaCKk15qUKnhASJJoXhm9A7DVLM"),
                     fee: try! .init(135675),
-                    counter: .init(154),
-                    gasLimit: .init(23675),
-                    storageLimit: .init(34152),
+                    counter: .init(UInt(154)),
+                    gasLimit: .init(UInt(23675)),
+                    storageLimit: .init(UInt(34152)),
                     limit: nil
                 )),
                 "7000e9dcc1a4a82c49aeec327b15e9ed457dc22a1ebcfba3089a01fbb801e88a0200"
@@ -485,9 +485,9 @@ class OperationForgingTests: XCTestCase {
                 .setDepositsLimit(.init(
                     source: try! .init(base58: "tz1gxabEuUaCKk15qUKnhASJJoXhm9A7DVLM"),
                     fee: try! .init(135675),
-                    counter: .init(154),
-                    gasLimit: .init(23675),
-                    storageLimit: .init(34152),
+                    counter: .init(UInt(154)),
+                    gasLimit: .init(UInt(23675)),
+                    storageLimit: .init(UInt(34152)),
                     limit: try! .init(634)
                 )),
                 "7000e9dcc1a4a82c49aeec327b15e9ed457dc22a1ebcfba3089a01fbb801e88a02fffa04"

@@ -6,16 +6,18 @@
 //
 
 import Foundation
+
 import TezosMichelson
 import TezosRPC
     
 public struct ContractStorage<ContractRPC: BlockContextContractsContract> {
     private let type: Micheline.Lazy
     private let contract: ContractRPC
+    private let nodeURL: URL
     
-    init(from code: ContractCode.Lazy, contract: ContractRPC) {
+    init(from code: ContractCode.Lazy, contract: ContractRPC, nodeURL: URL) {
         let type: Cached<Micheline> = code.map {
-            guard let storage = try? $0.storage.asPrim(Michelson._Type.Storage.self), storage.args.count == 1 else {
+            guard let storage = try? $0.storage.asPrim(.type(.storage)), storage.args.count == 1 else {
                 throw TezosContractError.invalidType("storage")
             }
             
@@ -24,6 +26,7 @@ public struct ContractStorage<ContractRPC: BlockContextContractsContract> {
        
         self.type = type
         self.contract = contract
+        self.nodeURL = nodeURL
     }
     
     public func get(configuredWith configuration: GetContractStorageConfiguration = .init()) async throws -> ContractStorageEntry? {
@@ -35,7 +38,7 @@ public struct ContractStorage<ContractRPC: BlockContextContractsContract> {
             return nil
         }
         
-        return try .init(from: value, type: type)
+        return try .init(from: value, type: type, nodeURL: nodeURL)
     }
 }
 

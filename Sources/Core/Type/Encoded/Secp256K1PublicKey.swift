@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct Secp256K1PublicKey: Key.Public.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "sppk"
     public static let base58Bytes: [UInt8] = [3, 254, 226, 86]

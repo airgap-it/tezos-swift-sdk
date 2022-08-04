@@ -111,78 +111,78 @@ class ContractEntrypointTest: XCTestCase {
                 let name = "test_entrypoint1"
                 let contractAddress = try! ContractHash(base58: "KT1ScmSVNZoC73zdn8Vevkit6wzbTr4aXYtc")
                 
-                let type: Micheline = .prim(try! .init(
-                    prim: "pair",
+                let type: Micheline = .comparableType(
+                    prim: .pair,
                     args: [
-                        .prim(try! .init(
-                            prim: "pair",
+                        .comparableType(
+                            prim: .pair,
                             args: [
-                                .prim(try! .init(
-                                    prim: "option",
+                                try! .comparableType(
+                                    prim: .option,
                                     args: [
-                                        .prim(try! .init(prim: "address"))
+                                        .comparableType(prim: .address)
                                     ],
                                     annots: ["%address"]
-                                )),
-                                .prim(try! .init(
-                                    prim: "pair",
+                                ),
+                                .comparableType(
+                                    prim: .pair,
                                     args: [
-                                        .prim(try! .init(prim: "bytes", annots: ["%label"])),
-                                        .prim(try! .init(prim: "address", annots: ["%owner"]))
+                                        try! .comparableType(prim: .bytes, annots: ["%label"]),
+                                        try! .comparableType(prim: .address, annots: ["%owner"])
                                     ]
-                                ))
+                                )
                             ]
-                        )),
-                        .prim(try! .init(
-                            prim: "option",
+                        ),
+                        .comparableType(
+                            prim: .option,
                             args: [
-                                .prim(try! .init(
-                                    prim: "pair",
+                                .comparableType(
+                                    prim: .pair,
                                     args: [
-                                        .prim(try! .init(prim: "bytes", annots: ["%parent"])),
-                                        .prim(try! .init(prim: "nat", annots: ["%ttl"]))
+                                        try! .comparableType(prim: .bytes, annots: ["%parent"]),
+                                        try! .comparableType(prim: .nat, annots: ["%ttl"])
                                     ]
-                                ))
+                                )
                             ]
-                        ))
+                        )
                     ]
-                ))
+                )
                 
-                let value: Micheline = .prim(try! .init(
-                    prim: "Pair",
+                let value: Micheline = .data(
+                    prim: .pair,
                     args: [
-                        .prim(try! .init(
-                            prim: "Pair",
+                        .data(
+                            prim: .pair,
                             args: [
-                                .prim(try! .init(
-                                    prim: "Some",
+                                .data(
+                                    prim: .some,
                                     args: [
-                                        .literal(.string(try! .init("tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb")))
+                                        try! .string("tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb")
                                     ]
-                                )),
-                                .prim(try! .init(
-                                    prim: "Pair",
+                                ),
+                                .data(
+                                    prim: .pair,
                                     args: [
-                                        .literal(.bytes(try! .init("0x0000a7848de3b1fce76a7ffce2c7ce40e46be33aed7c"))),
-                                        .literal(.string(try! .init("tz1b6wRXMA2PxATL6aoVGy9j7kSqXijW7VPq")))
+                                        try! .bytes("0x0000a7848de3b1fce76a7ffce2c7ce40e46be33aed7c"),
+                                        try! .string("tz1b6wRXMA2PxATL6aoVGy9j7kSqXijW7VPq")
                                     ]
-                                ))
+                                )
                             ]
-                        )),
-                        .prim(try! .init(
-                            prim: "Some",
+                        ),
+                        .data(
+                            prim: .some,
                             args: [
-                                .prim(try! .init(
-                                    prim: "Pair",
+                                .data(
+                                    prim: .pair,
                                     args: [
-                                        .literal(.bytes(try! .init("0x0b51b8ae90e19a079c9db469c4881871a5ba7778acf9773ac00c7dfcda0b1c87"))),
-                                        .literal(.integer(.init(1)))
+                                        try! .bytes("0x0b51b8ae90e19a079c9db469c4881871a5ba7778acf9773ac00c7dfcda0b1c87"),
+                                        .int(1)
                                     ]
-                                ))
+                                )
                             ]
-                        ))
+                        )
                     ]
-                ))
+                )
                 
                 let namedValue: ContractEntrypointParameter = .object(.init(
                     .value(.init(.literal(.string(try! .init("tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb"))), name: "%address")),
@@ -198,226 +198,226 @@ class ContractEntrypointTest: XCTestCase {
                 let name = "test_entrypoint2"
                 let contractAddress = try! ContractHash(base58: "KT1ScmSVNZoC73zdn8Vevkit6wzbTr4aXYtc")
                 
-                let type: Micheline = .prim(try! .init(
-                    prim: "pair",
+                let type: Micheline = .comparableType(
+                    prim: .pair,
                     args: [
-                        .prim(try! .init(
-                            prim: "pair",
+                        .comparableType(
+                            prim: .pair,
                             args: [
-                                .prim(try! .init(
-                                    prim: "pair",
+                                .comparableType(
+                                    prim: .pair,
                                     args: [
-                                        .prim(try! .init(
-                                            prim: "option",
+                                        try! .comparableType(
+                                            prim: .option,
                                             args: [
-                                                .prim(try! .init(prim: "address"))
+                                                .comparableType(prim: .address)
                                             ],
                                             annots: ["%address"]
-                                        )),
-                                        .prim(try! .init(
-                                            prim: "map",
+                                        ),
+                                        try! .type(
+                                            prim: .map,
                                             args: [
-                                                .prim(try! .init(prim: "string")),
-                                                .prim(try! .init(
-                                                    prim: "or",
+                                                .comparableType(prim: .string),
+                                                .comparableType(
+                                                    prim: .or,
                                                     args: [
-                                                        .prim(try! .init(
-                                                            prim: "or",
+                                                        .comparableType(
+                                                            prim: .or,
                                                             args: [
-                                                                .prim(try! .init(
-                                                                    prim: "or",
+                                                                .comparableType(
+                                                                    prim: .or,
                                                                     args: [
-                                                                        .prim(try! .init(
-                                                                            prim: "or",
+                                                                        .comparableType(
+                                                                            prim: .or,
                                                                             args: [
-                                                                                .prim(try! .init(prim: "address", annots: ["%address"])),
-                                                                                .prim(try! .init(prim: "bool", annots: ["%bool"]))
+                                                                                try! .comparableType(prim: .address, annots: ["%address"]),
+                                                                                try! .comparableType(prim: .bool, annots: ["%bool"])
                                                                             ]
-                                                                        )),
-                                                                        .prim(try! .init(
-                                                                            prim: "or",
+                                                                        ),
+                                                                        .comparableType(
+                                                                            prim: .or,
                                                                             args: [
-                                                                                .prim(try! .init(prim: "bytes", annots: ["%bytes"])),
-                                                                                .prim(try! .init(prim: "int", annots: ["%int"]))
+                                                                                try! .comparableType(prim: .bytes, annots: ["%bytes"]),
+                                                                                try! .comparableType(prim: .int, annots: ["%int"])
                                                                             ]
-                                                                        ))
+                                                                        )
                                                                     ]
-                                                                )),
-                                                                .prim(try! .init(
-                                                                    prim: "or",
+                                                                ),
+                                                                .comparableType(
+                                                                    prim: .or,
                                                                     args: [
-                                                                        .prim(try! .init(
-                                                                            prim: "or",
+                                                                        .comparableType(
+                                                                            prim: .or,
                                                                             args: [
-                                                                                .prim(try! .init(prim: "key", annots: ["%key"])),
-                                                                                .prim(try! .init(prim: "key_hash", annots: ["%key_hash"]))
+                                                                                try! .comparableType(prim: .key, annots: ["%key"]),
+                                                                                try! .comparableType(prim: .keyHash, annots: ["%key_hash"])
                                                                             ]
-                                                                        )),
-                                                                        .prim(try! .init(
-                                                                            prim: "or",
+                                                                        ),
+                                                                        .comparableType(
+                                                                            prim: .or,
                                                                             args: [
-                                                                                .prim(try! .init(prim: "nat", annots: ["%nat"])),
-                                                                                .prim(try! .init(prim: "signature", annots: ["%signature"]))
+                                                                                try! .comparableType(prim: .nat, annots: ["%nat"]),
+                                                                                try! .comparableType(prim: .signature, annots: ["%signature"])
                                                                             ]
-                                                                        ))
+                                                                        )
                                                                     ]
-                                                                ))
+                                                                )
                                                             ]
-                                                        )),
-                                                        .prim(try! .init(
-                                                            prim: "or",
+                                                        ),
+                                                        .comparableType(
+                                                            prim: .or,
                                                             args: [
-                                                                .prim(try! .init(
-                                                                    prim: "or",
+                                                                .comparableType(
+                                                                    prim: .or,
                                                                     args: [
-                                                                        .prim(try! .init(prim: "string", annots: ["%string"])),
-                                                                        .prim(try! .init(prim: "mutez", annots: ["%tez"]))
+                                                                        try! .comparableType(prim: .string, annots: ["%string"]),
+                                                                        try! .comparableType(prim: .mutez, annots: ["%tez"])
                                                                     ]
-                                                                )),
-                                                                .prim(try! .init(prim: "timestamp", annots: ["%timestamp"]))
+                                                                ),
+                                                                try! .comparableType(prim: .timestamp, annots: ["%timestamp"])
                                                             ]
-                                                        ))
+                                                        )
                                                     ]
-                                                ))
+                                                )
                                             ],
                                             annots: ["%data"]
-                                        ))
+                                        )
                                     ]
-                                )),
-                                .prim(try! .init(
-                                    prim: "pair",
+                                ),
+                                .comparableType(
+                                    prim: .pair,
                                     args: [
-                                        .prim(try! .init(prim: "bytes", annots: ["%label"])),
-                                        .prim(try! .init(prim: "address", annots: ["%owner"]))
+                                        try! .comparableType(prim: .bytes, annots: ["%label"]),
+                                        try! .comparableType(prim: .address, annots: ["%owner"])
                                     ]
-                                ))
+                                )
                             ]
-                        )),
-                        .prim(try! .init(
-                            prim: "option",
+                        ),
+                        .comparableType(
+                            prim: .option,
                             args: [
-                                .prim(try! .init(
-                                    prim: "pair",
+                                .comparableType(
+                                    prim: .pair,
                                     args: [
-                                        .prim(try! .init(prim: "bytes", annots: ["%parent"])),
-                                        .prim(try! .init(prim: "nat", annots: ["%ttl"]))
+                                        try! .comparableType(prim: .bytes, annots: ["%parent"]),
+                                        try! .comparableType(prim: .nat, annots: ["%ttl"])
                                     ]
-                                ))
+                                )
                             ]
-                        ))
+                        )
                     ]
-                ))
+                )
                 
-                let value: Micheline = .prim(try! .init(
-                    prim: "Pair",
+                let value: Micheline = .data(
+                    prim: .pair,
                     args: [
-                        .prim(try! .init(
-                            prim: "Pair",
+                        .data(
+                            prim: .pair,
                             args: [
-                                .prim(try! .init(
-                                    prim: "Pair",
+                                .data(
+                                    prim: .pair,
                                     args: [
-                                        .prim(try! .init(
-                                            prim: "Some",
+                                        .data(
+                                            prim: .some,
                                             args: [
-                                                .literal(.string(try! .init("tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb")))
+                                                try! .string("tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb")
                                             ]
-                                        )),
+                                        ),
                                         .sequence([
-                                            .prim(try! .init(
-                                                prim: "Elt",
+                                            .data(
+                                                prim: .elt,
                                                 args: [
-                                                    .literal(.string(try! .init("key1"))),
-                                                    .prim(try! .init(
-                                                        prim: "Left",
+                                                    try! .string("key1"),
+                                                    .data(
+                                                        prim: .left,
                                                         args: [
-                                                            .prim(try! .init(
-                                                                prim: "Left",
+                                                            .data(
+                                                                prim: .left,
                                                                 args: [
-                                                                    .prim(try! .init(
-                                                                        prim: "Left",
+                                                                    .data(
+                                                                        prim: .left,
                                                                         args: [
-                                                                            .prim(try! .init(
-                                                                                prim: "Right",
+                                                                            .data(
+                                                                                prim: .right,
                                                                                 args: [
-                                                                                    .prim(try! .init(prim: "True"))
+                                                                                    .data(prim: .true)
                                                                                 ]
-                                                                            ))
+                                                                            )
                                                                         ]
-                                                                    ))
+                                                                    )
                                                                 ]
-                                                            ))
+                                                            )
                                                         ]
-                                                    ))
+                                                    )
                                                 ]
-                                            )),
-                                            .prim(try! .init(
-                                                prim: "Elt",
+                                            ),
+                                            .data(
+                                                prim: .elt,
                                                 args: [
-                                                    .literal(.string(try! .init("key2"))),
-                                                    .prim(try! .init(
-                                                        prim: "Left",
+                                                    try! .string("key2"),
+                                                    .data(
+                                                        prim: .left,
                                                         args: [
-                                                            .prim(try! .init(
-                                                                prim: "Right",
+                                                            .data(
+                                                                prim: .right,
                                                                 args: [
-                                                                    .prim(try! .init(
-                                                                        prim: "Right",
+                                                                    .data(
+                                                                        prim: .right,
                                                                         args: [
-                                                                            .prim(try! .init(
-                                                                                prim: "Left",
+                                                                            .data(
+                                                                                prim: .left,
                                                                                 args: [
-                                                                                    .literal(.integer(.init(1)))
+                                                                                    .int(1)
                                                                                 ]
-                                                                            ))
+                                                                            )
                                                                         ]
-                                                                    ))
+                                                                    )
                                                                 ]
-                                                            ))
+                                                            )
                                                         ]
-                                                    ))
+                                                    )
                                                 ]
-                                            ))
+                                            )
                                         ])
                                     ]
-                                )),
-                                .prim(try! .init(
-                                    prim: "Pair",
+                                ),
+                                .data(
+                                    prim: .pair,
                                     args: [
-                                        .literal(.bytes(try! .init("0x0000a7848de3b1fce76a7ffce2c7ce40e46be33aed7c"))),
-                                        .literal(.string(try! .init("tz1b6wRXMA2PxATL6aoVGy9j7kSqXijW7VPq")))
+                                        try! .bytes("0x0000a7848de3b1fce76a7ffce2c7ce40e46be33aed7c"),
+                                        try! .string("tz1b6wRXMA2PxATL6aoVGy9j7kSqXijW7VPq")
                                     ]
-                                ))
+                                )
                             ]
-                        )),
-                        .prim(try! .init(
-                            prim: "Some",
+                        ),
+                        .data(
+                            prim: .some,
                             args: [
-                                .prim(try! .init(
-                                    prim: "Pair",
+                                .data(
+                                    prim: .pair,
                                     args: [
-                                        .literal(.bytes(try! .init("0x0b51b8ae90e19a079c9db469c4881871a5ba7778acf9773ac00c7dfcda0b1c87"))),
-                                        .literal(.integer(.init(2)))
+                                        try! .bytes("0x0b51b8ae90e19a079c9db469c4881871a5ba7778acf9773ac00c7dfcda0b1c87"),
+                                        .int(2)
                                     ]
-                                ))
+                                )
                             ]
-                        ))
+                        )
                     ]
-                ))
+                )
                 
                 let namedValue: ContractEntrypointParameter = .object(.init(
-                    .value(.init(.literal(.string(try! .init("tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb"))), name: "%address")),
+                    .value(.init(try! .string("tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb"), name: "%address")),
                     .map(.init(
                         [
-                            .value(.init(.literal(.string(try! .init("key1"))))): .value(.init(.prim(try! .init(prim: "True")), name: "%bool")),
-                            .value(.init(.literal(.string(try! .init("key2"))))): .value(.init(.literal(.integer(.init(1))), name: "%nat")),
+                            .value(.init(try! .string("key1"))): .value(.init(.data(prim: .true), name: "%bool")),
+                            .value(.init(try! .string("key2"))): .value(.init(.int(1), name: "%nat")),
                         ],
                         name: "%data"
                     )),
-                    .value(.init(.literal(.bytes(try! .init("0x0000a7848de3b1fce76a7ffce2c7ce40e46be33aed7c"))), name: "%label")),
-                    .value(.init(.literal(.string(try! .init("tz1b6wRXMA2PxATL6aoVGy9j7kSqXijW7VPq"))), name: "%owner")),
-                    .value(.init(.literal(.bytes(try! .init("0x0b51b8ae90e19a079c9db469c4881871a5ba7778acf9773ac00c7dfcda0b1c87"))), name: "%parent")),
-                    .value(.init(.literal(.integer(.init(2))), name: "%ttl"))
+                    .value(.init(try! .bytes("0x0000a7848de3b1fce76a7ffce2c7ce40e46be33aed7c"), name: "%label")),
+                    .value(.init(try! .string("tz1b6wRXMA2PxATL6aoVGy9j7kSqXijW7VPq"), name: "%owner")),
+                    .value(.init(try! .bytes("0x0b51b8ae90e19a079c9db469c4881871a5ba7778acf9773ac00c7dfcda0b1c87"), name: "%parent")),
+                    .value(.init(.int(2), name: "%ttl"))
                 ))
                 
                 return (name, contractAddress, type, value, namedValue)
@@ -426,10 +426,10 @@ class ContractEntrypointTest: XCTestCase {
                 let name = "test_entrypoint3"
                 let contractAddress = try! ContractHash(base58: "KT1ScmSVNZoC73zdn8Vevkit6wzbTr4aXYtc")
                 
-                let type: Micheline = .prim(try! .init(prim: "nat", annots: ["%current_version"]))
-                let value: Micheline = .literal(.integer(.init(1)))
+                let type: Micheline = try! .comparableType(prim: .nat, annots: ["%current_version"])
+                let value: Micheline = .int(1)
                 
-                let namedValue: ContractEntrypointParameter = .value(.init(.literal(.integer(.init(1)))))
+                let namedValue: ContractEntrypointParameter = .value(.init(.int(1)))
                 
                 return (name, contractAddress, type, value, namedValue)
             },
@@ -437,10 +437,10 @@ class ContractEntrypointTest: XCTestCase {
                 let name = "test_entrypoint4"
                 let contractAddress = try! ContractHash(base58: "KT1ScmSVNZoC73zdn8Vevkit6wzbTr4aXYtc")
                 
-                let type: Micheline = .prim(try! .init(prim: "nat", annots: ["%current_version"]))
-                let value: Micheline = .literal(.integer(.init(1)))
+                let type: Micheline = try! .comparableType(prim: .nat, annots: ["%current_version"])
+                let value: Micheline = .int(1)
                 
-                let namedValue: ContractEntrypointParameter = .value(.init(.literal(.integer(.init(1))), name: "%current_version"))
+                let namedValue: ContractEntrypointParameter = .value(.init(.int(1), name: "%current_version"))
                 
                 return (name, contractAddress, type, value, namedValue)
             },
@@ -448,11 +448,11 @@ class ContractEntrypointTest: XCTestCase {
                 let name = "test_entrypoint5"
                 let contractAddress = try! ContractHash(base58: "KT1ScmSVNZoC73zdn8Vevkit6wzbTr4aXYtc")
                 
-                let type: Micheline = .prim(try! .init(prim: "nat", annots: ["%current_version"]))
-                let value: Micheline = .literal(.integer(.init(1)))
+                let type: Micheline = try! .comparableType(prim: .nat, annots: ["%current_version"])
+                let value: Micheline = .int(1)
                 
                 let namedValue: ContractEntrypointParameter = .object(.init(
-                    .value(.init(.literal(.integer(.init(1))), name: "%current_version"))
+                    .value(.init(.int(1), name: "%current_version"))
                 ))
                 
                 return (name, contractAddress, type, value, namedValue)
@@ -461,43 +461,43 @@ class ContractEntrypointTest: XCTestCase {
                 let name = "test_entrypoint6"
                 let contractAddress = try! ContractHash(base58: "KT1ScmSVNZoC73zdn8Vevkit6wzbTr4aXYtc")
                 
-                let type: Micheline = .prim(try! .init(
-                    prim: "pair",
+                let type: Micheline = .comparableType(
+                    prim: .pair,
                     args: [
-                        .prim(try! .init(
-                            prim: "nat",
+                        try! .comparableType(
+                            prim: .nat,
                             annots: ["%value"]
-                        )),
-                        .prim(try! .init(
-                            prim: "pair",
+                        ),
+                        try! .comparableType(
+                            prim: .pair,
                             args: [
-                                .prim(try! .init(prim: "nat")),
-                                .prim(try! .init(prim: "nat")),
+                                .comparableType(prim: .nat),
+                                .comparableType(prim: .nat),
                             ],
                             annots: ["%data"]
-                        ))
+                        )
                     ]
-                ))
+                )
                 
-                let value: Micheline = .prim(try! .init(
-                    prim: "Pair",
+                let value: Micheline = .data(
+                    prim: .pair,
                     args: [
-                        .literal(.integer(.init(1))),
-                        .prim(try! .init(
-                            prim: "Pair",
+                        .int(1),
+                        .data(
+                            prim: .pair,
                             args: [
-                                .literal(.integer(.init(2))),
-                                .literal(.integer(.init(3)))
+                                .int(2),
+                                .int(3)
                             ]
-                        ))
+                        )
                     ]
-                ))
+                )
                 
                 let namedValue: ContractEntrypointParameter = .object(.init(
-                    .value(.init(.literal(.integer(.init(1))), name: "%value")),
+                    .value(.init(.int(1), name: "%value")),
                     .object(.init(
-                        .value(.init(.literal(.integer(.init(2))))),
-                        .value(.init(.literal(.integer(.init(3))))),
+                        .value(.init(.int(2))),
+                        .value(.init(.int(3))),
                         name: "%data"
                     ))
                 ))
@@ -508,44 +508,44 @@ class ContractEntrypointTest: XCTestCase {
                 let name = "test_entrypoint7"
                 let contractAddress = try! ContractHash(base58: "KT1ScmSVNZoC73zdn8Vevkit6wzbTr4aXYtc")
 
-                let type: Micheline = .prim(try! .init(
-                    prim: "list",
+                let type: Micheline = .type(
+                    prim: .list,
                     args: [
-                        .prim(try! .init(
-                            prim: "pair",
+                        .comparableType(
+                            prim: .pair,
                             args: [
-                                .prim(try! .init(prim: "nat", annots: ["%first"])),
-                                .prim(try! .init(prim: "nat", annots: ["%second"]))
+                                try! .comparableType(prim: .nat, annots: ["%first"]),
+                                try! .comparableType(prim: .nat, annots: ["%second"])
                             ]
-                        ))
+                        )
                     ]
-                ))
+                )
 
                 let value: Micheline = .sequence([
-                    .prim(try! .init(
-                        prim: "Pair",
+                    .data(
+                        prim: .pair,
                         args: [
-                            .literal(.integer(.init(1))),
-                            .literal(.integer(.init(2)))
+                            .int(1),
+                            .int(2)
                         ]
-                    )),
-                    .prim(try! .init(
-                        prim: "Pair",
+                    ),
+                    .data(
+                        prim: .pair,
                         args: [
-                            .literal(.integer(.init(3))),
-                            .literal(.integer(.init(4)))
+                            .int(3),
+                            .int(4)
                         ]
-                    ))
+                    )
                 ])
 
                 let namedValue: ContractEntrypointParameter = .sequence(.init(
                     .object(.init(
-                        .value(.init(.literal(.integer(.init(1))), name: "%first")),
-                        .value(.init(.literal(.integer(.init(2))), name: "%second"))
+                        .value(.init(.int(1), name: "%first")),
+                        .value(.init(.int(2), name: "%second"))
                     )),
                     .object(.init(
-                        .value(.init(.literal(.integer(.init(3))), name: "%first")),
-                        .value(.init(.literal(.integer(.init(4))), name: "%second"))
+                        .value(.init(.int(3), name: "%first")),
+                        .value(.init(.int(4), name: "%second"))
                     ))
                 ))
 
@@ -555,45 +555,45 @@ class ContractEntrypointTest: XCTestCase {
                 let name = "test_entrypoint8"
                 let contractAddress = try! ContractHash(base58: "KT1ScmSVNZoC73zdn8Vevkit6wzbTr4aXYtc")
 
-                let type: Micheline = .prim(try! .init(
-                    prim: "list",
+                let type: Micheline = .type(
+                    prim: .list,
                     args: [
-                        .prim(try! .init(
-                            prim: "pair",
+                        .comparableType(
+                            prim: .pair,
                             args: [
-                                .prim(try! .init(prim: "nat", annots: ["%first"])),
-                                .prim(try! .init(prim: "nat", annots: ["%second"]))
+                                try! .comparableType(prim: .nat, annots: ["%first"]),
+                                try! .comparableType(prim: .nat, annots: ["%second"])
                             ]
-                        ))
+                        )
                     ]
-                ))
+                )
 
                 let value: Micheline = .sequence([
-                    .prim(try! .init(
-                        prim: "Pair",
+                    .data(
+                        prim: .pair,
                         args: [
-                            .literal(.integer(.init(1))),
-                            .literal(.integer(.init(2)))
+                            .int(1),
+                            .int(2)
                         ]
-                    )),
-                    .prim(try! .init(
-                        prim: "Pair",
+                    ),
+                    .data(
+                        prim: .pair,
                         args: [
-                            .literal(.integer(.init(3))),
-                            .literal(.integer(.init(4)))
+                            .int(3),
+                            .int(4)
                         ]
-                    ))
+                    )
                 ])
 
                 let namedValue: ContractEntrypointParameter = .object(.init(
                     .sequence(.init(
                         .object(.init(
-                            .value(.init(.literal(.integer(.init(1))), name: "%first")),
-                            .value(.init(.literal(.integer(.init(2))), name: "%second"))
+                            .value(.init(.int(1), name: "%first")),
+                            .value(.init(.int(2), name: "%second"))
                         )),
                         .object(.init(
-                            .value(.init(.literal(.integer(.init(3))), name: "%first")),
-                            .value(.init(.literal(.integer(.init(4))), name: "%second"))
+                            .value(.init(.int(3), name: "%first")),
+                            .value(.init(.int(4), name: "%second"))
                         ))
                     ))
                 ))
@@ -604,34 +604,34 @@ class ContractEntrypointTest: XCTestCase {
                 let name = "test_entrypoint9"
                 let contractAddress = try! ContractHash(base58: "KT1ScmSVNZoC73zdn8Vevkit6wzbTr4aXYtc")
 
-                let type: Micheline = .prim(try! .init(
-                    prim: "map",
+                let type: Micheline = .type(
+                    prim: .map,
                     args: [
-                        .prim(try! .init(prim: "string")),
-                        .prim(try! .init(prim: "nat"))
+                        .comparableType(prim: .string),
+                        .comparableType(prim: .nat)
                     ]
-                ))
+                )
 
                 let value: Micheline = .sequence([
-                    .prim(try! .init(
-                        prim: "Elt",
+                    .data(
+                        prim: .elt,
                         args: [
-                            .literal(.string(try! .init("first"))),
-                            .literal(.integer(.init(1)))
+                            try! .string("first"),
+                            .int(1)
                         ]
-                    )),
-                    .prim(try! .init(
-                        prim: "Elt",
+                    ),
+                    .data(
+                        prim: .elt,
                         args: [
-                            .literal(.string(try! .init("second"))),
-                            .literal(.integer(.init(2)))
+                            try! .string("second"),
+                            .int(2)
                         ]
-                    ))
+                    )
                 ])
 
                 let namedValue: ContractEntrypointParameter = .map(.init([
-                    .value(.init(.literal(.string(try! .init("first"))))): .value(.init(.literal(.integer(.init(1))))),
-                    .value(.init(.literal(.string(try! .init("second"))))): .value(.init(.literal(.integer(.init(2))))),
+                    .value(.init(try! .string("first"))): .value(.init(.int(1))),
+                    .value(.init(try! .string("second"))): .value(.init(.int(2))),
                 ]))
 
                 return (name, contractAddress, type, value, namedValue)
@@ -640,35 +640,35 @@ class ContractEntrypointTest: XCTestCase {
                 let name = "test_entrypoint10"
                 let contractAddress = try! ContractHash(base58: "KT1ScmSVNZoC73zdn8Vevkit6wzbTr4aXYtc")
 
-                let type: Micheline = .prim(try! .init(
-                    prim: "map",
+                let type: Micheline = .type(
+                    prim: .map,
                     args: [
-                        .prim(try! .init(prim: "string")),
-                        .prim(try! .init(prim: "nat"))
+                        .comparableType(prim: .string),
+                        .comparableType(prim: .nat)
                     ]
-                ))
+                )
 
                 let value: Micheline = .sequence([
-                    .prim(try! .init(
-                        prim: "Elt",
+                    .data(
+                        prim: .elt,
                         args: [
-                            .literal(.string(try! .init("first"))),
-                            .literal(.integer(.init(1)))
+                            try! .string("first"),
+                            .int(1)
                         ]
-                    )),
-                    .prim(try! .init(
-                        prim: "Elt",
+                    ),
+                    .data(
+                        prim: .elt,
                         args: [
-                            .literal(.string(try! .init("second"))),
-                            .literal(.integer(.init(2)))
+                            try! .string("second"),
+                            .int(2)
                         ]
-                    ))
+                    )
                 ])
 
                 let namedValue: ContractEntrypointParameter = .object(.init(
                     .map(.init([
-                        .value(.init(.literal(.string(try! .init("first"))))): .value(.init(.literal(.integer(.init(1))))),
-                        .value(.init(.literal(.string(try! .init("second"))))): .value(.init(.literal(.integer(.init(2))))),
+                        .value(.init(try! .string("first"))): .value(.init(.int(1))),
+                        .value(.init(try! .string("second"))): .value(.init(.int(2))),
                     ]))
                 ))
 

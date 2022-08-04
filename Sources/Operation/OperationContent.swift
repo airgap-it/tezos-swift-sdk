@@ -5,13 +5,12 @@
 //  Created by Julia Samol on 04.07.22.
 //
 
-import Foundation
 import TezosCore
 import TezosMichelson
 
 extension TezosOperation {
     
-    public enum Content: Hashable {
+    public enum Content: OperationContentProtocol, Hashable {
         public typealias `Protocol` = OperationContentProtocol
         public typealias Consensus = OperationConsensusContentProtocol
         public typealias Manager = OperationManagerContentProtocol
@@ -34,7 +33,7 @@ extension TezosOperation {
         case setDepositsLimit(SetDepositsLimit)
         
         enum Kind: CaseIterable, RawRepresentable {
-            typealias RawValue = (ForgeableConsuming & `Protocol`).Type
+            typealias RawValue = (ForgeableConsuming & `Protocol` & BytesTaggable).Type
             
             case seedNonceRevelation
             case doubleEndorsementEvidence
@@ -130,9 +129,13 @@ extension TezosOperation {
             }
         }
         
+        public func asOperationContent() -> TezosOperation.Content {
+            self
+        }
+        
         // MARK: SeedNonceRevelation
         
-        public struct SeedNonceRevelation: `Protocol`, Hashable {
+        public struct SeedNonceRevelation: `Protocol`, BytesTaggable, Hashable {
             public static let tag: [UInt8] = [1]
             
             public let level: Int32
@@ -143,14 +146,14 @@ extension TezosOperation {
                 self.nonce = nonce
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .seedNonceRevelation(self)
             }
         }
         
         // MARK: DoubleEndorsementEvidence
         
-        public struct DoubleEndorsementEvidence: `Protocol`, Hashable {
+        public struct DoubleEndorsementEvidence: `Protocol`, BytesTaggable, Hashable {
             public static let tag: [UInt8] = [2]
             
             public let op1: InlinedEndorsement
@@ -161,14 +164,14 @@ extension TezosOperation {
                 self.op2 = op2
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .doubleEndorsementEvidence(self)
             }
         }
         
         // MARK: DoubleBakingEvidence
         
-        public struct DoubleBakingEvidence: `Protocol`, Hashable {
+        public struct DoubleBakingEvidence: `Protocol`, BytesTaggable, Hashable {
             public static let tag: [UInt8] = [3]
             
             public let bh1: BlockHeader
@@ -179,14 +182,14 @@ extension TezosOperation {
                 self.bh2 = bh2
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .doubleBakingEvidence(self)
             }
         }
         
         // MARK: ActivateAccount
         
-        public struct ActivateAccount: `Protocol`, Hashable {
+        public struct ActivateAccount: `Protocol`, BytesTaggable, Hashable {
             public static let tag: [UInt8] = [4]
             
             public let pkh: Ed25519PublicKeyHash
@@ -197,14 +200,14 @@ extension TezosOperation {
                 self.secret = secret
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .activateAccount(self)
             }
         }
         
         // MARK: Proposals
         
-        public struct Proposals: `Protocol`, Hashable {
+        public struct Proposals: `Protocol`, BytesTaggable, Hashable {
             public static let tag: [UInt8] = [5]
             
             public let source: Address.Implicit
@@ -217,14 +220,14 @@ extension TezosOperation {
                 self.proposals = proposals
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .proposals(self)
             }
         }
         
         // MARK: Ballot
         
-        public struct Ballot: `Protocol`, Hashable {
+        public struct Ballot: `Protocol`, BytesTaggable, Hashable {
             public static let tag: [UInt8] = [6]
             
             public let source: Address.Implicit
@@ -256,14 +259,14 @@ extension TezosOperation {
                 }
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .ballot(self)
             }
         }
                     
         // MARK: DoublePreendorsementEvidence
         
-        public struct DoublePreendorsementEvidence: `Protocol`, Hashable {
+        public struct DoublePreendorsementEvidence: `Protocol`, BytesTaggable, Hashable {
             public static let tag: [UInt8] = [7]
             
             public let op1: InlinedPreendorsement
@@ -274,14 +277,14 @@ extension TezosOperation {
                 self.op2 = op2
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .doublePreendorsementEvidence(self)
             }
         }
         
         // MARK: FailingNoop
         
-        public struct FailingNoop: `Protocol`, Hashable {
+        public struct FailingNoop: `Protocol`, BytesTaggable, Hashable {
             public static let tag: [UInt8] = [17]
             
             public let arbitrary: HexString
@@ -290,14 +293,14 @@ extension TezosOperation {
                 self.arbitrary = arbitrary
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .failingNoop(self)
             }
         }
         
         // MARK: Preendorsement
         
-        public struct Preendorsement: `Protocol`, Consensus, Hashable {
+        public struct Preendorsement: `Protocol`, BytesTaggable, Consensus, Hashable {
             public static let tag: [UInt8] = [20]
             
             public let slot: UInt16
@@ -317,14 +320,14 @@ extension TezosOperation {
                 self.blockPayloadHash = blockPayloadHash
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .preendorsement(self)
             }
         }
                     
         // MARK: Endorsement
         
-        public struct Endorsement: `Protocol`, Consensus, Hashable {
+        public struct Endorsement: `Protocol`, BytesTaggable, Consensus, Hashable {
             public static let tag: [UInt8] = [21]
             
             public let slot: UInt16
@@ -344,14 +347,14 @@ extension TezosOperation {
                 self.blockPayloadHash = blockPayloadHash
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .endorsement(self)
             }
         }
         
         // MARK: Reveal
         
-        public struct Reveal: `Protocol`, Manager, Hashable {
+        public struct Reveal: `Protocol`, BytesTaggable, Manager, Hashable {
             public static let tag: [UInt8] = [107]
             
             public let source: Address.Implicit
@@ -377,14 +380,14 @@ extension TezosOperation {
                 self.publicKey = publicKey
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .reveal(self)
             }
         }
         
         // MARK: Transaction
         
-        public struct Transaction: `Protocol`, Manager, Hashable {
+        public struct Transaction: `Protocol`, BytesTaggable, Manager, Hashable {
             public static let tag: [UInt8] = [108]
             
             public let source: Address.Implicit
@@ -416,14 +419,14 @@ extension TezosOperation {
                 self.parameters = parameters
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .transaction(self)
             }
         }
         
         // MARK: Origination
         
-        public struct Origination: `Protocol`, Manager, Hashable {
+        public struct Origination: `Protocol`, BytesTaggable, Manager, Hashable {
             public static let tag: [UInt8] = [109]
             
             public let source: Address.Implicit
@@ -455,14 +458,14 @@ extension TezosOperation {
                 self.script = script
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .origination(self)
             }
         }
         
         // MARK: Delegation
         
-        public struct Delegation: `Protocol`, Manager, Hashable {
+        public struct Delegation: `Protocol`, BytesTaggable, Manager, Hashable {
             public static let tag: [UInt8] = [110]
             
             public let source: Address.Implicit
@@ -488,14 +491,14 @@ extension TezosOperation {
                 self.delegate = delegate
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .delegation(self)
             }
         }
         
         // MARK: RegisterGlobalConstant
         
-        public struct RegisterGlobalConstant: `Protocol`, Manager, Hashable {
+        public struct RegisterGlobalConstant: `Protocol`, BytesTaggable, Manager, Hashable {
             public static let tag: [UInt8] = [111]
             
             public let source: Address.Implicit
@@ -521,14 +524,14 @@ extension TezosOperation {
                 self.value = value
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .registerGlobalConstant(self)
             }
         }
                     
         // MARK: SetDepositsLimit
         
-        public struct SetDepositsLimit: `Protocol`, Manager, Hashable {
+        public struct SetDepositsLimit: `Protocol`, BytesTaggable, Manager, Hashable {
             public static let tag: [UInt8] = [112]
             
             public let source: Address.Implicit
@@ -554,19 +557,15 @@ extension TezosOperation {
                 self.limit = limit
             }
             
-            public func asContent() -> TezosOperation.Content {
+            public func asOperationContent() -> TezosOperation.Content {
                 .setDepositsLimit(self)
             }
         }
     }
 }
 
-// MARK: Protocol
-
 public protocol OperationContentProtocol {
-    static var tag: [UInt8] { get }
-    
-    func asContent() -> TezosOperation.Content
+    func asOperationContent() -> TezosOperation.Content
 }
 
 public protocol OperationConsensusContentProtocol {
@@ -582,4 +581,45 @@ public protocol OperationManagerContentProtocol {
     var counter: TezosNat { get }
     var gasLimit: TezosNat { get }
     var storageLimit: TezosNat { get }
+}
+
+// MARK: Utility Extensions
+
+private extension TezosOperation.Content {
+    var common: `Protocol` {
+        switch self {
+        case .seedNonceRevelation(let seedNonceRevelation):
+            return seedNonceRevelation
+        case .doubleEndorsementEvidence(let doubleEndorsementEvidence):
+            return doubleEndorsementEvidence
+        case .doubleBakingEvidence(let doubleBakingEvidence):
+            return doubleBakingEvidence
+        case .activateAccount(let activateAccount):
+            return activateAccount
+        case .proposals(let proposals):
+            return proposals
+        case .ballot(let ballot):
+            return ballot
+        case .doublePreendorsementEvidence(let doublePreendorsementEvidence):
+            return doublePreendorsementEvidence
+        case .failingNoop(let failingNoop):
+            return failingNoop
+        case .preendorsement(let preendorsement):
+            return preendorsement
+        case .endorsement(let endorsement):
+            return endorsement
+        case .reveal(let reveal):
+            return reveal
+        case .transaction(let transaction):
+            return transaction
+        case .origination(let origination):
+            return origination
+        case .delegation(let delegation):
+            return delegation
+        case .registerGlobalConstant(let registerGlobalConstant):
+            return registerGlobalConstant
+        case .setDepositsLimit(let setDepositsLimit):
+            return setDepositsLimit
+        }
+    }
 }

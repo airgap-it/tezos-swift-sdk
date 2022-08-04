@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct SaplingSpendingKey: EncodedValue {
     public static let base58Prefix: String = "sask"
     public static let base58Bytes: [UInt8] = [11, 237, 20, 92]

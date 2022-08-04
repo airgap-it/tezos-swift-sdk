@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 05.07.22.
 //
 
-import Foundation
-
 public enum Entrypoint: Hashable, Codable {
     case `default`
     case root

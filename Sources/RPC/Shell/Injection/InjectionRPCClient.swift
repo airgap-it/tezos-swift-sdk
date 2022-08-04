@@ -10,7 +10,7 @@ import TezosCore
 
 // MARK: /injection
 
-class InjectionClient<HTTPClient: HTTP>: Injection {
+public class InjectionClient<HTTPClient: HTTP>: Injection {
     let baseURL: URL
     let http: HTTPClient
 
@@ -19,14 +19,14 @@ class InjectionClient<HTTPClient: HTTP>: Injection {
         self.http = http
     }
     
-    lazy var block: InjectionBlockClient<HTTPClient> = .init(parentURL: baseURL, http: http)
-    lazy var operation: InjectionOperationClient<HTTPClient> = .init(parentURL: baseURL, http: http)
-    lazy var `protocol`: InjectionProtocolClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    public lazy var block: InjectionBlockClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    public lazy var operation: InjectionOperationClient<HTTPClient> = .init(parentURL: baseURL, http: http)
+    public lazy var `protocol`: InjectionProtocolClient<HTTPClient> = .init(parentURL: baseURL, http: http)
 }
 
 // MARK: /injection/block
 
-struct InjectionBlockClient<HTTPClient: HTTP>: InjectionBlock {
+public struct InjectionBlockClient<HTTPClient: HTTP>: InjectionBlock {
     let baseURL: URL
     let http: HTTPClient
 
@@ -35,7 +35,7 @@ struct InjectionBlockClient<HTTPClient: HTTP>: InjectionBlock {
         self.http = http
     }
     
-    func post(
+    public func post(
         data: String,
         operations: [[RPCInjectableOperation]],
         configuredWith configuration: InjectionBlockPostConfiguration
@@ -63,7 +63,7 @@ struct InjectionBlockClient<HTTPClient: HTTP>: InjectionBlock {
 
 // MARK: /injection/operation
 
-struct InjectionOperationClient<HTTPClient: HTTP>: InjectionOperation {
+public struct InjectionOperationClient<HTTPClient: HTTP>: InjectionOperation {
     let baseURL: URL
     let http: HTTPClient
 
@@ -72,7 +72,7 @@ struct InjectionOperationClient<HTTPClient: HTTP>: InjectionOperation {
         self.http = http
     }
     
-    func post(data: String, configuredWith configuration: InjectionOperationPostConfiguration) async throws -> OperationHash {
+    public func post(data: String, configuredWith configuration: InjectionOperationPostConfiguration) async throws -> OperationHash {
         var parameters = [HTTPParameter]()
         if let async = configuration.async, async {
             parameters.append(("async", nil))
@@ -93,7 +93,7 @@ struct InjectionOperationClient<HTTPClient: HTTP>: InjectionOperation {
 
 // MARK: /injection/protocol
 
-struct InjectionProtocolClient<HTTPClient: HTTP>: InjectionProtocol {
+public struct InjectionProtocolClient<HTTPClient: HTTP>: InjectionProtocol {
     let baseURL: URL
     let http: HTTPClient
 
@@ -102,7 +102,7 @@ struct InjectionProtocolClient<HTTPClient: HTTP>: InjectionProtocol {
         self.http = http
     }
     
-    func post(
+    public func post(
         expectedEnvVersion: UInt16,
         components: [RPCProtocolComponent],
         configuredWith configuration: InjectionProtocolPostConfiguration
