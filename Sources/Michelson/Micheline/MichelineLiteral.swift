@@ -5,15 +5,20 @@
 //  Created by Julia Samol on 13.06.22.
 //
 
-import Foundation
 import TezosCore
 
 extension Micheline {
     
-    public enum Literal: Hashable, Codable {
+    public enum Literal: Hashable, Codable, MichelineLiteralProtocol {
+        public typealias `Protocol` = MichelineLiteralProtocol
+        
         case integer(Integer)
         case string(String)
         case bytes(Bytes)
+        
+        public func asMichelineLiteral() -> Micheline.Literal {
+            self
+        }
         
         // MARK: Codable
         
@@ -49,7 +54,7 @@ extension Micheline {
         
         // MARK: Int
         
-        public struct Integer: BigIntWrapper, Hashable, Codable {
+        public struct Integer: `Protocol`, BigIntWrapper, Hashable, Codable {
             public let value: Swift.String
             
             public init<S: StringProtocol>(_ value: S) throws {
@@ -58,6 +63,10 @@ extension Micheline {
                 }
                 
                 self.value = Swift.String(value)
+            }
+            
+            public func asMichelineLiteral() -> Micheline.Literal {
+                .integer(self)
             }
             
             // MARK: Codable
@@ -69,7 +78,7 @@ extension Micheline {
         
         // MARK: String
         
-        public struct String: StringWrapper, Hashable, Codable {
+        public struct String: `Protocol`, StringWrapper, Hashable, Codable {
             public static let regex: Swift.String = #"^(\"|\r|\n|\t|\b|\\|[^\"\\])*$"#
             
             public let value: Swift.String
@@ -82,6 +91,10 @@ extension Micheline {
                 self.value = Swift.String(value)
             }
             
+            public func asMichelineLiteral() -> Micheline.Literal {
+                .string(self)
+            }
+            
             // MARK: Codable
             
             public enum CodingKeys: Swift.String, CodingKey {
@@ -91,7 +104,7 @@ extension Micheline {
         
         // MARK: Bytes
         
-        public struct Bytes: BytesWrapper, Hashable, Codable {
+        public struct Bytes: `Protocol`, BytesWrapper, Hashable, Codable {
             public static let regex: Swift.String = HexString.regex(withPrefix: .required)
             
             public let value: Swift.String
@@ -106,6 +119,10 @@ extension Micheline {
             
             public init(_ value: [UInt8]) {
                 self.value = Swift.String(HexString(from: value), withPrefix: true)
+            }
+            
+            public func asMichelineLiteral() -> Micheline.Literal {
+                .bytes(self)
             }
             
             // MARK: Codable
@@ -128,5 +145,15 @@ extension Micheline {
                 case value = "bytes"
             }
         }
+    }
+}
+
+public protocol MichelineLiteralProtocol: Micheline.`Protocol` {
+    func asMichelineLiteral() -> Micheline.Literal
+}
+
+public extension Micheline.Literal.`Protocol` {
+    func asMicheline() -> Micheline {
+        .literal(asMichelineLiteral())
     }
 }

@@ -6,9 +6,7 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
-public struct Ed25519PublicKeyHash: EncodedValue {
+public struct Ed25519PublicKeyHash: Address.Implicit.`Protocol`, KeyHash.Public.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "tz1"
     public static let base58Bytes: [UInt8] = [6, 161, 159]
     public static let base58Length: Int = 36
@@ -23,5 +21,13 @@ public struct Ed25519PublicKeyHash: EncodedValue {
         }
         
         self.base58 = base58
+    }
+    
+    public func asImplicitAddress() -> Address.Implicit {
+        .tz1(self)
+    }
+    
+    public func asPublicKeyHash() -> KeyHash.Public {
+        .tz1(self)
     }
 }

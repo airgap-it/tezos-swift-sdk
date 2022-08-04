@@ -6,9 +6,7 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
-public struct P256PublicKeyHash: EncodedValue {
+public struct P256PublicKeyHash: Address.Implicit.`Protocol`, KeyHash.Public.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "tz3"
     public static let base58Bytes: [UInt8] = [6, 161, 164]
     public static let base58Length: Int = 36
@@ -23,5 +21,13 @@ public struct P256PublicKeyHash: EncodedValue {
         }
         
         self.base58 = base58
+    }
+    
+    public func asImplicitAddress() -> Address.Implicit {
+        .tz3(self)
+    }
+    
+    public func asPublicKeyHash() -> KeyHash.Public {
+        .tz3(self)
     }
 }

@@ -5,7 +5,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
 import TezosCore
 
 // MARK: Micheline
@@ -93,7 +92,7 @@ extension Micheline.Sequence {
     
 }
 
-// MARK: Utility Functions: Unpack
+// MARK: Utilities: Unpack
 
 private func postUnpack(_ value: Micheline, usingSchema schema: Micheline) throws -> Micheline {
     if case let .prim(schema) = schema {
@@ -110,33 +109,33 @@ private func postUnpack(_ value: Micheline, usingSchema schema: Micheline) throw
 }
 
 private func postUnpack(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
-    if let schema = try? schema.asPrim(Michelson._Type.Option.self, Michelson.ComparableType.Option.self) {
+    if let schema = try? schema.asPrim(.type(.option), .type(.comparable(.option))) {
         return try postUnpackOptionData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson._Type.Set.self, Michelson._Type.List.self) {
+    } else if let schema = try? schema.asPrim(.type(.set), .type(.list)) {
         return try postUnpackSequenceData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson._Type.Contract.self, Michelson.ComparableType.Address.self) {
+    } else if let schema = try? schema.asPrim(.type(.contract), .type(.comparable(.address))) {
         return try postUnpackAddressData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson._Type.Pair.self, Michelson.ComparableType.Pair.self) {
+    } else if let schema = try? schema.asPrim(.type(.pair), .type(.comparable(.pair))) {
         return try postUnpackPairData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson._Type.Or.self, Michelson.ComparableType.Or.self) {
+    } else if let schema = try? schema.asPrim(.type(.or), .type(.comparable(.or))) {
         return try postUnpackOrData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson._Type.Lambda.self) {
+    } else if let schema = try? schema.asPrim(.type(.lambda)) {
         return try postUnpackLambdaData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson._Type.Map.self) {
+    } else if let schema = try? schema.asPrim(.type(.map)) {
         return try postUnpackMapData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson._Type.BigMap.self) {
+    } else if let schema = try? schema.asPrim(.type(.bigMap)) {
         return try postUnpackBigMapData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson.ComparableType.ChainID.self) {
+    } else if let schema = try? schema.asPrim(.type(.comparable(.chainID))) {
         return try postUnpackChainIDData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson.ComparableType.KeyHash.self) {
+    } else if let schema = try? schema.asPrim(.type(.comparable(.keyHash))) {
         return try postUnpackKeyHashData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson.ComparableType.Key.self) {
+    } else if let schema = try? schema.asPrim(.type(.comparable(.key))) {
         return try postUnpackKeyData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson.ComparableType.Signature.self) {
+    } else if let schema = try? schema.asPrim(.type(.comparable(.signature))) {
         return try postUnpackSignatureData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson.ComparableType.Timestamp.self) {
+    } else if let schema = try? schema.asPrim(.type(.comparable(.timestamp))) {
         return try postUnpackTimestampData(value, usingSchema: schema)
-    } else if let _ = try? schema.asPrim(Michelson._Type.allPrims) {
+    } else if let _ = try? schema.asPrim(Michelson.Type_.Prim.allRawValues) {
         return value
     } else {
         throw invalidSchemaError(schema: .prim(schema))
@@ -144,12 +143,12 @@ private func postUnpack(_ value: Micheline, usingSchema schema: Micheline.Primit
 }
 
 private func postUnpackOptionData(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
-    if let value = try? value.asPrim(Michelson.Data.Some.self), value.args.count == schema.args.count {
+    if let value = try? value.asPrim(.data(.some)), value.args.count == schema.args.count {
         let postUnpackedArgs = try postUnpack(value.args, usingSchemas: schema.args)
         return .prim(
             try .init(prim: value.prim, args: postUnpackedArgs, annots: value.annots)
         )
-    } else if let _ = try? value.asPrim(Michelson.Data.None.self) {
+    } else if let _ = try? value.asPrim(.data(.none)) {
         return value
     } else {
         throw valueSchemaMismatchError(value: value, schema: .prim(schema))
@@ -169,17 +168,23 @@ private func postUnpackSequenceData(_ value: Micheline, usingSchema schema: Mich
 }
 
 private func postUnpackAddressData(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
-    try postUnpackBytesToString(value, usingSchema: schema) { try Address(from: $0).base58 }
+    try postUnpackBytesToString(value, usingSchema: schema) {
+        var bytes = $0
+        let address = try Address(fromConsuming: &bytes)
+        let entrypoint = try String(fromConsuming: &bytes)
+        
+        return combineAddress(address, with: entrypoint)
+    }
 }
 
 private func postUnpackPairData(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
     if case let .sequence(value) = value {
         let pair: Micheline = .prim(
-            try .init(prim: Michelson.Data.Pair.self, args: value, annots: []).normalized()
+            try .init(prim: .data(.pair), args: value, annots: []).normalized()
         )
         
         return try postUnpack(pair, usingSchema: schema)
-    } else if let value = try? value.asPrim(Michelson.Data.Pair.self) {
+    } else if let value = try? value.asPrim(.data(.pair)) {
         let valueNormalized = try value.normalized()
         let schemaNormalized = try schema.normalized()
         
@@ -207,9 +212,9 @@ private func postUnpackOrData(_ value: Micheline, usingSchema schema: Micheline.
     }
     
     let type: Micheline = try {
-        if let _ = try? value.asPrim(Michelson.Data.Left.self) {
+        if let _ = try? value.asPrim(.data(.left)) {
             return schema.args[0]
-        } else if let _ = try? value.asPrim(Michelson.Data.Right.self) {
+        } else if let _ = try? value.asPrim(.data(.right)) {
             return schema.args[1]
         } else {
             throw valueSchemaMismatchError(value: .prim(value), schema: .prim(schema))
@@ -246,7 +251,7 @@ private func postUnpackMapData(_ value: Micheline, usingSchema schema: Micheline
     }
     
     let postUnpacked: [Micheline] = try value.map { node in
-        guard let elt = try? node.asPrim(Michelson.Data.Elt.self), elt.args.count == schema.args.count else {
+        guard let elt = try? node.asPrim(.data(.elt)), elt.args.count == schema.args.count else {
             throw valueSchemaMismatchError(value: .sequence(value), schema: .prim(schema))
         }
         
@@ -286,31 +291,26 @@ private func postUnpackSignatureData(_ value: Micheline, usingSchema schema: Mic
 
 private func postUnpackTimestampData(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
     try postUnpackIntToString(value, usingSchema: schema) {
-        let date = Date(timeIntervalSince1970: TimeInterval($0) / 1000.0)
-        
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions.insert(.withFractionalSeconds)
-        
-        return formatter.string(from: date)
+        Timestamp.millis(Int64($0)).toRFC3339()
     }
 }
 
 private func postUnpackInstruction(_ value: Micheline.PrimitiveApplication, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
-    if let value = try? value.asPrim(Michelson.Instruction.Map.self, Michelson.Instruction.Iter.self) {
+    if let value = try? value.asPrim(.data(.instruction(.map)), .data(.instruction(.iter))) {
         return try postUnpackIteratingInstruction(value, usingSchema: schema)
-    } else if let value = try? value.asPrim(Michelson.Instruction.Loop.self, Michelson.Instruction.LoopLeft.self) {
+    } else if let value = try? value.asPrim(.data(.instruction(.loop)), .data(.instruction(.loopLeft))) {
         return try postUnpackLoopInstruction(value, usingSchema: schema)
-    } else if let value = try? value.asPrim(Michelson.Instruction.Lambda.self) {
+    } else if let value = try? value.asPrim(.data(.instruction(.lambda))) {
         return try postUnpackLambdaInstruction(value, usingSchema: schema)
-    } else if let value = try? value.asPrim(Michelson.Instruction.Dip.self) {
+    } else if let value = try? value.asPrim(.data(.instruction(.dip))) {
         return try postUnpackDipInstruction(value, usingSchema: schema)
-    } else if let value = try? value.asPrim(Michelson.Instruction.IfNone.self, Michelson.Instruction.IfCons.self, Michelson.Instruction.If.self) {
+    } else if let value = try? value.asPrim(.data(.instruction(.ifNone)), .data(.instruction(.ifCons)), .data(.instruction(.if))) {
         return try postUnpackIfInstruction(value, usingSchema: schema)
-    } else if let value = try? value.asPrim(Michelson.Instruction.Push.self) {
+    } else if let value = try? value.asPrim(.data(.instruction(.push))) {
         return try postUnpackPushInstruction(value)
-    } else if let value = try? value.asPrim(Michelson.Instruction.CreateContract.self) {
+    } else if let value = try? value.asPrim(.data(.instruction(.createContract))) {
         return try postUnpackCreateContractInstruction(value, usingSchema: schema)
-    } else if let value = try? value.asPrim(Michelson.Instruction.allPrims) {
+    } else if let value = try? value.asPrim(Michelson.Instruction.Prim.allRawValues) {
         return .prim(value)
     } else {
         throw valueSchemaMismatchError(value: .prim(value), schema: .prim(schema))
@@ -425,7 +425,15 @@ private func postUnpack(_ values: [Micheline], usingSchema schema: Micheline) th
     try values.map { try postUnpack($0, usingSchema: schema) }
 }
 
-// MARK: Utility Functions: Pack
+private func combineAddress(_ address: Address, with entrypoint: String) -> String {
+    guard !entrypoint.isEmpty else {
+        return address.base58
+    }
+    
+    return "\(address.base58)\(Michelson.ComparableType.Address.entrypointSeparator)\(entrypoint)"
+}
+
+// MARK: Utilities: Pack
 
 private func prePack(_ value: Micheline, usingSchema schema: Micheline) throws -> Micheline {
     if case let .prim(schema) = schema {
@@ -442,33 +450,33 @@ private func prePack(_ value: Micheline, usingSchema schema: Micheline) throws -
 }
 
 private func prePack(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
-    if let schema = try? schema.asPrim(Michelson._Type.Option.self, Michelson.ComparableType.Option.self) {
+    if let schema = try? schema.asPrim(.type(.option), .type(.comparable(.option))) {
         return try prePackOptionData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson._Type.Set.self, Michelson._Type.List.self) {
+    } else if let schema = try? schema.asPrim(.type(.set), .type(.list)) {
         return try prePackSequenceData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson._Type.Contract.self, Michelson.ComparableType.Address.self) {
+    } else if let schema = try? schema.asPrim(.type(.contract), .type(.comparable(.address))) {
         return try prePackAddressData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson._Type.Pair.self, Michelson.ComparableType.Pair.self) {
+    } else if let schema = try? schema.asPrim(.type(.pair), .type(.comparable(.pair))) {
         return try prePackPairData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson._Type.Or.self, Michelson.ComparableType.Or.self) {
+    } else if let schema = try? schema.asPrim(.type(.or), .type(.comparable(.or))) {
         return try prePackOrData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson._Type.Lambda.self) {
+    } else if let schema = try? schema.asPrim(.type(.lambda)) {
         return try prePackLambdaData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson._Type.Map.self) {
+    } else if let schema = try? schema.asPrim(.type(.map)) {
         return try prePackMapData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson._Type.BigMap.self) {
+    } else if let schema = try? schema.asPrim(.type(.bigMap)) {
         return try prePackBigMapData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson.ComparableType.ChainID.self) {
+    } else if let schema = try? schema.asPrim(.type(.comparable(.chainID))) {
         return try prePackChainIDData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson.ComparableType.KeyHash.self) {
+    } else if let schema = try? schema.asPrim(.type(.comparable(.keyHash))) {
         return try prePackKeyHashData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson.ComparableType.Key.self) {
+    } else if let schema = try? schema.asPrim(.type(.comparable(.key))) {
         return try prePackKeyData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson.ComparableType.Signature.self) {
+    } else if let schema = try? schema.asPrim(.type(.comparable(.signature))) {
         return try prePackSignatureData(value, usingSchema: schema)
-    } else if let schema = try? schema.asPrim(Michelson.ComparableType.Timestamp.self) {
+    } else if let schema = try? schema.asPrim(.type(.comparable(.timestamp))) {
         return try prePackTimestampData(value, usingSchema: schema)
-    } else if let _ = try? schema.asPrim(Michelson._Type.allPrims) {
+    } else if let _ = try? schema.asPrim(Michelson.Type_.Prim.allRawValues) {
         return value
     } else {
         throw invalidSchemaError(schema: .prim(schema))
@@ -476,12 +484,12 @@ private func prePack(_ value: Micheline, usingSchema schema: Micheline.Primitive
 }
 
 private func prePackOptionData(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
-    if let value = try? value.asPrim(Michelson.Data.Some.self), value.args.count == schema.args.count {
+    if let value = try? value.asPrim(.data(.some)), value.args.count == schema.args.count {
         let prePackedArgs = try prePack(value.args, usingSchemas: schema.args)
         return .prim(
             try .init(prim: value.prim, args: prePackedArgs, annots: value.annots)
         )
-    } else if let _ = try? value.asPrim(Michelson.Data.None.self) {
+    } else if let _ = try? value.asPrim(.data(.none)) {
         return value
     } else {
         throw valueSchemaMismatchError(value: value, schema: .prim(schema))
@@ -501,17 +509,23 @@ private func prePackSequenceData(_ value: Micheline, usingSchema schema: Micheli
 }
 
 private func prePackAddressData(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
-    try prePackStringToBytes(value, usingSchema: schema) { try Address(base58: $0).encodeToBytes() }
+    try prePackStringToBytes(value, usingSchema: schema) {
+        let (address, entrypoint) = splitAddress($0)
+        let addressBytes = try Address(base58: address).encodeToBytes()
+        let entrypointBytes = try entrypoint?.encodeToBytes() ?? []
+        
+        return addressBytes + entrypointBytes
+    }
 }
 
 private func prePackPairData(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
     if case let .sequence(value) = value {
         let pair: Micheline = .prim(
-            try .init(prim: Michelson.Data.Pair.self, args: value, annots: []).normalized()
+            try .init(prim: .data(.pair), args: value, annots: []).normalized()
         )
         
         return try prePack(pair, usingSchema: schema)
-    } else if let value = try? value.asPrim(Michelson.Data.Pair.self) {
+    } else if let value = try? value.asPrim(.data(.pair)) {
         let valueNormalized = try value.normalized()
         let schemaNormalized = try schema.normalized()
         
@@ -539,9 +553,9 @@ private func prePackOrData(_ value: Micheline, usingSchema schema: Micheline.Pri
     }
     
     let type: Micheline = try {
-        if let _ = try? value.asPrim(Michelson.Data.Left.self) {
+        if let _ = try? value.asPrim(.data(.left)) {
             return schema.args[0]
-        } else if let _ = try? value.asPrim(Michelson.Data.Right.self) {
+        } else if let _ = try? value.asPrim(.data(.right)) {
             return schema.args[1]
         } else {
             throw valueSchemaMismatchError(value: .prim(value), schema: .prim(schema))
@@ -578,7 +592,7 @@ private func prePackMapData(_ value: Micheline, usingSchema schema: Micheline.Pr
     }
     
     let prePacked: [Micheline] = try value.map { node in
-        guard let elt = try? node.asPrim(Michelson.Data.Elt.self), elt.args.count == schema.args.count else {
+        guard let elt = try? node.asPrim(.data(.elt)), elt.args.count == schema.args.count else {
             throw valueSchemaMismatchError(value: .sequence(value), schema: .prim(schema))
         }
         
@@ -618,33 +632,26 @@ private func prePackSignatureData(_ value: Micheline, usingSchema schema: Michel
 
 private func prePackTimestampData(_ value: Micheline, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
     try prePackStringToInt(value, usingSchema: schema) {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions.insert(.withFractionalSeconds)
-        
-        guard let date = formatter.date(from: $0) else {
-            throw TezosError.invalidValue("Invalid ISO8601 date.")
-        }
-        
-        return Int((date.timeIntervalSince1970 * 1000.0).rounded())
+        Int(Timestamp.rfc3339($0).toMillis())
     }
 }
 
 private func prePackInstruction(_ value: Micheline.PrimitiveApplication, usingSchema schema: Micheline.PrimitiveApplication) throws -> Micheline {
-    if let value = try? value.asPrim(Michelson.Instruction.Map.self, Michelson.Instruction.Iter.self) {
+    if let value = try? value.asPrim(.data(.instruction(.map)), .data(.instruction(.iter))) {
         return try prePackIteratingInstruction(value, usingSchema: schema)
-    } else if let value = try? value.asPrim(Michelson.Instruction.Loop.self, Michelson.Instruction.LoopLeft.self) {
+    } else if let value = try? value.asPrim(.data(.instruction(.loop)), .data(.instruction(.loopLeft))) {
         return try prePackLoopInstruction(value, usingSchema: schema)
-    } else if let value = try? value.asPrim(Michelson.Instruction.Lambda.self) {
+    } else if let value = try? value.asPrim(.data(.instruction(.lambda))) {
         return try prePackLambdaInstruction(value, usingSchema: schema)
-    } else if let value = try? value.asPrim(Michelson.Instruction.Dip.self) {
+    } else if let value = try? value.asPrim(.data(.instruction(.dip))) {
         return try prePackDipInstruction(value, usingSchema: schema)
-    } else if let value = try? value.asPrim(Michelson.Instruction.IfNone.self, Michelson.Instruction.IfCons.self, Michelson.Instruction.If.self) {
+    } else if let value = try? value.asPrim(.data(.instruction(.ifNone)), .data(.instruction(.ifCons)), .data(.instruction(.if))) {
         return try prePackIfInstruction(value, usingSchema: schema)
-    } else if let value = try? value.asPrim(Michelson.Instruction.Push.self) {
+    } else if let value = try? value.asPrim(.data(.instruction(.push))) {
         return try prePackPushInstruction(value)
-    } else if let value = try? value.asPrim(Michelson.Instruction.CreateContract.self) {
+    } else if let value = try? value.asPrim(.data(.instruction(.createContract))) {
         return try prePackCreateContractInstruction(value, usingSchema: schema)
-    } else if let value = try? value.asPrim(Michelson.Instruction.allPrims) {
+    } else if let value = try? value.asPrim(Michelson.Instruction.Prim.allRawValues) {
         return .prim(value)
     } else {
         throw valueSchemaMismatchError(value: .prim(value), schema: .prim(schema))
@@ -755,6 +762,21 @@ private func prePack(_ values: [Micheline], usingSchema schema: Micheline) throw
     try values.map { try prePack($0, usingSchema: schema) }
 }
 
+private func splitAddress(_ address: String) -> (String, String?) {
+    let split = address.split(separator: Michelson.ComparableType.Address.entrypointSeparator, maxSplits: 2, omittingEmptySubsequences: false)
+    
+    let address = String(split[0])
+    let entrypoint: String? = {
+        if let entrypoint = split[safe: 1] {
+            return String(entrypoint)
+        } else {
+            return nil
+        }
+    }()
+    
+    return (address, entrypoint)
+}
+
 // MARK: Errors
 
 private func invalidValueError(value: Micheline) -> Swift.Error {
@@ -771,7 +793,7 @@ private func valueSchemaMismatchError(value: Micheline, schema: Micheline) -> Sw
 
 // MARK: Tag
 
-private enum Tag: BytesTag {
+private enum Tag: BytesTagIterable {
     case node
     
     var value: [UInt8] {

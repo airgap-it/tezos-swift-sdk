@@ -5,11 +5,11 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 // MARK: KeyHash
 
-public enum KeyHash: EncodedGroup {
+public enum KeyHash: KeyHashProtocol, EncodedGroup {
+    public typealias `Protocol` = KeyHashProtocol
+    
     case `public`(Public)
     
     public static func isValid(string: String) -> Bool {
@@ -35,13 +35,23 @@ public enum KeyHash: EncodedGroup {
             throw TezosError.invalidValue("Invalid key hash base58 encoded value (\(base58).")
         }
     }
+    
+    public func asKeyHash() -> KeyHash {
+        self
+    }
+}
+
+public protocol KeyHashProtocol {
+    func asKeyHash() -> KeyHash
 }
 
 // MARK: PublicKeyHash
 
 extension KeyHash {
     
-    public enum Public: EncodedGroup {
+    public enum Public: PublicKeyHashProtocol, EncodedGroup {
+        public typealias `Protocol` = PublicKeyHashProtocol
+        
         case tz1(Ed25519PublicKeyHash)
         case tz2(Secp256K1PublicKeyHash)
         case tz3(P256PublicKeyHash)
@@ -80,12 +90,28 @@ extension KeyHash {
                 throw TezosError.invalidValue("Invalid public key hash base58 encoded value (\(base58).")
             }
         }
+        
+        public func asPublicKeyHash() -> KeyHash.Public {
+            self
+        }
+    }
+}
+
+public protocol PublicKeyHashProtocol: KeyHash.`Protocol` {
+    func asPublicKeyHash() -> KeyHash.Public
+}
+
+public extension KeyHash.Public.`Protocol` {
+    func asKeyHash() -> KeyHash {
+        .public(asPublicKeyHash())
     }
 }
 
 // MARK: BlindedKeyHash
 
-public enum BlindedKeyHash: EncodedGroup {
+public enum BlindedKeyHash: BlindedKeyHashProtocol, EncodedGroup {
+    public typealias `Protocol` = BlindedKeyHashProtocol
+    
     case `public`(Public)
     
     public static func isValid(string: String) -> Bool {
@@ -111,13 +137,23 @@ public enum BlindedKeyHash: EncodedGroup {
             throw TezosError.invalidValue("Invalid blinded key hash base58 encoded value (\(base58).")
         }
     }
+    
+    public func asBlindedKeyHash() -> BlindedKeyHash {
+        self
+    }
+}
+
+public protocol BlindedKeyHashProtocol {
+    func asBlindedKeyHash() -> BlindedKeyHash
 }
 
 // MARK: BlindedPublicKeyHash
 
 extension BlindedKeyHash {
     
-    public enum Public: EncodedGroup {
+    public enum Public: PublicBlindedKeyHashProtocol, EncodedGroup {
+        public typealias `Protocol` = PublicBlindedKeyHashProtocol
+        
         case btz1(Ed25519BlindedPublicKeyHash)
         
         public static func isValid(string: String) -> Bool {
@@ -142,5 +178,19 @@ extension BlindedKeyHash {
                 throw TezosError.invalidValue("Invalid blinded public key hash base58 encoded value (\(base58).")
             }
         }
+        
+        public func asPublicBlindedKeyHash() -> BlindedKeyHash.Public {
+            self
+        }
+    }
+}
+
+public protocol PublicBlindedKeyHashProtocol: BlindedKeyHash.`Protocol` {
+    func asPublicBlindedKeyHash() -> BlindedKeyHash.Public
+}
+
+extension BlindedKeyHash.Public.`Protocol` {
+    public func asBlindedKeyHash() -> BlindedKeyHash {
+        .public(asPublicBlindedKeyHash())
     }
 }

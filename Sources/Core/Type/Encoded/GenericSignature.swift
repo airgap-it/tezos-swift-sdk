@@ -6,9 +6,7 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
-public struct GenericSignature: EncodedValue {
+public struct GenericSignature: Signature.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "sig"
     public static let base58Bytes: [UInt8] = [4, 130, 43]
     public static let base58Length: Int = 96
@@ -23,5 +21,9 @@ public struct GenericSignature: EncodedValue {
         }
         
         self.base58 = base58
+    }
+    
+    public func asSignature() -> Signature {
+        .sig(self)
     }
 }

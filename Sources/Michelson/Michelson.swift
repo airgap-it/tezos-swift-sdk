@@ -5,14 +5,21 @@
 //  Created by Julia Samol on 09.06.22.
 //
 
-import Foundation
 import TezosCore
 
-public indirect enum Michelson: Hashable {
+public indirect enum Michelson: MichelsonProtocol, Hashable {
     public typealias `Protocol` = MichelsonProtocol
     
     case data(Data)
     case type(`Type`)
+    
+    public var annotations: [Annotation] {
+        common.annotations
+    }
+    
+    public func asMichelson() -> Michelson {
+        self
+    }
 }
 
 public protocol MichelsonProtocol {
@@ -24,10 +31,43 @@ public protocol MichelsonProtocol {
 // MARK: Prim
 
 extension Michelson {
-    public typealias Prim = MichelsonPrimProtocol
     
-    public static var allPrims: [Prim.Type] {
-        Data.allPrims + `Type`.allPrims
+    public enum Prim: Hashable, RawRepresentable {
+        public typealias `Protocol` = MichelsonPrimProtocol
+        public typealias RawValue = `Protocol`.Type
+        
+        case data(Data.Prim)
+        case type(`Type`.Prim)
+        
+        public static let allRawValues: [RawValue] = Data.Prim.allRawValues + `Type`.Prim.allRawValues
+        
+        public init?(rawValue: RawValue) {
+            switch rawValue {
+            case is Data.Prim.RawValue:
+                guard let data = Data.Prim(rawValue: rawValue as! Data.Prim.RawValue) else {
+                    return nil
+                }
+                
+                self = .data(data)
+            case is `Type`.Prim.RawValue:
+                guard let type = `Type`.Prim(rawValue: rawValue as! `Type`.Prim.RawValue) else {
+                    return nil
+                }
+                
+                self = .type(type)
+            default:
+                return nil
+            }
+        }
+        
+        public var rawValue: RawValue {
+            switch self {
+            case .data(let data):
+                return data.rawValue
+            case .type(let type):
+                return type.rawValue
+            }
+        }
     }
 }
 
@@ -102,6 +142,17 @@ public protocol MichelsonAnnotationProtocol {
 }
 
 // MARK: Utility Extensions
+
+extension Michelson {
+    var common: `Protocol` {
+        switch self {
+        case .data(let data):
+            return data.common
+        case .type(let type):
+            return type.common
+        }
+    }
+}
 
 public extension Michelson.`Protocol` {
     var annotations: [Michelson.Annotation] { [] }

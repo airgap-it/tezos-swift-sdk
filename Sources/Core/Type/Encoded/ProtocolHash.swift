@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct ProtocolHash: EncodedValue {
     public static let base58Prefix: String = "P"
     public static let base58Bytes: [UInt8] = [2, 170]

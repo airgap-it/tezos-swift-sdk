@@ -5,11 +5,11 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 // MARK: Key
 
-public enum Key: EncodedGroup {
+public enum Key: KeyProtocol, EncodedGroup {
+    public typealias `Protocol` = KeyProtocol
+    
     case secret(Secret)
     case `public`(Public)
     
@@ -40,13 +40,23 @@ public enum Key: EncodedGroup {
             throw TezosError.invalidValue("Invalid key base58 encoded value (\(base58).")
         }
     }
+    
+    public func asKey() -> Key {
+        self
+    }
+}
+
+public protocol KeyProtocol {
+    func asKey() -> Key
 }
 
 // MARK: SecretKey
 
 extension Key {
     
-    public enum Secret: EncodedGroup {
+    public enum Secret: SecretKeyProtocol, EncodedGroup {
+        public typealias `Protocol` = SecretKeyProtocol
+        
         case edsk(Ed25519SecretKey)
         case spsk(Secp256K1SecretKey)
         case p2sk(P256SecretKey)
@@ -85,6 +95,20 @@ extension Key {
                 throw TezosError.invalidValue("Invalid secret key base58 encoded value (\(base58).")
             }
         }
+        
+        public func asSecretKey() -> Key.Secret {
+            self
+        }
+    }
+}
+
+public protocol SecretKeyProtocol: Key.`Protocol` {
+    func asSecretKey() -> Key.Secret
+}
+
+extension Key.Secret.`Protocol` {
+    public func asKey() -> Key {
+        .secret(asSecretKey())
     }
 }
 
@@ -92,7 +116,9 @@ extension Key {
 
 extension Key {
     
-    public enum Public: EncodedGroup {
+    public enum Public: PublicKeyProtocol, EncodedGroup {
+        public typealias `Protocol` = PublicKeyProtocol
+        
         case edpk(Ed25519PublicKey)
         case sppk(Secp256K1PublicKey)
         case p2pk(P256PublicKey)
@@ -131,5 +157,19 @@ extension Key {
                 throw TezosError.invalidValue("Invalid public key base58 encoded value (\(base58).")
             }
         }
+        
+        public func asPublicKey() -> Key.Public {
+            self
+        }
+    }
+}
+
+public protocol PublicKeyProtocol: Key.`Protocol` {
+    func asPublicKey() -> Key.Public
+}
+
+extension Key.Public.`Protocol` {
+    public func asKey() -> Key {
+        .public(asPublicKey())
     }
 }

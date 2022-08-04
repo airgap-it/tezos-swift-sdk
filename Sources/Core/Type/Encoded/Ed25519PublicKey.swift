@@ -6,9 +6,7 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
-public struct Ed25519PublicKey: EncodedValue {
+public struct Ed25519PublicKey: Key.Public.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "edpk"
     public static let base58Bytes: [UInt8] = [13, 15, 37, 217]
     public static let base58Length: Int = 54
@@ -23,5 +21,9 @@ public struct Ed25519PublicKey: EncodedValue {
         }
         
         self.base58 = base58
+    }
+    
+    public func asPublicKey() -> Key.Public {
+        .edpk(self)
     }
 }

@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct CryptoboxPublicKeyHash: EncodedValue {
     public static let base58Prefix: String = "id"
     public static let base58Bytes: [UInt8] = [153, 103]

@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct BlockPayloadHash: EncodedValue {
     public static let base58Prefix: String = "vh"
     public static let base58Bytes: [UInt8] = [1, 106, 242]

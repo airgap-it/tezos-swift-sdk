@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct ChainID: EncodedValue {
     public static let base58Prefix: String = "Net"
     public static let base58Bytes: [UInt8] = [87, 82, 0]

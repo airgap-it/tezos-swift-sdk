@@ -6,9 +6,7 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
-public struct P256PublicKey: EncodedValue {
+public struct P256PublicKey: Key.Public.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "p2pk"
     public static let base58Bytes: [UInt8] = [3, 178, 139, 127]
     public static let base58Length: Int = 55
@@ -23,5 +21,9 @@ public struct P256PublicKey: EncodedValue {
         }
         
         self.base58 = base58
+    }
+    
+    public func asPublicKey() -> Key.Public {
+        .p2pk(self)
     }
 }

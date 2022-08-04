@@ -5,7 +5,6 @@
 //  Created by Julia Samol on 09.06.22.
 //
 
-import Foundation
 import BigInt
 
 public protocol BigNatWrapper: StringWrapper {}
@@ -17,7 +16,7 @@ public extension BigNatWrapper {
         #"^[0-9]+$"#
     }
     
-    init(_ value: UInt) {
+    init<I: UnsignedInteger>(_ value: I) {
         try! self.init(String(value))
     }
 }
