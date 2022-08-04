@@ -5,13 +5,18 @@
 //  Created by Julia Samol on 21.07.22.
 //
 
+import Foundation
+
 import TezosCore
 import TezosMichelson
 import TezosRPC
+import TezosCryptoDefault
 
 public protocol BigMapHandler {
     var id: String { get }
     var type: Micheline { get }
+    
+    var nodeURL: URL { get }
 }
 
 public extension BigMapHandler {
@@ -19,7 +24,14 @@ public extension BigMapHandler {
         forKey key: Micheline,
         configuredWith configuration: BigMapGetConfiguration
     ) async throws -> ContractStorageEntry? {
-        fatalError("TODO: Inject Crypto and RPC")
+        let chains = ChainsClient(parentURL: nodeURL, http: URLSessionHTTP())
+        
+        return try await get(
+            forKey: key,
+            using: .init(provider: DefaultCryptoProvider()),
+            and: chains.main.blocks.head.context.bigMaps,
+            configuredWith: configuration
+        )
     }
     
     private func get<Provider: CryptoProvider, BigMapsRPC: BlockContextBigMaps>(
@@ -37,7 +49,7 @@ public extension BigMapHandler {
             return nil
         }
         
-        return try .init(from: value, type: type.args[1])
+        return try .init(from: value, type: type.args[1], nodeURL: nodeURL)
     }
     
     private func scriptExpr<Provider: CryptoProvider>(from key: Micheline, ofType type: Micheline, using crypto: Crypto<Provider>) throws -> ScriptExprHash {

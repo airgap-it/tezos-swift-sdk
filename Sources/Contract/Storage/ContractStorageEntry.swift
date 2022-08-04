@@ -5,6 +5,8 @@
 //  Created by Julia Samol on 21.07.22.
 //
 
+import Foundation
+
 import TezosCore
 import TezosMichelson
 import TezosRPC
@@ -30,29 +32,29 @@ public enum ContractStorageEntry: ContractStorageEntryProtocol, Hashable {
         common.type
     }
     
-    init(from value: Micheline, type: Micheline) throws {
+    init(from value: Micheline, type: Micheline, nodeURL: URL) throws {
         if let bigMapType = try? type.asPrim(.type(.bigMap)),
            case let .literal(integer) = value,
            case let .integer(bigMapValue) = integer
         {
-            self = .bigMap(.init(from: bigMapValue, type: bigMapType))
+            self = .bigMap(.init(from: bigMapValue, type: bigMapType, nodeURL: nodeURL))
         } else if let sequenceType = try? type.asPrim(.type(.list), .type(.set)),
                   sequenceType.args.count == 1,
                   case let .sequence(sequenceValue) = value
         {
-            self = .sequence(try .init(from: sequenceValue, type: sequenceType, elementType: sequenceType.args[0]))
+            self = .sequence(try .init(from: sequenceValue, type: sequenceType, elementType: sequenceType.args[0], nodeURL: nodeURL))
         } else if let lambdaType = try? type.asPrim(.type(.lambda)),
                   case let .sequence(lambdaValue) = value
         {
-            self = .sequence(try .init(from: lambdaValue, type: lambdaType))
+            self = .sequence(try .init(from: lambdaValue, type: lambdaType, nodeURL: nodeURL))
         } else if let mapType = try? type.asPrim(.type(.map)),
                   case let .sequence(mapValue) = value
         {
-            self = .map(try .init(from: mapValue, type: mapType))
+            self = .map(try .init(from: mapValue, type: mapType, nodeURL: nodeURL))
         } else if let primType = try? type.asPrim(), primType.args.isEmpty {
             self = .value(.init(from: value, type: primType))
         } else if let primType = try? type.asPrim(), let primValue = try? value.asPrim() {
-            self = .object(try .init(from: primValue, type: primType))
+            self = .object(try .init(from: primValue, type: primType, nodeURL: nodeURL))
         } else {
             throw TezosContractError.invalidType("storage type")
         }
@@ -115,7 +117,7 @@ extension ContractStorageEntry {
         public let elements: [ContractStorageEntry]
         private let dict: [String: ContractStorageEntry]
         
-        init(from value: Micheline.PrimitiveApplication, type: Micheline.PrimitiveApplication) throws {
+        init(from value: Micheline.PrimitiveApplication, type: Micheline.PrimitiveApplication, nodeURL: URL) throws {
             guard value.args.count == type.args.count else {
                 throw TezosContractError.invalidType("storage object")
             }
@@ -123,7 +125,7 @@ extension ContractStorageEntry {
             let elements = try zip(value.args, type.args)
                 .flatMap { (value) -> [ContractStorageEntry] in
                     let (v, t) = value
-                    let entry = try ContractStorageEntry(from: v, type: t)
+                    let entry = try ContractStorageEntry(from: v, type: t, nodeURL: nodeURL)
                     
                     if case let .object(object) = entry, object.names.isEmpty {
                         return .init(object.elements)
@@ -168,9 +170,9 @@ extension ContractStorageEntry {
         
         public let elements: [ContractStorageEntry]
         
-        init(from value: Micheline.Sequence, type: Micheline.PrimitiveApplication, elementType: Micheline? = nil) throws {
+        init(from value: Micheline.Sequence, type: Micheline.PrimitiveApplication, elementType: Micheline? = nil, nodeURL: URL) throws {
             let values = try value.map {
-                try ContractStorageEntry(from: $0, type: elementType ?? .prim(type))
+                try ContractStorageEntry(from: $0, type: elementType ?? .prim(type), nodeURL: nodeURL)
             }
             
             self.init(value: .sequence(value), type: .prim(type), values: values)
@@ -198,7 +200,7 @@ extension ContractStorageEntry {
         
         private let dict: [ContractStorageEntry: ContractStorageEntry]
         
-        init(from value: Micheline.Sequence, type: Micheline.PrimitiveApplication) throws {
+        init(from value: Micheline.Sequence, type: Micheline.PrimitiveApplication, nodeURL: URL) throws {
             guard type.args.count == 2 else {
                 throw TezosContractError.invalidType("storage map")
             }
@@ -208,8 +210,8 @@ extension ContractStorageEntry {
                     throw TezosContractError.invalidType("storage map value")
                 }
                 
-                let key = try ContractStorageEntry(from: elt.args[0], type: type.args[0])
-                let value = try ContractStorageEntry(from: elt.args[1], type: type.args[1])
+                let key = try ContractStorageEntry(from: elt.args[0], type: type.args[0], nodeURL: nodeURL)
+                let value = try ContractStorageEntry(from: elt.args[1], type: type.args[1], nodeURL: nodeURL)
                 
                 dict[key] = value
             }
@@ -243,14 +245,17 @@ extension ContractStorageEntry {
         public let value: Micheline
         public let type: Micheline
         
-        init(from value: Micheline.Literal.Integer, type: Micheline.PrimitiveApplication) {
-            self.init(id: value.value, value: .literal(.integer(value)), type: .prim(type))
+        public let nodeURL: URL
+        
+        init(from value: Micheline.Literal.Integer, type: Micheline.PrimitiveApplication, nodeURL: URL) {
+            self.init(id: value.value, value: .literal(.integer(value)), type: .prim(type), nodeURL: nodeURL)
         }
         
-        init(id: String, value: Micheline, type: Micheline) {
+        init(id: String, value: Micheline, type: Micheline, nodeURL: URL) {
             self.id = id
             self.value = value
             self.type = type
+            self.nodeURL = nodeURL
         }
         
         public func asStorageEntry() -> ContractStorageEntry {

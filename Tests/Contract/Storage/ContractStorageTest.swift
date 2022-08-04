@@ -14,6 +14,8 @@ import XCTest
 @testable import TezosRPC
 
 class ContractStorageTest: XCTestCase {
+    
+    private let nodeURL: URL = .init(string: "http://node.com")!
 
     override func setUpWithError() throws {
         
@@ -34,7 +36,8 @@ class ContractStorageTest: XCTestCase {
                         code: .sequence([])
                     )
                 },
-                contract: contractRPC
+                contract: contractRPC,
+                nodeURL: nodeURL
             )
             
             let actual = try await contractStorage.get()
@@ -123,8 +126,8 @@ class ContractStorageTest: XCTestCase {
                     value: value,
                     type: type,
                     elements: [
-                        .bigMap(.init(id: "51296", value: value.args[0], type: type.args[0])),
-                        .bigMap(.init(id: "51297", value: value.args[1].args[0], type: type.args[1].args[0])),
+                        .bigMap(.init(id: "51296", value: value.args[0], type: type.args[0], nodeURL: nodeURL)),
+                        .bigMap(.init(id: "51297", value: value.args[1].args[0], type: type.args[1].args[0], nodeURL: nodeURL)),
                         .object(.init(
                             value: value.args[1].args[1],
                             type: type.args[1].args[1],

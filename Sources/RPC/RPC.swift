@@ -5,6 +5,8 @@
 //  Created by Julia Samol on 07.07.22.
 //
 
+import Foundation
+
 import TezosCore
 import TezosMichelson
 import TezosOperation
@@ -14,15 +16,44 @@ public struct TezosRPC<
     ActiveRPC: ActiveSimplifiedRPC,
     ChainsRPC: Chains,
     InjectionRPC: Injection,
-    OperationFeeEstimator: FeeEstimator
->: ShellSimplifiedRPC, ActiveSimplifiedRPC, FeeEstimator where OperationFeeEstimator.FeeApplicable == TezosOperation {
+    FeeEstimatorRPC: FeeEstimator
+>: ShellSimplifiedRPC, ActiveSimplifiedRPC, FeeEstimator where FeeEstimatorRPC.FeeApplicable == TezosOperation {
     private let shell: ShellRPC
     private let active: ActiveRPC
     
     public let chains: ChainsRPC
     public let injection: InjectionRPC
     
-    private let feeEstimator: OperationFeeEstimator
+    private let feeEstimator: FeeEstimatorRPC
+    
+    public static func create(nodeURL: URL) -> TezosRPC<
+        ShellSimplifiedRPCClient<ChainsClient<URLSessionHTTP>, InjectionClient<URLSessionHTTP>>,
+        ActiveSimplifiedRPCClient<ChainsClient<URLSessionHTTP>>,
+        ChainsClient<URLSessionHTTP>,
+        InjectionClient<URLSessionHTTP>,
+        OperationFeeEstimator<ChainsClient<URLSessionHTTP>>
+    >{
+        let http = URLSessionHTTP()
+        
+        let chains = ChainsClient(parentURL: nodeURL, http: http)
+        let injection = InjectionClient(parentURL: nodeURL, http: http)
+        
+        return .init(
+            shell: ShellSimplifiedRPCClient(chains: chains, injection: injection),
+            active: ActiveSimplifiedRPCClient(chains: chains),
+            chains: chains,
+            injection: injection,
+            feeEstimator: OperationFeeEstimator(chains: chains)
+        )
+    }
+    
+    init(shell: ShellRPC, active: ActiveRPC, chains: ChainsRPC, injection: InjectionRPC, feeEstimator: FeeEstimatorRPC) {
+        self.shell = shell
+        self.active = active
+        self.chains = chains
+        self.injection = injection
+        self.feeEstimator = feeEstimator
+    }
     
     // MARK: FeeEstimator
     

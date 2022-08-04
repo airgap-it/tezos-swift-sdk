@@ -14,7 +14,7 @@ public struct URLSessionHTTP: HTTP {
         self.session = session
     }
     
-    func delete<Response: Decodable>(
+    public func delete<Response: Decodable>(
         baseURL: URL,
         endpoint: String,
         headers: [HTTPHeader],
@@ -26,7 +26,7 @@ public struct URLSessionHTTP: HTTP {
         return try await send(request: urlRequest)
     }
     
-    func get<Response: Decodable>(
+    public func get<Response: Decodable>(
         baseURL: URL,
         endpoint: String,
         headers: [HTTPHeader],
@@ -38,7 +38,7 @@ public struct URLSessionHTTP: HTTP {
         return try await send(request: urlRequest)
     }
     
-    func patch<Request: Encodable, Response: Decodable>(
+    public func patch<Request: Encodable, Response: Decodable>(
         baseURL: URL,
         endpoint: String,
         headers: [HTTPHeader],
@@ -56,7 +56,7 @@ public struct URLSessionHTTP: HTTP {
         return try await send(request: urlRequest)
     }
     
-    func post<Request: Encodable, Response: Decodable>(
+    public func post<Request: Encodable, Response: Decodable>(
         baseURL: URL,
         endpoint: String,
         headers: [HTTPHeader],
@@ -74,7 +74,7 @@ public struct URLSessionHTTP: HTTP {
         return try await send(request: urlRequest)
     }
     
-    func put<Request: Encodable, Response: Decodable>(
+    public func put<Request: Encodable, Response: Decodable>(
         baseURL: URL,
         endpoint: String,
         headers: [HTTPHeader],

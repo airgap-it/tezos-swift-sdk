@@ -13,6 +13,10 @@ import TezosCore
 
 public struct DefaultCryptoProvider: CryptoProvider {
     
+    public init() {
+        
+    }
+    
     // MARK: BLAKE2b
     
     public func blake2b(message: [UInt8], ofSize size: Int) throws -> [UInt8] {

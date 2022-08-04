@@ -10,7 +10,7 @@
 public class Crypto<Provider: CryptoProvider> {
     private let provider: Provider
     
-    init(provider: Provider) {
+    public init(provider: Provider) {
         self.provider = provider
     }
     
