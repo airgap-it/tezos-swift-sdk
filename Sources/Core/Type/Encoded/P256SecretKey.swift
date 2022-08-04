@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct P256SecretKey: Key.Secret.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "p2sk"
     public static let base58Bytes: [UInt8] = [16, 81, 238, 189]

@@ -5,12 +5,11 @@
 //  Created by Julia Samol on 09.06.22.
 //
 
-import Foundation
 import TezosCore
 
 extension Michelson {
 
-    public indirect enum Data: Hashable {
+    public indirect enum Data: MichelsonDataProtocol, Hashable {
         public typealias `Protocol` = MichelsonDataProtocol
         
         case int(IntConstant)
@@ -29,10 +28,18 @@ extension Michelson {
         case map(Map)
         case instruction(Instruction)
         
+        public var annotations: [Michelson.Annotation] {
+            common.annotations
+        }
+        
+        public func asMichelsonData() -> Data {
+            self
+        }
+        
         // MARK: IntConstant
         
         public struct IntConstant: `Protocol`, BigIntWrapper, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .int(self)
             }
             
@@ -50,7 +57,7 @@ extension Michelson {
         // MARK: NaturalNumberConstant
         
         public struct NaturalNumberConstant: `Protocol`, BigNatWrapper, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .nat(self)
             }
             
@@ -68,7 +75,7 @@ extension Michelson {
         // MARK: StringConstant
         
         public struct StringConstant: `Protocol`, StringWrapper, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .string(self)
             }
             
@@ -88,7 +95,7 @@ extension Michelson {
         // MARK: ByteSequenceConstant
         
         public struct ByteSequenceConstant: `Protocol`, BytesWrapper, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .bytes(self)
             }
             
@@ -111,8 +118,8 @@ extension Michelson {
         
         // MARK: Unit
         
-        public struct Unit: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+        public struct Unit: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonData() -> Data {
                 .unit(self)
             }
             
@@ -132,8 +139,8 @@ extension Michelson {
         
         // MARK: True
         
-        public struct True: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+        public struct True: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonData() -> Data {
                 .true(self)
             }
             
@@ -153,8 +160,8 @@ extension Michelson {
         
         // MARK: False
         
-        public struct False: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+        public struct False: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonData() -> Data {
                 .false(self)
             }
             
@@ -174,8 +181,8 @@ extension Michelson {
         
         // MARK: Pair
         
-        public struct Pair: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+        public struct Pair: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonData() -> Data {
                 .pair(self)
             }
             
@@ -212,8 +219,8 @@ extension Michelson {
         
         // MARK: Left
         
-        public struct Left: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+        public struct Left: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonData() -> Data {
                 .left(self)
             }
             
@@ -243,8 +250,8 @@ extension Michelson {
         
         // MARK: Right
         
-        public struct Right: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+        public struct Right: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonData() -> Data {
                 .right(self)
             }
             
@@ -274,8 +281,8 @@ extension Michelson {
         
         // MARK: Some
         
-        public struct Some: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+        public struct Some: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonData() -> Data {
                 .some(self)
             }
             
@@ -305,8 +312,8 @@ extension Michelson {
         
         // MARK: None
         
-        public struct None: `Protocol`, Prim, Hashable {
-            public func asData() -> Data {
+        public struct None: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonData() -> Data {
                 .none(self)
             }
             
@@ -327,7 +334,7 @@ extension Michelson {
         // MARK: Sequence
         
         public struct Sequence: `Protocol`, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .sequence(self)
             }
             
@@ -345,7 +352,7 @@ extension Michelson {
         // MARK: Map
         
         public struct Map: `Protocol`, Hashable {
-            public func asData() -> Data {
+            public func asMichelsonData() -> Data {
                 .map(self)
             }
             
@@ -362,7 +369,7 @@ extension Michelson {
         
         // MARK: Elt
         
-        public struct Elt: Prim, Hashable {
+        public struct Elt: Prim.`Protocol`, Hashable {
             public static let name: String = "Elt"
             public static let tag: [UInt8] = [4]
             
@@ -392,33 +399,144 @@ extension Michelson {
 }
 
 public protocol MichelsonDataProtocol: Michelson.`Protocol` {
-    func asData() -> Michelson.Data
+    func asMichelsonData() -> Michelson.Data
 }
 
 public extension Michelson.Data.`Protocol` {
     func asMichelson() -> Michelson {
-        .data(asData())
+        .data(asMichelsonData())
     }
 }
 
 // MARK: Prim
 
 extension Michelson.Data {
-    public typealias Prim = MichelsonDataPrimProtocol
     
-    public static var allPrims: [Prim.Type] {
-        [
-            Unit.self,
-            True.self,
-            False.self,
-            Pair.self,
-            Left.self,
-            Right.self,
-            Some.self,
-            None.self,
-            Elt.self,
-        ] + Michelson.Instruction.allPrims
+    public enum Prim: Hashable, RawRepresentable, CaseIterable {
+        public typealias `Protocol` = MichelsonDataPrimProtocol
+        public typealias RawValue = `Protocol`.Type
+        
+        case unit
+        case `true`
+        case `false`
+        case pair
+        case left
+        case right
+        case some
+        case none
+        case elt
+        case instruction(Michelson.Instruction.Prim)
+        
+        public static let allRawValues: [RawValue] = allCases.map { $0.rawValue } + Michelson.Instruction.Prim.allRawValues
+        
+        public static let allCases: [Michelson.Data.Prim] = [
+            .unit,
+            .`true`,
+            .`false`,
+            .pair,
+            .left,
+            .right,
+            .some,
+            .none,
+            .elt
+        ]
+        
+        public init?(rawValue: RawValue) {
+            switch rawValue {
+            case is Unit.Type:
+                self = .unit
+            case is True.Type:
+                self = .`true`
+            case is False.Type:
+                self = .`false`
+            case is Pair.Type:
+                self = .pair
+            case is Left.Type:
+                self = .left
+            case is Right.Type:
+                self = .right
+            case is Some.Type:
+                self = .some
+            case is None.Type:
+                self = .none
+            case is Elt.Type:
+                self = .elt
+            case is Michelson.Instruction.Prim.RawValue:
+                guard let instruction = Michelson.Instruction.Prim(rawValue: rawValue as! Michelson.Instruction.Prim.RawValue) else {
+                    fallthrough
+                }
+                
+                self = .instruction(instruction)
+            default:
+                return nil
+            }
+        }
+        
+        public var rawValue: RawValue {
+            switch self {
+            case .unit:
+                return Unit.self
+            case .`true`:
+                return True.self
+            case .`false`:
+                return False.self
+            case .pair:
+                return Pair.self
+            case .left:
+                return Left.self
+            case .right:
+                return Right.self
+            case .some:
+                return Some.self
+            case .none:
+                return None.self
+            case .elt:
+                return Elt.self
+            case .instruction(let instruction):
+                return instruction.rawValue
+            }
+        }
     }
 }
 
-public protocol MichelsonDataPrimProtocol: Michelson.Prim {}
+public protocol MichelsonDataPrimProtocol: Michelson.Prim.`Protocol` {}
+
+// MARK: Utility Extensions
+
+extension Michelson.Data {
+    
+    var common: `Protocol` {
+        switch self {
+        case .int(let int):
+            return int
+        case .nat(let nat):
+            return nat
+        case .string(let string):
+            return string
+        case .bytes(let bytes):
+            return bytes
+        case .unit(let unit):
+            return unit
+        case .true(let `true`):
+            return `true`
+        case .false(let `false`):
+            return `false`
+        case .pair(let pair):
+            return pair
+        case .left(let left):
+            return left
+        case .right(let right):
+            return right
+        case .some(let some):
+            return some
+        case .none(let none):
+            return none
+        case .sequence(let sequence):
+            return sequence
+        case .map(let map):
+            return map
+        case .instruction(let instruction):
+            return instruction.common
+        }
+    }
+}

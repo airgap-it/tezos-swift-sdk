@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct Secp256K1Element: EncodedValue {
     public static let base58Prefix: String = "GSp"
     public static let base58Bytes: [UInt8] = [5, 92, 0]

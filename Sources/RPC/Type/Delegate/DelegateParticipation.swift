@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 19.07.22.
 //
 
-import Foundation
-
 // MARK: RPCDelegateParticipation
 
 public struct RPCDelegateParticipation: Hashable, Codable {

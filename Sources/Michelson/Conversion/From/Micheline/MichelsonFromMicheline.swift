@@ -5,7 +5,6 @@
 //  Created by Julia Samol on 14.06.22.
 //
 
-import Foundation
 import TezosCore
 
 // MARK: From Micheline
@@ -30,12 +29,12 @@ extension Michelson: ConvertibleFromMichelineLiteral {
     
     public init(from literal: Micheline.Literal) throws {
         switch literal {
-        case .integer(let content):
-            self = .data(.int(try .init(content.value)))
-        case .string(let content):
-            self = .data(.string(try .init(content.value)))
-        case .bytes(let content):
-            self = .data(.bytes(try .init(content.value)))
+        case .integer(let integer):
+            self = .data(.int(try .init(integer.value)))
+        case .string(let string):
+            self = .data(.string(try .init(string.value)))
+        case .bytes(let bytes):
+            self = .data(.bytes(try .init(bytes.value)))
         }
     }
 }
@@ -56,15 +55,15 @@ extension Michelson: ConvertibleFromMichelinePrimitiveApplication {
         
         let resolvedPrim = Self.resolvePrim(from: prims, forArgs: args)
         
-        guard let michelson = try resolvedPrim?.init(args: args, annots: annots) as? MichelsonProtocol else {
+        guard let michelson = try resolvedPrim?.rawValue.init(args: args, annots: annots) as? MichelsonProtocol else {
             throw TezosError.invalidValue("Unrecognized Micheline primitive application: \(primitiveApplication.prim).")
         }
         
         self = michelson.asMichelson()
     }
     
-    private static func resolvePrim(from prims: [Prim.Type], forArgs args: [Michelson]) -> Prim.Type? {
-        prims.first(where: { (try? $0.validateArgs(args)) != nil })
+    private static func resolvePrim(from prims: [Prim], forArgs args: [Michelson]) -> Prim? {
+        prims.first(where: { (try? $0.rawValue.validateArgs(args)) != nil })
     }
 }
 
@@ -104,7 +103,7 @@ extension Michelson: ConvertibleFromMichelineSequence {
 private extension Array where Element == Micheline {
     func asEltSequence() throws -> [Michelson.Data.Elt] {
         try map { node in
-            let elt = try node.asPrim(Michelson.Data.Elt.self)
+            let elt = try node.asPrim(.data(.elt))
             return try .init(args: try elt.args.map({ try Michelson(from: $0) }), annots: [])
         }
     }

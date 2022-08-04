@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct Secp256K1EncryptedSecretKey: EncodedValue {
     public static let base58Prefix: String = "spesk"
     public static let base58Bytes: [UInt8] = [9, 237, 241, 174, 150]

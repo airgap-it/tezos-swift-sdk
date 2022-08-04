@@ -17,21 +17,18 @@ public enum ContractEntrypointParameter: ContractEntrypointParameterProtocol, Ha
     case map(Map)
     
     public var name: String? {
-        switch self {
-        case .value(let value):
-            return value.name
-        case .object(let object):
-            return object.name
-        case .sequence(let sequence):
-            return sequence.name
-        case .map(let map):
-            return map.name
-        }
+        common.name
+    }
+    
+    public func asEntrypointParameter() -> ContractEntrypointParameter {
+        self
     }
 }
 
 public protocol ContractEntrypointParameterProtocol {
     var name: String? { get }
+    
+    func asEntrypointParameter() -> ContractEntrypointParameter
 }
 
 // MARK: ContractEntryParameter.Value
@@ -45,6 +42,10 @@ extension ContractEntrypointParameter {
         public init(_ value: Micheline? = nil, name: String? = nil) {
             self.value = value
             self.name = name
+        }
+        
+        public func asEntrypointParameter() -> ContractEntrypointParameter {
+            .value(self)
         }
     }
 }
@@ -68,6 +69,10 @@ extension ContractEntrypointParameter {
             self.name = name
             self.fields = .init(elements.compactMap({ $0.name }))
         }
+        
+        public func asEntrypointParameter() -> ContractEntrypointParameter {
+            .object(self)
+        }
     }
 }
 
@@ -83,6 +88,10 @@ extension ContractEntrypointParameter {
             self.elements = elements
             self.name = name
         }
+        
+        public func asEntrypointParameter() -> ContractEntrypointParameter {
+            .sequence(self)
+        }
     }
 }
 
@@ -97,6 +106,28 @@ extension ContractEntrypointParameter {
         public init(_ elements: OrderedDictionary<ContractEntrypointParameter, ContractEntrypointParameter>, name: String? = nil) {
             self.elements = elements
             self.name = name
+        }
+        
+        public func asEntrypointParameter() -> ContractEntrypointParameter {
+            .map(self)
+        }
+    }
+}
+
+// MARK: Utility Extensions
+
+private extension ContractEntrypointParameter {
+    
+    var common: `Protocol` {
+        switch self {
+        case .value(let value):
+            return value
+        case .object(let object):
+            return object
+        case .sequence(let sequence):
+            return sequence
+        case .map(let map):
+            return map
         }
     }
 }

@@ -5,12 +5,11 @@
 //  Created by Julia Samol on 09.06.22.
 //
 
-import Foundation
 import TezosCore
 
 extension Michelson {
     
-    public indirect enum Instruction: Hashable {
+    public indirect enum Instruction: MichelsonInsturctionProtocol, Hashable {
         public typealias `Protocol` = MichelsonInsturctionProtocol
         
         case sequence(`Sequence`)
@@ -113,10 +112,18 @@ extension Michelson {
         case joinTickets(JoinTickets)
         case openChest(OpenChest)
         
+        public var annotations: [Michelson.Annotation] {
+            common.annotations
+        }
+        
+        public func asMichelsonInstruction() -> Instruction {
+            self
+        }
+        
         // MARK: Sequence
         
         public struct Sequence: `Protocol`, Hashable {
-            public func asInstruction() -> Instruction {
+            public func asMichelsonInstruction() -> Instruction {
                 .sequence(self)
             }
             
@@ -133,8 +140,8 @@ extension Michelson {
 
         // MARK: DROP
         
-        public struct Drop: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Drop: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .drop(self)
             }
             
@@ -168,8 +175,8 @@ extension Michelson {
 
         // MARK: DUP
         
-        public struct Dup: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Dup: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .dup(self)
             }
             
@@ -227,8 +234,8 @@ extension Michelson {
 
         // MARK: SWAP
         
-        public struct Swap: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Swap: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .swap(self)
             }
             
@@ -248,8 +255,8 @@ extension Michelson {
 
         // MARK: DIG
         
-        public struct Dig: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Dig: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .dig(self)
             }
             
@@ -283,8 +290,8 @@ extension Michelson {
 
         // MARK: DUG
         
-        public struct Dug: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Dug: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .dug(self)
             }
             
@@ -318,8 +325,8 @@ extension Michelson {
 
         // MARK: PUSH
         
-        public struct Push: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Push: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .push(self)
             }
             
@@ -377,8 +384,8 @@ extension Michelson {
 
         // MARK: SOME
         
-        public struct Some: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Some: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .some(self)
             }
             
@@ -430,8 +437,8 @@ extension Michelson {
 
         // MARK: NONE
         
-        public struct None: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct None: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .none(self)
             }
             
@@ -490,8 +497,8 @@ extension Michelson {
 
         // MARK: UNIT
         
-        public struct Unit: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Unit: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .unit(self)
             }
             
@@ -543,8 +550,8 @@ extension Michelson {
 
         // MARK: NEVER
         
-        public struct Never: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Never: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .never(self)
             }
             
@@ -564,8 +571,8 @@ extension Michelson {
 
         // MARK: IF_NONE
         
-        public struct IfNone: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct IfNone: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .ifNone(self)
             }
             
@@ -601,8 +608,8 @@ extension Michelson {
 
         // MARK: PAIR
         
-        public struct Pair: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Pair: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .pair(self)
             }
             
@@ -665,8 +672,8 @@ extension Michelson {
 
         // MARK: CAR
         
-        public struct Car: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Car: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .car(self)
             }
             
@@ -712,8 +719,8 @@ extension Michelson {
         
             // MARK: CDR
         }
-        public struct Cdr: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Cdr: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .cdr(self)
             }
             
@@ -760,8 +767,8 @@ extension Michelson {
 
         // MARK: UNPAIR
         
-        public struct Unpair: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Unpair: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .unpair(self)
             }
             
@@ -824,8 +831,8 @@ extension Michelson {
 
         // MARK: LEFT
         
-        public struct Left: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Left: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .left(self)
             }
             
@@ -884,8 +891,8 @@ extension Michelson {
 
         // MARK: RIGHT
         
-        public struct Right: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Right: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .right(self)
             }
             
@@ -944,8 +951,8 @@ extension Michelson {
 
         // MARK: IF_LEFT
         
-        public struct IfLeft: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct IfLeft: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .ifLeft(self)
             }
             
@@ -981,8 +988,8 @@ extension Michelson {
 
         // MARK: NIL
         
-        public struct Nil: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Nil: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .`nil`(self)
             }
             
@@ -1041,8 +1048,8 @@ extension Michelson {
 
         // MARK: CONS
         
-        public struct Cons: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Cons: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .cons(self)
             }
             
@@ -1089,8 +1096,8 @@ extension Michelson {
 
         // MARK: IF_CONS
         
-        public struct IfCons: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct IfCons: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .ifCons(self)
             }
             
@@ -1126,8 +1133,8 @@ extension Michelson {
 
         // MARK: SIZE
         
-        public struct Size: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Size: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .size(self)
             }
             
@@ -1174,8 +1181,8 @@ extension Michelson {
 
         // MARK: EMPTY_SET
         
-        public struct EmptySet: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct EmptySet: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .emptySet(self)
             }
             
@@ -1234,8 +1241,8 @@ extension Michelson {
 
         // MARK: EMPTY_MAP
         
-        public struct EmptyMap: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct EmptyMap: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .emptyMap(self)
             }
             
@@ -1298,8 +1305,8 @@ extension Michelson {
 
         // MARK: EMPTY_BIG_MAP
         
-        public struct EmptyBigMap: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct EmptyBigMap: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .emptyBigMap(self)
             }
             
@@ -1362,8 +1369,8 @@ extension Michelson {
 
         // MARK: MAP
         
-        public struct Map: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Map: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .map(self)
             }
             
@@ -1417,8 +1424,8 @@ extension Michelson {
 
         // MARK: ITER
         
-        public struct Iter: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Iter: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .iter(self)
             }
             
@@ -1448,8 +1455,8 @@ extension Michelson {
 
         // MARK: MEM
         
-        public struct Mem: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Mem: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .mem(self)
             }
             
@@ -1496,8 +1503,8 @@ extension Michelson {
 
         // MARK: GET
         
-        public struct Get: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Get: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .get(self)
             }
             
@@ -1555,8 +1562,8 @@ extension Michelson {
 
         // MARK: UPDATE
         
-        public struct Update: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Update: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .update(self)
             }
             
@@ -1614,8 +1621,8 @@ extension Michelson {
 
         // MARK: GET_AND_UPDATE
         
-        public struct GetAndUpdate: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct GetAndUpdate: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .getAndUpdate(self)
             }
             
@@ -1635,8 +1642,8 @@ extension Michelson {
 
         // MARK: IF
         
-        public struct If: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct If: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .`if`(self)
             }
             
@@ -1672,8 +1679,8 @@ extension Michelson {
 
         // MARK: LOOP
         
-        public struct Loop: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Loop: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .loop(self)
             }
             
@@ -1703,8 +1710,8 @@ extension Michelson {
         
         // MARK: LOOP_LEFT
         
-        public struct LoopLeft: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct LoopLeft: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .loopLeft(self)
             }
             
@@ -1734,8 +1741,8 @@ extension Michelson {
 
         // MARK: LAMBDA
         
-        public struct Lambda: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Lambda: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .lambda(self)
             }
             
@@ -1797,8 +1804,8 @@ extension Michelson {
 
         // MARK: EXEC
         
-        public struct Exec: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Exec: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .exec(self)
             }
             
@@ -1845,8 +1852,8 @@ extension Michelson {
 
         // MARK: APPLY
         
-        public struct Apply: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Apply: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .apply(self)
             }
             
@@ -1866,8 +1873,8 @@ extension Michelson {
 
         // MARK: DIP
         
-        public struct Dip: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Dip: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .dip(self)
             }
             
@@ -1916,8 +1923,8 @@ extension Michelson {
 
         // MARK: FAILWITH
         
-        public struct Failwith: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Failwith: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .failwith(self)
             }
             
@@ -1937,8 +1944,8 @@ extension Michelson {
 
         // MARK: CAST
         
-        public struct Cast: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Cast: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .cast(self)
             }
             
@@ -1985,8 +1992,8 @@ extension Michelson {
 
         // MARK: RENAME
         
-        public struct Rename: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Rename: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .rename(self)
             }
             
@@ -2033,8 +2040,8 @@ extension Michelson {
 
         // MARK: CONCAT
         
-        public struct Concat: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Concat: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .concat(self)
             }
             
@@ -2081,8 +2088,8 @@ extension Michelson {
 
         // MARK: SLICE
         
-        public struct Slice: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Slice: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .slice(self)
             }
             
@@ -2102,8 +2109,8 @@ extension Michelson {
 
         // MARK: PACK
         
-        public struct Pack: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Pack: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .pack(self)
             }
             
@@ -2123,8 +2130,8 @@ extension Michelson {
 
         // MARK: UNPACK
         
-        public struct Unpack: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Unpack: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .unpack(self)
             }
             
@@ -2154,8 +2161,8 @@ extension Michelson {
 
         // MARK: ADD
         
-        public struct Add: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Add: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .add(self)
             }
             
@@ -2202,8 +2209,8 @@ extension Michelson {
 
         // MARK: SUB
         
-        public struct Sub: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Sub: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .sub(self)
             }
             
@@ -2250,8 +2257,8 @@ extension Michelson {
 
         // MARK: MUL
         
-        public struct Mul: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Mul: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .mul(self)
             }
             
@@ -2298,8 +2305,8 @@ extension Michelson {
 
         // MARK: EDIV
         
-        public struct Ediv: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Ediv: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .ediv(self)
             }
             
@@ -2346,8 +2353,8 @@ extension Michelson {
 
         // MARK: ABS
         
-        public struct Abs: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Abs: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .abs(self)
             }
             
@@ -2394,8 +2401,8 @@ extension Michelson {
 
         // MARK: ISNAT
         
-        public struct Isnat: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Isnat: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .isnat(self)
             }
             
@@ -2442,8 +2449,8 @@ extension Michelson {
 
         // MARK: INT
         
-        public struct Int: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Int: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .int(self)
             }
             
@@ -2490,8 +2497,8 @@ extension Michelson {
 
         // MARK: NEG
         
-        public struct Neg: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Neg: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .neg(self)
             }
             
@@ -2538,8 +2545,8 @@ extension Michelson {
 
         // MARK: LSL
         
-        public struct Lsl: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Lsl: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .lsl(self)
             }
             
@@ -2586,8 +2593,8 @@ extension Michelson {
 
         // MARK: LSR
         
-        public struct Lsr: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Lsr: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .lsr(self)
             }
             
@@ -2634,8 +2641,8 @@ extension Michelson {
 
         // MARK: OR
         
-        public struct Or: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Or: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .or(self)
             }
             
@@ -2682,8 +2689,8 @@ extension Michelson {
 
         // MARK: AND
         
-        public struct And: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct And: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .and(self)
             }
             
@@ -2730,8 +2737,8 @@ extension Michelson {
 
         // MARK: XOR
         
-        public struct Xor: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Xor: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .xor(self)
             }
             
@@ -2778,8 +2785,8 @@ extension Michelson {
 
         // MARK: NOT
         
-        public struct Not: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Not: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .not(self)
             }
             
@@ -2826,8 +2833,8 @@ extension Michelson {
 
         // MARK: COMPARE
         
-        public struct Compare: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Compare: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .compare(self)
             }
             
@@ -2874,8 +2881,8 @@ extension Michelson {
 
         // MARK: EQ
         
-        public struct Eq: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Eq: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .eq(self)
             }
             
@@ -2922,8 +2929,8 @@ extension Michelson {
 
         // MARK: NEQ
         
-        public struct Neq: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Neq: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .neq(self)
             }
             
@@ -2970,8 +2977,8 @@ extension Michelson {
 
         // MARK: LT
         
-        public struct Lt: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Lt: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .lt(self)
             }
             
@@ -3018,8 +3025,8 @@ extension Michelson {
 
         // MARK: GT
         
-        public struct Gt: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Gt: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .gt(self)
             }
             
@@ -3066,8 +3073,8 @@ extension Michelson {
 
         // MARK: LE
         
-        public struct Le: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Le: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .le(self)
             }
             
@@ -3114,8 +3121,8 @@ extension Michelson {
 
         // MARK: GE
         
-        public struct Ge: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Ge: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .ge(self)
             }
             
@@ -3162,8 +3169,8 @@ extension Michelson {
 
         // MARK: SELF
         
-        public struct `Self`: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct `Self`: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .`self`(self)
             }
             
@@ -3210,8 +3217,8 @@ extension Michelson {
 
         // MARK: SELF_ADDRESS
         
-        public struct SelfAddress: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct SelfAddress: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .selfAddress(self)
             }
             
@@ -3258,8 +3265,8 @@ extension Michelson {
 
         // MARK: CONTRACT
         
-        public struct Contract: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Contract: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .contract(self)
             }
             
@@ -3313,8 +3320,8 @@ extension Michelson {
 
         // MARK: TRANSFER_TOKENS
         
-        public struct TransferTokens: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct TransferTokens: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .transferTokens(self)
             }
             
@@ -3334,8 +3341,8 @@ extension Michelson {
 
         // MARK: SET_DELEGATE
         
-        public struct SetDelegate: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct SetDelegate: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .setDelegate(self)
             }
             
@@ -3382,8 +3389,8 @@ extension Michelson {
 
         // MARK: CREATE_CONTRACT
         
-        public struct CreateContract: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct CreateContract: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .createContract(self)
             }
             
@@ -3450,8 +3457,8 @@ extension Michelson {
 
         // MARK: IMPLICIT_ACCOUNT
         
-        public struct ImplicitAccount: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct ImplicitAccount: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .implicitAccount(self)
             }
             
@@ -3498,8 +3505,8 @@ extension Michelson {
 
         // MARK: VOTING_POWER
         
-        public struct VotingPower: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct VotingPower: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .votingPower(self)
             }
             
@@ -3519,8 +3526,8 @@ extension Michelson {
 
         // MARK: NOW
         
-        public struct Now: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Now: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .now(self)
             }
             
@@ -3567,8 +3574,8 @@ extension Michelson {
 
         // MARK: LEVEL
         
-        public struct Level: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Level: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .level(self)
             }
             
@@ -3615,8 +3622,8 @@ extension Michelson {
 
         // MARK: AMOUNT
         
-        public struct Amount: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Amount: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .amount(self)
             }
             
@@ -3663,8 +3670,8 @@ extension Michelson {
 
         // MARK: BALANCE
         
-        public struct Balance: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Balance: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .balance(self)
             }
             
@@ -3711,8 +3718,8 @@ extension Michelson {
 
         // MARK: CHECK_SIGNATURE
         
-        public struct CheckSignature: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct CheckSignature: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .checkSignature(self)
             }
             
@@ -3759,8 +3766,8 @@ extension Michelson {
 
         // MARK: BLAKE2B
         
-        public struct Blake2B: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Blake2B: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .blake2b(self)
             }
             
@@ -3807,8 +3814,8 @@ extension Michelson {
 
         // MARK: KECCAK
         
-        public struct Keccak: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Keccak: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .keccak(self)
             }
             
@@ -3855,8 +3862,8 @@ extension Michelson {
 
         // MARK: SHA3
         
-        public struct Sha3: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Sha3: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .sha3(self)
             }
             
@@ -3903,8 +3910,8 @@ extension Michelson {
 
         // MARK: SHA256
         
-        public struct Sha256: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Sha256: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .sha256(self)
             }
             
@@ -3951,8 +3958,8 @@ extension Michelson {
 
         // MARK: SHA512
         
-        public struct Sha512: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Sha512: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .sha512(self)
             }
             
@@ -3999,8 +4006,8 @@ extension Michelson {
 
         // MARK: HASH_KEY
         
-        public struct HashKey: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct HashKey: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .hashKey(self)
             }
             
@@ -4047,8 +4054,8 @@ extension Michelson {
 
         // MARK: SOURCE
         
-        public struct Source: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Source: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .source(self)
             }
             
@@ -4095,8 +4102,8 @@ extension Michelson {
 
         // MARK: SENDER
         
-        public struct Sender: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Sender: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .sender(self)
             }
             
@@ -4143,8 +4150,8 @@ extension Michelson {
 
         // MARK: ADDRESS
         
-        public struct Address: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Address: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .address(self)
             }
             
@@ -4191,8 +4198,8 @@ extension Michelson {
 
         // MARK: CHAIN_ID
         
-        public struct ChainID: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct ChainID: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .chainID(self)
             }
             
@@ -4239,8 +4246,8 @@ extension Michelson {
 
         // MARK: TOTAL_VOTING_POWER
         
-        public struct TotalVotingPower: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct TotalVotingPower: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .totalVotingPower(self)
             }
             
@@ -4260,8 +4267,8 @@ extension Michelson {
 
         // MARK: PAIRING_CHECK
         
-        public struct PairingCheck: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct PairingCheck: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .pairingCheck(self)
             }
             
@@ -4281,8 +4288,8 @@ extension Michelson {
 
         // MARK: SAPLING_EMPTY_STATE
         
-        public struct SaplingEmptyState: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct SaplingEmptyState: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .saplingEmptyState(self)
             }
             
@@ -4316,8 +4323,8 @@ extension Michelson {
 
         // MARK: SAPLING_VERIFY_UPDATE
         
-        public struct SaplingVerifyUpdate: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct SaplingVerifyUpdate: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .saplingVerifyUpdate(self)
             }
             
@@ -4337,8 +4344,8 @@ extension Michelson {
 
         // MARK: TICKET
         
-        public struct Ticket: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct Ticket: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .ticket(self)
             }
             
@@ -4358,8 +4365,8 @@ extension Michelson {
 
         // MARK: READ_TICKET
         
-        public struct ReadTicket: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct ReadTicket: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .readTicket(self)
             }
             
@@ -4379,8 +4386,8 @@ extension Michelson {
 
         // MARK: SPLIT_TICKET
         
-        public struct SplitTicket: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct SplitTicket: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .splitTicket(self)
             }
             
@@ -4400,8 +4407,8 @@ extension Michelson {
 
         // MARK: JOIN_TICKETS
         
-        public struct JoinTickets: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct JoinTickets: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .joinTickets(self)
             }
             
@@ -4421,8 +4428,8 @@ extension Michelson {
 
         // MARK: OPEN_CHEST
         
-        public struct OpenChest: `Protocol`, Prim, Hashable {
-            public func asInstruction() -> Instruction {
+        public struct OpenChest: `Protocol`, Prim.`Protocol`, Hashable {
+            public func asMichelsonInstruction() -> Instruction {
                 .openChest(self)
             }
             
@@ -4443,122 +4450,734 @@ extension Michelson {
 }
 
 public protocol MichelsonInsturctionProtocol: Michelson.Data.`Protocol` {
-    func asInstruction() -> Michelson.Instruction
+    func asMichelsonInstruction() -> Michelson.Instruction
 }
 
 public extension Michelson.Instruction.`Protocol` {
-    func asData() -> Michelson.Data {
-        .instruction(asInstruction())
+    func asMichelsonData() -> Michelson.Data {
+        .instruction(asMichelsonInstruction())
     }
 }
 
 // MARK: Prim
 
 extension Michelson.Instruction {
-    public typealias Prim = MichelsonInstructionPrimProtocol
-    
-    public static var allPrims: [Prim.Type] {
-        [
-            Drop.self,
-            Dup.self,
-            Swap.self,
-            Dig.self,
-            Dug.self,
-            Push.self,
-            Some.self,
-            None.self,
-            Unit.self,
-            Never.self,
-            IfNone.self,
-            Pair.self,
-            Car.self,
-            Cdr.self,
-            Unpair.self,
-            Left.self,
-            Right.self,
-            IfLeft.self,
-            Nil.self,
-            Cons.self,
-            IfCons.self,
-            Size.self,
-            EmptySet.self,
-            EmptyMap.self,
-            EmptyBigMap.self,
-            Map.self,
-            Iter.self,
-            Mem.self,
-            Get.self,
-            Update.self,
-            GetAndUpdate.self,
-            If.self,
-            Loop.self,
-            LoopLeft.self,
-            Lambda.self,
-            Exec.self,
-            Apply.self,
-            Dip.self,
-            Failwith.self,
-            Cast.self,
-            Rename.self,
-            Concat.self,
-            Slice.self,
-            Pack.self,
-            Unpack.self,
-            Add.self,
-            Sub.self,
-            Mul.self,
-            Ediv.self,
-            Abs.self,
-            Isnat.self,
-            Int.self,
-            Neg.self,
-            Lsl.self,
-            Lsr.self,
-            Or.self,
-            And.self,
-            Xor.self,
-            Not.self,
-            Compare.self,
-            Eq.self,
-            Neq.self,
-            Lt.self,
-            Gt.self,
-            Le.self,
-            Ge.self,
-            `Self`.self,
-            SelfAddress.self,
-            Contract.self,
-            TransferTokens.self,
-            SetDelegate.self,
-            CreateContract.self,
-            ImplicitAccount.self,
-            VotingPower.self,
-            Now.self,
-            Level.self,
-            Amount.self,
-            Balance.self,
-            CheckSignature.self,
-            Blake2B.self,
-            Keccak.self,
-            Sha3.self,
-            Sha256.self,
-            Sha512.self,
-            HashKey.self,
-            Source.self,
-            Sender.self,
-            Address.self,
-            ChainID.self,
-            TotalVotingPower.self,
-            PairingCheck.self,
-            SaplingEmptyState.self,
-            SaplingVerifyUpdate.self,
-            Ticket.self,
-            ReadTicket.self,
-            SplitTicket.self,
-            JoinTickets.self,
-            OpenChest.self,
-        ]
+    public enum Prim: Hashable, RawRepresentable, CaseIterable {
+        public typealias `Protocol` = MichelsonInstructionPrimProtocol
+        public typealias RawValue = `Protocol`.Type
+        
+        case drop
+        case dup
+        case swap
+        case dig
+        case dug
+        case push
+        case some
+        case none
+        case unit
+        case never
+        case ifNone
+        case pair
+        case car
+        case cdr
+        case unpair
+        case left
+        case right
+        case ifLeft
+        case `nil`
+        case cons
+        case ifCons
+        case size
+        case emptySet
+        case emptyMap
+        case emptyBigMap
+        case map
+        case iter
+        case mem
+        case get
+        case update
+        case getAndUpdate
+        case `if`
+        case loop
+        case loopLeft
+        case lambda
+        case exec
+        case apply
+        case dip
+        case failwith
+        case cast
+        case rename
+        case concat
+        case slice
+        case pack
+        case unpack
+        case add
+        case sub
+        case mul
+        case ediv
+        case abs
+        case isnat
+        case int
+        case neg
+        case lsl
+        case lsr
+        case or
+        case and
+        case xor
+        case not
+        case compare
+        case eq
+        case neq
+        case lt
+        case gt
+        case le
+        case ge
+        case `self`
+        case selfAddress
+        case contract
+        case transferTokens
+        case setDelegate
+        case createContract
+        case implicitAccount
+        case votingPower
+        case now
+        case level
+        case amount
+        case balance
+        case checkSignature
+        case blake2b
+        case keccak
+        case sha3
+        case sha256
+        case sha512
+        case hashKey
+        case source
+        case sender
+        case address
+        case chainID
+        case totalVotingPower
+        case pairingCheck
+        case saplingEmptyState
+        case saplingVerifyUpdate
+        case ticket
+        case readTicket
+        case splitTicket
+        case joinTickets
+        case openChest
+        
+        public static let allRawValues: [RawValue] = allCases.map { $0.rawValue }
+        
+        public init?(rawValue: RawValue) {
+            switch rawValue {
+            case is Drop.Type:
+                self = .drop
+            case is Dup.Type:
+                self = .dup
+            case is Swap.Type:
+                self = .swap
+            case is Dig.Type:
+                self = .dig
+            case is Dug.Type:
+                self = .dug
+            case is Push.Type:
+                self = .push
+            case is Some.Type:
+                self = .some
+            case is None.Type:
+                self = .none
+            case is Unit.Type:
+                self = .unit
+            case is Never.Type:
+                self = .never
+            case is IfNone.Type:
+                self = .ifNone
+            case is Pair.Type:
+                self = .pair
+            case is Car.Type:
+                self = .car
+            case is Cdr.Type:
+                self = .cdr
+            case is Unpair.Type:
+                self = .unpair
+            case is Left.Type:
+                self = .left
+            case is Right.Type:
+                self = .right
+            case is IfLeft.Type:
+                self = .ifLeft
+            case is Nil.Type:
+                self = .`nil`
+            case is Cons.Type:
+                self = .cons
+            case is IfCons.Type:
+                self = .ifCons
+            case is Size.Type:
+                self = .size
+            case is EmptySet.Type:
+                self = .emptySet
+            case is EmptyMap.Type:
+                self = .emptyMap
+            case is EmptyBigMap.Type:
+                self = .emptyBigMap
+            case is Map.Type:
+                self = .map
+            case is Iter.Type:
+                self = .iter
+            case is Mem.Type:
+                self = .mem
+            case is Get.Type:
+                self = .get
+            case is Update.Type:
+                self = .update
+            case is GetAndUpdate.Type:
+                self = .getAndUpdate
+            case is If.Type:
+                self = .`if`
+            case is Loop.Type:
+                self = .loop
+            case is LoopLeft.Type:
+                self = .loopLeft
+            case is Lambda.Type:
+                self = .lambda
+            case is Exec.Type:
+                self = .exec
+            case is Apply.Type:
+                self = .apply
+            case is Dip.Type:
+                self = .dip
+            case is Failwith.Type:
+                self = .failwith
+            case is Cast.Type:
+                self = .cast
+            case is Rename.Type:
+                self = .rename
+            case is Concat.Type:
+                self = .concat
+            case is Slice.Type:
+                self = .slice
+            case is Pack.Type:
+                self = .pack
+            case is Unpack.Type:
+                self = .unpack
+            case is Add.Type:
+                self = .add
+            case is Sub.Type:
+                self = .sub
+            case is Mul.Type:
+                self = .mul
+            case is Ediv.Type:
+                self = .ediv
+            case is Abs.Type:
+                self = .abs
+            case is Isnat.Type:
+                self = .isnat
+            case is Int.Type:
+                self = .int
+            case is Neg.Type:
+                self = .neg
+            case is Lsl.Type:
+                self = .lsl
+            case is Lsr.Type:
+                self = .lsr
+            case is Or.Type:
+                self = .or
+            case is And.Type:
+                self = .and
+            case is Xor.Type:
+                self = .xor
+            case is Not.Type:
+                self = .not
+            case is Compare.Type:
+                self = .compare
+            case is Eq.Type:
+                self = .eq
+            case is Neq.Type:
+                self = .neq
+            case is Lt.Type:
+                self = .lt
+            case is Gt.Type:
+                self = .gt
+            case is Le.Type:
+                self = .le
+            case is Ge.Type:
+                self = .ge
+            case is `Self`.Type:
+                self = .`self`
+            case is SelfAddress.Type:
+                self = .selfAddress
+            case is Contract.Type:
+                self = .contract
+            case is TransferTokens.Type:
+                self = .transferTokens
+            case is SetDelegate.Type:
+                self = .setDelegate
+            case is CreateContract.Type:
+                self = .createContract
+            case is ImplicitAccount.Type:
+                self = .implicitAccount
+            case is VotingPower.Type:
+                self = .votingPower
+            case is Now.Type:
+                self = .now
+            case is Level.Type:
+                self = .level
+            case is Amount.Type:
+                self = .amount
+            case is Balance.Type:
+                self = .balance
+            case is CheckSignature.Type:
+                self = .checkSignature
+            case is Blake2B.Type:
+                self = .blake2b
+            case is Keccak.Type:
+                self = .keccak
+            case is Sha3.Type:
+                self = .sha3
+            case is Sha256.Type:
+                self = .sha256
+            case is Sha512.Type:
+                self = .sha512
+            case is HashKey.Type:
+                self = .hashKey
+            case is Source.Type:
+                self = .source
+            case is Sender.Type:
+                self = .sender
+            case is Address.Type:
+                self = .address
+            case is ChainID.Type:
+                self = .chainID
+            case is TotalVotingPower.Type:
+                self = .totalVotingPower
+            case is PairingCheck.Type:
+                self = .pairingCheck
+            case is SaplingEmptyState.Type:
+                self = .saplingEmptyState
+            case is SaplingVerifyUpdate.Type:
+                self = .saplingVerifyUpdate
+            case is Ticket.Type:
+                self = .ticket
+            case is ReadTicket.Type:
+                self = .readTicket
+            case is SplitTicket.Type:
+                self = .splitTicket
+            case is JoinTickets.Type:
+                self = .joinTickets
+            case is OpenChest.Type:
+                self = .openChest 
+            default:
+                return nil
+            }
+        }
+        
+        public var rawValue: RawValue {
+            switch self {
+            case .drop:
+                return Drop.self
+            case .dup:
+                return Dup.self
+            case .swap:
+                return Swap.self
+            case .dig:
+                return Dig.self
+            case .dug:
+                return Dug.self
+            case .push:
+                return Push.self
+            case .some:
+                return Some.self
+            case .none:
+                return None.self
+            case .unit:
+                return Unit.self
+            case .never:
+                return Never.self
+            case .ifNone:
+                return IfNone.self
+            case .pair:
+                return Pair.self
+            case .car:
+                return Car.self
+            case .cdr:
+                return Cdr.self
+            case .unpair:
+                return Unpair.self
+            case .left:
+                return Left.self
+            case .right:
+                return Right.self
+            case .ifLeft:
+                return IfLeft.self
+            case .`nil`:
+                return Nil.self
+            case .cons:
+                return Cons.self
+            case .ifCons:
+                return IfCons.self
+            case .size:
+                return Size.self
+            case .emptySet:
+                return EmptySet.self
+            case .emptyMap:
+                return EmptyMap.self
+            case .emptyBigMap:
+                return EmptyBigMap.self
+            case .map:
+                return Map.self
+            case .iter:
+                return Iter.self
+            case .mem:
+                return Mem.self
+            case .get:
+                return Get.self
+            case .update:
+                return Update.self
+            case .getAndUpdate:
+                return GetAndUpdate.self
+            case .`if`:
+                return If.self
+            case .loop:
+                return Loop.self
+            case .loopLeft:
+                return LoopLeft.self
+            case .lambda:
+                return Lambda.self
+            case .exec:
+                return Exec.self
+            case .apply:
+                return Apply.self
+            case .dip:
+                return Dip.self
+            case .failwith:
+                return Failwith.self
+            case .cast:
+                return Cast.self
+            case .rename:
+                return Rename.self
+            case .concat:
+                return Concat.self
+            case .slice:
+                return Slice.self
+            case .pack:
+                return Pack.self
+            case .unpack:
+                return Unpack.self
+            case .add:
+                return Add.self
+            case .sub:
+                return Sub.self
+            case .mul:
+                return Mul.self
+            case .ediv:
+                return Ediv.self
+            case .abs:
+                return Abs.self
+            case .isnat:
+                return Isnat.self
+            case .int:
+                return Int.self
+            case .neg:
+                return Neg.self
+            case .lsl:
+                return Lsl.self
+            case .lsr:
+                return Lsr.self
+            case .or:
+                return Or.self
+            case .and:
+                return And.self
+            case .xor:
+                return Xor.self
+            case .not:
+                return Not.self
+            case .compare:
+                return Compare.self
+            case .eq:
+                return Eq.self
+            case .neq:
+                return Neq.self
+            case .lt:
+                return Lt.self
+            case .gt:
+                return Gt.self
+            case .le:
+                return Le.self
+            case .ge:
+                return Ge.self
+            case .`self`:
+                return `Self`.self
+            case .selfAddress:
+                return SelfAddress.self
+            case .contract:
+                return Contract.self
+            case .transferTokens:
+                return TransferTokens.self
+            case .setDelegate:
+                return SetDelegate.self
+            case .createContract:
+                return CreateContract.self
+            case .implicitAccount:
+                return ImplicitAccount.self
+            case .votingPower:
+                return VotingPower.self
+            case .now:
+                return Now.self
+            case .level:
+                return Level.self
+            case .amount:
+                return Amount.self
+            case .balance:
+                return Balance.self
+            case .checkSignature:
+                return CheckSignature.self
+            case .blake2b:
+                return Blake2B.self
+            case .keccak:
+                return Keccak.self
+            case .sha3:
+                return Sha3.self
+            case .sha256:
+                return Sha256.self
+            case .sha512:
+                return Sha512.self
+            case .hashKey:
+                return HashKey.self
+            case .source:
+                return Source.self
+            case .sender:
+                return Sender.self
+            case .address:
+                return Address.self
+            case .chainID:
+                return ChainID.self
+            case .totalVotingPower:
+                return TotalVotingPower.self
+            case .pairingCheck:
+                return PairingCheck.self
+            case .saplingEmptyState:
+                return SaplingEmptyState.self
+            case .saplingVerifyUpdate:
+                return SaplingVerifyUpdate.self
+            case .ticket:
+                return Ticket.self
+            case .readTicket:
+                return ReadTicket.self
+            case .splitTicket:
+                return SplitTicket.self
+            case .joinTickets:
+                return JoinTickets.self
+            case .openChest:
+                return OpenChest.self
+            }
+        }
     }
 }
 
-public protocol MichelsonInstructionPrimProtocol: Michelson.Data.Prim {}
+public protocol MichelsonInstructionPrimProtocol: Michelson.Data.Prim.`Protocol` {}
+
+// MARK: Utility Extensions
+
+extension Michelson.Instruction {
+    var common: `Protocol` {
+        switch self {
+        case .sequence(let sequence):
+            return sequence
+        case .drop(let drop):
+            return drop
+        case .dup(let dup):
+            return dup
+        case .swap(let swap):
+            return swap
+        case .dig(let dig):
+            return dig
+        case .dug(let dug):
+            return dug
+        case .push(let push):
+            return push
+        case .some(let some):
+            return some
+        case .none(let none):
+            return none
+        case .unit(let unit):
+            return unit
+        case .never(let never):
+            return never
+        case .ifNone(let ifNone):
+            return ifNone
+        case .pair(let pair):
+            return pair
+        case .car(let car):
+            return car
+        case .cdr(let cdr):
+            return cdr
+        case .unpair(let unpair):
+            return unpair
+        case .left(let left):
+            return left
+        case .right(let right):
+            return right
+        case .ifLeft(let ifLeft):
+            return ifLeft
+        case .nil(let `nil`):
+            return `nil`
+        case .cons(let cons):
+            return cons
+        case .ifCons(let ifCons):
+            return ifCons
+        case .size(let size):
+            return size
+        case .emptySet(let emptySet):
+            return emptySet
+        case .emptyMap(let emptyMap):
+            return emptyMap
+        case .emptyBigMap(let emptyBigMap):
+            return emptyBigMap
+        case .map(let map):
+            return map
+        case .iter(let iter):
+            return iter
+        case .mem(let mem):
+            return mem
+        case .get(let get):
+            return get
+        case .update(let update):
+            return update
+        case .getAndUpdate(let getAndUpdate):
+            return getAndUpdate
+        case .if(let `if`):
+            return `if`
+        case .loop(let loop):
+            return loop
+        case .loopLeft(let loopLeft):
+            return loopLeft
+        case .lambda(let lambda):
+            return lambda
+        case .exec(let exec):
+            return exec
+        case .apply(let apply):
+            return apply
+        case .dip(let dip):
+            return dip
+        case .failwith(let failwith):
+            return failwith
+        case .cast(let cast):
+            return cast
+        case .rename(let rename):
+            return rename
+        case .concat(let concat):
+            return concat
+        case .slice(let slice):
+            return slice
+        case .pack(let pack):
+            return pack
+        case .unpack(let unpack):
+            return unpack
+        case .add(let add):
+            return add
+        case .sub(let sub):
+            return sub
+        case .mul(let mul):
+            return mul
+        case .ediv(let ediv):
+            return ediv
+        case .abs(let abs):
+            return abs
+        case .isnat(let isnat):
+            return isnat
+        case .int(let int):
+            return int
+        case .neg(let neg):
+            return neg
+        case .lsl(let lsl):
+            return lsl
+        case .lsr(let lsr):
+            return lsr
+        case .or(let or):
+            return or
+        case .and(let and):
+            return and
+        case .xor(let xor):
+            return xor
+        case .not(let not):
+            return not
+        case .compare(let compare):
+            return compare
+        case .eq(let eq):
+            return eq
+        case .neq(let neq):
+            return neq
+        case .lt(let lt):
+            return lt
+        case .gt(let gt):
+            return gt
+        case .le(let le):
+            return le
+        case .ge(let ge):
+            return ge
+        case .`self`(let `self`):
+            return `self`
+        case .selfAddress(let selfAddress):
+            return selfAddress
+        case .contract(let contract):
+            return contract
+        case .transferTokens(let transferTokens):
+            return transferTokens
+        case .setDelegate(let setDelegate):
+            return setDelegate
+        case .createContract(let createContract):
+            return createContract
+        case .implicitAccount(let implicitAccount):
+            return implicitAccount
+        case .votingPower(let votingPower):
+            return votingPower
+        case .now(let now):
+            return now
+        case .level(let level):
+            return level
+        case .amount(let amount):
+            return amount
+        case .balance(let balance):
+            return balance
+        case .checkSignature(let checkSignature):
+            return checkSignature
+        case .blake2b(let blake2b):
+            return blake2b
+        case .keccak(let keccak):
+            return keccak
+        case .sha3(let sha3):
+            return sha3
+        case .sha256(let sha256):
+            return sha256
+        case .sha512(let sha512):
+            return sha512
+        case .hashKey(let hashKey):
+            return hashKey
+        case .source(let source):
+            return source
+        case .sender(let sender):
+            return sender
+        case .address(let address):
+            return address
+        case .chainID(let chainID):
+            return chainID
+        case .totalVotingPower(let totalVotingPower):
+            return totalVotingPower
+        case .pairingCheck(let pairingCheck):
+            return pairingCheck
+        case .saplingEmptyState(let saplingEmptyState):
+            return saplingEmptyState
+        case .saplingVerifyUpdate(let saplingVerifyUpdate):
+            return saplingVerifyUpdate
+        case .ticket(let ticket):
+            return ticket
+        case .readTicket(let readTicket):
+            return readTicket
+        case .splitTicket(let splitTicket):
+            return splitTicket
+        case .joinTickets(let joinTickets):
+            return joinTickets
+        case .openChest(let openChest):
+            return openChest
+        }
+    }
+}

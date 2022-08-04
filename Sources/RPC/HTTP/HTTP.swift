@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol HTTP {
+public protocol HTTP {
     func delete<Response: Decodable>(
         baseURL: URL,
         endpoint: String,

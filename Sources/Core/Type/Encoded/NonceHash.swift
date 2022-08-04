@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct NonceHash: EncodedValue {
     public static let base58Prefix: String = "nce"
     public static let base58Bytes: [UInt8] = [69, 220, 169]

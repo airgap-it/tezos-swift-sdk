@@ -5,7 +5,6 @@
 //  Created by Julia Samol on 14.06.22.
 //
 
-import Foundation
 import TezosCore
 
 // MARK: Micheline
@@ -25,12 +24,12 @@ extension Micheline: BytesCodable {
     
     public func encodeToBytes() throws -> [UInt8] {
         switch self {
-        case .literal(let content):
-            return try content.encodeToBytes()
-        case .prim(let content):
-            return try content.encodeToBytes()
-        case .sequence(let content):
-            return try content.encodeToBytes()
+        case .literal(let literal):
+            return try literal.encodeToBytes()
+        case .prim(let primitiveApplication):
+            return try primitiveApplication.encodeToBytes()
+        case .sequence(let sequence):
+            return try sequence.encodeToBytes()
         }
     }
 }
@@ -54,12 +53,12 @@ extension Micheline.Literal: BytesCodable {
     
     public func encodeToBytes() throws -> [UInt8] {
         switch self {
-        case .integer(let content):
-            return Tag.int + content.encodeToBytes()
-        case .string(let content):
-            return Tag.string + (try encodeString(content.value))
-        case .bytes(let content):
-            return Tag.bytes + (try encodeBytes([UInt8](from: content)))
+        case .integer(let integer):
+            return Tag.int + integer.encodeToBytes()
+        case .string(let string):
+            return Tag.string + (try encodeString(string.value))
+        case .bytes(let bytes):
+            return Tag.bytes + (try encodeBytes([UInt8](from: bytes)))
         }
     }
     
@@ -274,7 +273,7 @@ private func decodePrim(fromConsmuing bytes: inout [UInt8]) throws -> String {
         throw TezosError.invalidValue("Unknown Micheline prim tag (\(byte)).")
     }
     
-    return prim.name
+    return prim.rawValue.name
 }
 
 private func decodeAnnots(fromConsmuing bytes: inout [UInt8]) throws -> [String] {
@@ -353,7 +352,7 @@ private func encodePrim(_ prim: String) throws -> [UInt8] {
         throw TezosError.invalidValue("Unknown Micheline prim (\(prim)).")
     }
     
-    return prim.tag
+    return prim.rawValue.tag
 }
 
 private func encodeAnnots(_ annots: [String]) throws -> [UInt8] {

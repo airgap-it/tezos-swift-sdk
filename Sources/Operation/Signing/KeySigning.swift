@@ -5,14 +5,14 @@
 //  Created by Julia Samol on 07.07.22.
 //
 
-import Foundation
 import TezosCore
+import TezosCryptoDefault
 
 // MARK: Key.Secret
 
 extension Key.Secret {
     public func sign(_ operation: TezosOperation) throws -> Signature {
-        fatalError("TODO: Inject crypto")
+        try sign(operation, using: .init(provider: DefaultCryptoProvider()))
     }
     
     func sign<Provider: CryptoProvider>(_ operation: TezosOperation, using crypto: Crypto<Provider>) throws -> Signature {
@@ -24,7 +24,7 @@ extension Key.Secret {
 
 extension Ed25519SecretKey {
     public func sign(_ operation: TezosOperation) throws -> Ed25519Signature {
-        fatalError("TODO: Inject crypto")
+        try sign(operation, using: .init(provider: DefaultCryptoProvider()))
     }
     
     func sign<Provider: CryptoProvider>(_ operation: TezosOperation, using crypto: Crypto<Provider>) throws -> Ed25519Signature {
@@ -36,7 +36,7 @@ extension Ed25519SecretKey {
 
 extension Secp256K1SecretKey {
     public func sign(_ operation: TezosOperation) throws -> Secp256K1Signature {
-        fatalError("TODO: Inject crypto")
+        try sign(operation, using: .init(provider: DefaultCryptoProvider()))
     }
     
     func sign<Provider: CryptoProvider>(_ operation: TezosOperation, using crypto: Crypto<Provider>) throws -> Secp256K1Signature {
@@ -48,7 +48,7 @@ extension Secp256K1SecretKey {
 
 extension P256SecretKey {
     public func sign(_ operation: TezosOperation) throws -> P256Signature {
-        fatalError("TODO: Inject crypto")
+        try sign(operation, using: .init(provider: DefaultCryptoProvider()))
     }
     
     func sign<Provider: CryptoProvider>(_ operation: TezosOperation, using crypto: Crypto<Provider>) throws -> P256Signature {
@@ -60,7 +60,7 @@ extension P256SecretKey {
 
 extension Key.Public {
     public func verify(_ operation: TezosOperation.Signed) throws -> Bool {
-        fatalError("TODO: Inject crypto")
+        try verify(operation, using: .init(provider: DefaultCryptoProvider()))
     }
     
     func verify<Provider: CryptoProvider>(_ operation: TezosOperation.Signed, using crypto: Crypto<Provider>) throws -> Bool {
@@ -72,7 +72,7 @@ extension Key.Public {
 
 extension Ed25519PublicKey {
     public func verify(_ operation: TezosOperation.Signed) throws -> Bool {
-        fatalError("TODO: Inject crypto")
+        try verify(operation, using: .init(provider: DefaultCryptoProvider()))
     }
     
     func verify<Provider: CryptoProvider>(_ operation: TezosOperation.Signed, using crypto: Crypto<Provider>) throws -> Bool {
@@ -84,7 +84,7 @@ extension Ed25519PublicKey {
 
 extension Secp256K1PublicKey {
     public func verify(_ operation: TezosOperation.Signed) throws -> Bool {
-        fatalError("TODO: Inject crypto")
+        try verify(operation, using: .init(provider: DefaultCryptoProvider()))
     }
     
     func verify<Provider: CryptoProvider>(_ operation: TezosOperation.Signed, using crypto: Crypto<Provider>) throws -> Bool {
@@ -96,7 +96,7 @@ extension Secp256K1PublicKey {
 
 extension P256PublicKey {
     public func verify(_ operation: TezosOperation.Signed) throws -> Bool {
-        fatalError("TODO: Inject crypto")
+        try verify(operation, using: .init(provider: DefaultCryptoProvider()))
     }
     
     func verify<Provider: CryptoProvider>(_ operation: TezosOperation.Signed, using crypto: Crypto<Provider>) throws -> Bool {

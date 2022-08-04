@@ -5,11 +5,9 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 // MARK: Address
 
-public enum Address: EncodedGroup {
+public enum Address: AddressProtocol, EncodedGroup {
     public typealias `Protocol` = AddressProtocol
     
     case implicit(Implicit)
@@ -41,6 +39,10 @@ public enum Address: EncodedGroup {
             throw TezosError.invalidValue("Invalid address base58 encoded value (\(base58).")
         }
     }
+    
+    public func asAddress() -> Address {
+        self
+    }
 }
 
 public protocol AddressProtocol {
@@ -51,7 +53,7 @@ public protocol AddressProtocol {
 
 extension Address {
     
-    public enum Implicit: EncodedGroup, Address.`Protocol` {
+    public enum Implicit: ImplicitAddressProtocol, EncodedGroup {
         public typealias `Protocol` = ImplicitAddressProtocol
         
         case tz1(Ed25519PublicKeyHash)
@@ -93,8 +95,8 @@ extension Address {
             }
         }
         
-        public func asAddress() -> Address {
-            .implicit(self)
+        public func asImplicitAddress() -> Address.Implicit {
+            self
         }
     }
 }
@@ -103,8 +105,8 @@ public protocol ImplicitAddressProtocol: Address.`Protocol` {
     func asImplicitAddress() -> Address.Implicit
 }
 
-extension Address.Implicit.`Protocol` {
-    public func asAddress() -> Address {
+public extension Address.Implicit.`Protocol` {
+    func asAddress() -> Address {
         .implicit(asImplicitAddress())
     }
 }
@@ -113,7 +115,7 @@ extension Address.Implicit.`Protocol` {
 
 extension Address {
     
-    public enum Originated: EncodedGroup, Address.`Protocol` {
+    public enum Originated: OriginatedAddressProtocol, EncodedGroup {
         public typealias `Protocol` = OriginatedAddressProtocol
         
         case contract(ContractHash)
@@ -141,8 +143,8 @@ extension Address {
             }
         }
         
-        public func asAddress() -> Address {
-            .originated(self)
+        public func asOriginatedAddress() -> Address.Originated {
+            self
         }
     }
 }
@@ -151,8 +153,8 @@ public protocol OriginatedAddressProtocol: Address.`Protocol` {
     func asOriginatedAddress() -> Address.Originated
 }
 
-extension Address.Originated.`Protocol` {
-    public func asAddress() -> Address {
+public extension Address.Originated.`Protocol` {
+    func asAddress() -> Address {
         .originated(asOriginatedAddress())
     }
 }

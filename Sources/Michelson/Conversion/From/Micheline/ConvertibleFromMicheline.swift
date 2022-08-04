@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 16.06.22.
 //
 
-import Foundation
-
 // MARK: From Micheline
 
 public protocol ConvertibleFromMicheline {

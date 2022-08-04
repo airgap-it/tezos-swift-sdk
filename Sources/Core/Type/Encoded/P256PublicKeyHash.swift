@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct P256PublicKeyHash: Address.Implicit.`Protocol`, KeyHash.Public.`Protocol`, EncodedValue {
     public static let base58Prefix: String = "tz3"
     public static let base58Bytes: [UInt8] = [6, 161, 164]

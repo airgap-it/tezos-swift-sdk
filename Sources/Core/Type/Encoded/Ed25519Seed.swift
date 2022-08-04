@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct Ed25519Seed: EncodedValue {
     public static let base58Prefix: String = "edsk"
     public static let base58Bytes: [UInt8] = [13, 15, 58, 7]

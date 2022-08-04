@@ -5,8 +5,6 @@
 //  Created by Julia Samol on 11.07.22.
 //
 
-import Foundation
-
 // MARK: /injection/block
 
 public struct InjectBlockRequest: Hashable, Codable {

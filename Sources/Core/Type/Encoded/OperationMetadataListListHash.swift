@@ -6,8 +6,6 @@
 //  Created by Julia Samol on 15.06.22.
 //
 
-import Foundation
-
 public struct OperationMetadataListListHash: EncodedValue {
     public static let base58Prefix: String = "LLr"
     public static let base58Bytes: [UInt8] = [29, 159, 182]
