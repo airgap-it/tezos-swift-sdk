@@ -12,18 +12,30 @@ import TezosMichelson
 import TezosOperation
 import TezosRPC
 
-public typealias TezosContract = Contract<URLSessionHTTP>
+public typealias TezosContract = Contract<
+    BlockClient<URLSessionHTTP>,
+    BlockContextContractsContractClient<URLSessionHTTP>,
+    OperationFeeEstimator<ChainsClient<URLSessionHTTP>>
+>
 
-public class Contract<HTTPClient: HTTP> {
+public class Contract<
+    BlockRPC: Block,
+    ContractRPC: BlockContextContractsContract,
+    FeeEstimatorRPC: FeeEstimator
+> where FeeEstimatorRPC.FeeApplicable == TezosOperation {
     public let address: ContractHash
     
-    private let block: BlockClient<HTTPClient>
-    private let contract: BlockContextContractsContractClient<HTTPClient>
-    private let feeEstimator: OperationFeeEstimator<ChainsClient<HTTPClient>>
+    private let block: BlockRPC
+    private let contract: ContractRPC
+    private let feeEstimator: FeeEstimatorRPC
     
     private let nodeURL: URL
     
-    public static func create(nodeURL: URL, address: ContractHash) -> Contract<URLSessionHTTP> {
+    public static func create(nodeURL: URL, address: ContractHash) -> Contract<
+        BlockClient<URLSessionHTTP>,
+        BlockContextContractsContractClient<URLSessionHTTP>,
+        OperationFeeEstimator<ChainsClient<URLSessionHTTP>>
+    > {
         let http = URLSessionHTTP()
         let chains = ChainsClient(parentURL: nodeURL, http: http)
         
@@ -39,13 +51,7 @@ public class Contract<HTTPClient: HTTP> {
         )
     }
     
-    init(
-        address: ContractHash,
-        block: BlockClient<HTTPClient>,
-        contract: BlockContextContractsContractClient<HTTPClient>,
-        feeEstimator: OperationFeeEstimator<ChainsClient<HTTPClient>>,
-        nodeURL: URL
-    ) {
+    init(address: ContractHash, block: BlockRPC, contract: ContractRPC, feeEstimator: FeeEstimatorRPC, nodeURL: URL) {
         self.address = address
         self.block = block
         self.contract = contract
@@ -53,12 +59,12 @@ public class Contract<HTTPClient: HTTP> {
         self.nodeURL = nodeURL
     }
     
-    public lazy var storage: ContractStorage<HTTPClient> = .init(from: codeCached, contract: contract, nodeURL: nodeURL)
+    public lazy var storage: ContractStorage<ContractRPC> = .init(from: codeCached, contract: contract, nodeURL: nodeURL)
     
     private lazy var entrypointsCached: Cached<[String: Micheline]> = .init{ [unowned self] in
         try await self.contract.entrypoints.get(configuredWith: .init(headers: $0)).entrypoints.mapValues { try $0.normalized() }
     }
-    public func entrypoint(_ entrypoint: Entrypoint = .default) -> ContractEntrypoint<HTTPClient> {
+    public func entrypoint(_ entrypoint: Entrypoint = .default) -> ContractEntrypoint<BlockRPC, FeeEstimatorRPC> {
         let entrypointsLazy: Cached<Micheline> = entrypointsCached.combine(with: codeCached).map {
             let (entrypoints, code) = $0
             
