@@ -75,7 +75,7 @@ public enum RPCConstants: Hashable, Codable {
         }
     }
     
-    public var proofOfWorkThreshold: Int64 {
+    public var proofOfWorkThreshold: String {
         switch self {
         case .active(let active):
             return active.proofOfWorkThreshold
@@ -237,14 +237,14 @@ public enum RPCConstants: Hashable, Codable {
         }
     }
     
-    public var minimalBlockDelay: Int64? {
+    public var minimalBlockDelay: String? {
         switch self {
         case .active(let active):
             return active.minimalBlockDelay
         }
     }
     
-    public var delayIncrementPerRound: Int64? {
+    public var delayIncrementPerRound: String? {
         switch self {
         case .active(let active):
             return active.delayIncrementPerRound

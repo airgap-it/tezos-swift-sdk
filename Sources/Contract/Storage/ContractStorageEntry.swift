@@ -150,7 +150,7 @@ extension ContractStorageEntry {
                 }
         }
         
-        subscript(key: String) -> ContractStorageEntry? {
+        public subscript(key: String) -> ContractStorageEntry? {
             dict[key]
         }
         
@@ -225,7 +225,7 @@ extension ContractStorageEntry {
             self.dict = dict
         }
         
-        subscript(key: ContractStorageEntry) -> ContractStorageEntry? {
+        public subscript(key: ContractStorageEntry) -> ContractStorageEntry? {
             dict[key]
         }
         

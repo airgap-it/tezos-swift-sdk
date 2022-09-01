@@ -27,7 +27,7 @@ extension RPCConstants {
         public let cyclesPerVotingPeriod: Int32
         public let hardGasLimitPerOperation: String
         public let hardGasLimitPerBlock: String
-        public let proofOfWorkThreshold: Int64
+        public let proofOfWorkThreshold: String
         public let tokensPerRoll: Mutez
         public let seedNonceRevelationTip: Mutez
         public let originationSize: Int32
@@ -43,8 +43,8 @@ extension RPCConstants {
         public let liquidityBakingSunsetLevel: Int32
         public let liquidityBakingToggleEmaThreshold: Int32
         public let maxOperationsTimeToLive: Int16
-        public let minimalBlockDelay: Int64
-        public let delayIncrementPerRound: Int64
+        public let minimalBlockDelay: String
+        public let delayIncrementPerRound: String
         public let consensusCommitteeSize: Int32
         public let consensusThreshold: Int32
         public let minimalParticipationRatio: RPCRatio
@@ -94,7 +94,7 @@ extension RPCConstants {
             cyclesPerVotingPeriod: Int32,
             hardGasLimitPerOperation: String,
             hardGasLimitPerBlock: String,
-            proofOfWorkThreshold: Int64,
+            proofOfWorkThreshold: String,
             tokensPerRoll: Mutez,
             seedNonceRevelationTip: Mutez,
             originationSize: Int32,
@@ -110,8 +110,8 @@ extension RPCConstants {
             liquidityBakingSunsetLevel: Int32,
             liquidityBakingToggleEmaThreshold: Int32,
             maxOperationsTimeToLive: Int16,
-            minimalBlockDelay: Int64,
-            delayIncrementPerRound: Int64,
+            minimalBlockDelay: String,
+            delayIncrementPerRound: String,
             consensusCommitteeSize: Int32,
             consensusThreshold: Int32,
             minimalParticipationRatio: RPCRatio,

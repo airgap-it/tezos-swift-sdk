@@ -10,12 +10,12 @@ import Foundation
 import TezosMichelson
 import TezosRPC
     
-public struct ContractStorage<ContractRPC: BlockContextContractsContract> {
+public struct ContractStorage<HTTPClient: HTTP> {
     private let type: Micheline.Lazy
-    private let contract: ContractRPC
+    private let contract: BlockContextContractsContractClient<HTTPClient>
     private let nodeURL: URL
     
-    init(from code: ContractCode.Lazy, contract: ContractRPC, nodeURL: URL) {
+    init(from code: ContractCode.Lazy, contract: BlockContextContractsContractClient<HTTPClient>, nodeURL: URL) {
         let type: Cached<Micheline> = code.map {
             guard let storage = try? $0.storage.asPrim(.type(.storage)), storage.args.count == 1 else {
                 throw TezosContractError.invalidType("storage")

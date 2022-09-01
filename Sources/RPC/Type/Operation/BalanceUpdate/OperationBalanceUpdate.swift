@@ -62,7 +62,7 @@ public enum RPCBalanceUpdate: Hashable, Codable {
         case doubleSigningEvidenceRewards = "double signing evidence rewards"
         case endorsingRewards = "endorsing rewards"
         case bakingRewards = "baking rewards"
-        case bakingBonuses = "bakingBonuses"
+        case bakingBonuses = "baking bonuses"
         case subsidy
         case bootstrap
         case invoice
@@ -208,7 +208,7 @@ public enum RPCBalanceUpdate: Hashable, Codable {
 }
 
 extension RPCBalanceUpdate {
-    public var change: Int64 {
+    public var change: String {
         switch self {
         case .contract(let contract):
             return contract.change
@@ -592,10 +592,10 @@ extension RPCBalanceUpdate {
     public struct Contract: Hashable, Codable {
         private let kind: Kind
         public let contract: Address
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(contract: Address, change: Int64, origin: Origin) {
+        public init(contract: Address, change: String, origin: Origin) {
             self.kind = .contract
             self.contract = contract
             self.change = change
@@ -611,10 +611,10 @@ extension RPCBalanceUpdate {
     public struct BlockFees: Hashable, Codable {
         private let kind: Kind
         private let category: AccumlatorCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .accumulator
             self.category = .blockFees
             self.change = change
@@ -631,10 +631,10 @@ extension RPCBalanceUpdate {
         private let kind: Kind
         private let category: FreezerCategory
         public let delegate: KeyHash.Public
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(delegate: KeyHash.Public, change: Int64, origin: Origin) {
+        public init(delegate: KeyHash.Public, change: String, origin: Origin) {
             self.kind = .freezer
             self.category = .deposits
             self.delegate = delegate
@@ -651,10 +651,10 @@ extension RPCBalanceUpdate {
     public struct NonceRevelationRewards: Hashable, Codable {
         private let kind: Kind
         private let category: MintedCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .minted
             self.category = .nonceRevelationRewards
             self.change = change
@@ -670,10 +670,10 @@ extension RPCBalanceUpdate {
     public struct DoubleSigningEvidenceRewards: Hashable, Codable {
         private let kind: Kind
         private let category: MintedCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .minted
             self.category = .doubleSigningEvidenceRewards
             self.change = change
@@ -689,10 +689,10 @@ extension RPCBalanceUpdate {
     public struct EndorsingRewards: Hashable, Codable {
         private let kind: Kind
         private let category: MintedCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .minted
             self.category = .endorsingRewards
             self.change = change
@@ -708,10 +708,10 @@ extension RPCBalanceUpdate {
     public struct BakingRewards: Hashable, Codable {
         private let kind: Kind
         private let category: MintedCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .minted
             self.category = .bakingRewards
             self.change = change
@@ -727,10 +727,10 @@ extension RPCBalanceUpdate {
     public struct BakingBonuses: Hashable, Codable {
         private let kind: Kind
         private let category: MintedCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .minted
             self.category = .bakingBonuses
             self.change = change
@@ -746,10 +746,10 @@ extension RPCBalanceUpdate {
     public struct StorageFees: Hashable, Codable {
         private let kind: Kind
         private let category: BurnedCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .burned
             self.category = .storageFees
             self.change = change
@@ -765,10 +765,10 @@ extension RPCBalanceUpdate {
     public struct DoubleSigningPunishments: Hashable, Codable {
         private let kind: Kind
         private let category: BurnedCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .burned
             self.category = .punishments
             self.change = change
@@ -787,10 +787,10 @@ extension RPCBalanceUpdate {
         public let delegate: KeyHash.Public
         public let participation: Bool
         public let revelation: Bool
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(delegate: KeyHash.Public, participation: Bool, revelation: Bool, change: Int64, origin: Origin) {
+        public init(delegate: KeyHash.Public, participation: Bool, revelation: Bool, change: String, origin: Origin) {
             self.kind = .burned
             self.category = .lostEndorsingRewards
             self.delegate = delegate
@@ -809,10 +809,10 @@ extension RPCBalanceUpdate {
     public struct LiquidityBakingSubsidies: Hashable, Codable {
         private let kind: Kind
         private let category: MintedCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .minted
             self.category = .subsidy
             self.change = change
@@ -828,10 +828,10 @@ extension RPCBalanceUpdate {
     public struct Burned: Hashable, Codable {
         private let kind: Kind
         private let category: BurnedCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .burned
             self.category = .burned
             self.change = change
@@ -848,10 +848,10 @@ extension RPCBalanceUpdate {
         private let kind: Kind
         private let category: CommitmentCategory
         public let committer: BlindedKeyHash.Public
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(committer: BlindedKeyHash.Public, change: Int64, origin: Origin) {
+        public init(committer: BlindedKeyHash.Public, change: String, origin: Origin) {
             self.kind = .commitment
             self.category = .commitment
             self.committer = committer
@@ -868,10 +868,10 @@ extension RPCBalanceUpdate {
     public struct Bootstrap: Hashable, Codable {
         private let kind: Kind
         private let category: MintedCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .minted
             self.category = .bootstrap
             self.change = change
@@ -887,10 +887,10 @@ extension RPCBalanceUpdate {
     public struct Invoice: Hashable, Codable {
         private let kind: Kind
         private let category: MintedCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .minted
             self.category = .invoice
             self.change = change
@@ -906,10 +906,10 @@ extension RPCBalanceUpdate {
     public struct InitialCommitments: Hashable, Codable {
         private let kind: Kind
         private let category: MintedCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .minted
             self.category = .commitment
             self.change = change
@@ -925,10 +925,10 @@ extension RPCBalanceUpdate {
     public struct Minted: Hashable, Codable {
         private let kind: Kind
         private let category: MintedCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .minted
             self.category = .minted
             self.change = change
@@ -946,10 +946,10 @@ extension RPCBalanceUpdate {
         private let category: FreezerCategory
         public let contract: Address
         public let bondID: TxRollupBondID
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(contract: Address, bondID: TxRollupBondID, change: Int64, origin: Origin) {
+        public init(contract: Address, bondID: TxRollupBondID, change: String, origin: Origin) {
             self.kind = .freezer
             self.category = .bonds
             self.contract = contract
@@ -976,10 +976,10 @@ extension RPCBalanceUpdate {
     public struct TxRollupRejectionRewards: Hashable, Codable {
         private let kind: Kind
         private let category: MintedCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .minted
             self.category = .txRollupRejectionRewards
             self.change = change
@@ -995,10 +995,10 @@ extension RPCBalanceUpdate {
     public struct TxRollupRejectionPunishments: Hashable, Codable {
         private let kind: Kind
         private let category: BurnedCategory
-        public let change: Int64
+        public let change: String
         public let origin: Origin
         
-        public init(change: Int64, origin: Origin) {
+        public init(change: String, origin: Origin) {
             self.kind = .burned
             self.category = .txRollupRejectionPunishments
             self.change = change

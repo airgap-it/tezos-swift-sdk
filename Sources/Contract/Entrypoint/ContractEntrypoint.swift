@@ -10,22 +10,22 @@ import TezosMichelson
 import TezosOperation
 import TezosRPC
 
-public struct ContractEntrypoint<BlockRPC: Block, OperationFeeEstimator: FeeEstimator> where OperationFeeEstimator.FeeApplicable == TezosOperation {
+public struct ContractEntrypoint<HTTPClient: HTTP> {
     public let entrypoint: Entrypoint
     
     private let code: Micheline.Lazy
     private let contractAddress: ContractHash
     
-    private let block: BlockRPC
-    private let feeEstimator: OperationFeeEstimator
+    private let block: BlockClient<HTTPClient>
+    private let feeEstimator: OperationFeeEstimator<ChainsClient<HTTPClient>>
     
     init(
         from code: Micheline.Lazy,
         entrypoint: Entrypoint,
         contractAddress: ContractHash,
-        block: BlockRPC,
-        feeEstimator: OperationFeeEstimator
-    ) async {
+        block: BlockClient<HTTPClient>,
+        feeEstimator: OperationFeeEstimator<ChainsClient<HTTPClient>>
+    ) {
         self.entrypoint = entrypoint
         self.code = code
         self.contractAddress = contractAddress

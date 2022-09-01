@@ -134,13 +134,13 @@ extension Address.Originated: BytesCodable {
             throw TezosError.invalidValue("Bytes `\(bytes)` are not valid Tezos originated address bytes.")
         }
         
-        self = .contract(try .init(fromConsuming: &bytes))
+        self = .kt1(try .init(fromConsuming: &bytes))
         bytes.consumePadding(forKind: kind)
     }
     
     public func encodeToBytes() throws -> [UInt8] {
         switch self {
-        case .contract(let contractHash):
+        case .kt1(let contractHash):
             return try contractHash.encodeToBytes().padEnd(targetSize: Self.targetSize)
         }
     }
