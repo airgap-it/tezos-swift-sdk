@@ -98,4 +98,4 @@ Add the following dependency in your `Package.swift` file:
 ## Documentation
 
 A high level guide on how to use the library can be found in the [docs](https://github.com/airgap-it/tezos-swift-sdk/tree/main/Docs).
-<!--To try out the library in action, see the [samples](https://github.com/airgap-it/tezos-kotlin-sdk/tree/main/samples).-->
+To try out the library in action, see the [Samples](https://github.com/airgap-it/tezos-swift-sdk/tree/main/Samples).

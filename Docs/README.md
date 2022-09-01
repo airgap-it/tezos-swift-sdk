@@ -1127,4 +1127,4 @@ The library will generate a Micheline value from the object description specifie
 The values will be placed based on their annotations, if **any is provided** or based on their order if **no annotation was specified for any value**.
 
 By default, the entrypoint handler will also estimate the minimum fee for the operation it generates. However, you can override 
-this behaviour by provided **both** the `fee` and `limits` arguments.
+this behaviour by provided **both** the `fee` and `limits` arguments (through the call configuration argument).
