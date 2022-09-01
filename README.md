@@ -6,17 +6,49 @@
 
 A Swift library to interact with the Tezos blockchain.
 
-### 🚧🚧🚧 The project is still a work in progress, use at your own risk. 🚧🚧🚧
+## Use Cases
+
+The Tezos Swift SDK ships with tools that can be used to:
+
+*General*
+  - convert a Base58 encoded string to bytes and vice versa
+
+*Michelson/Micheline*
+  - parse or create a Micheline JSON string
+  - pack and unpack Micheline
+  - convert Micheline to typed Michelson and vice versa
+
+*Operations*
+- create an unsigned or signed Tezos operation
+- forge and unforge an operation
+- sign an operation and verify the signature
+
+*RPC*
+- interact with a Tezos node
+- estimate the operation fee
+
+*Contract*
+- read a contract's storage
+- read BigMaps
+- prepare contract calls
+
+## Requirements
+
+The Tezos Swift SDK requires:
+
+- iOS 13
+- macOS 10.15
 
 ## Modules Overview
 
-Tezos Swift SDK is a multi-package project. It has been designed to allow its users to use only the required minimum of functionality that meets their needs, thus optimizing the amount of redundant and unwanted code and dependencies.
+The Tezos Swift SDK is a multi-package project. It has been designed to allow its users to use only the required minimum of functionality that meets their needs, thus optimizing the amount of redundant and unwanted code and dependencies.
 The library modules can be divided into 3 categories:
 - Core
 - Plugin
 - Default Provider
 
 ### Core Modules
+
 The core modules are the basis for other modules. They are required for the SDK to work as expected.
 
 | Core Module   | Description                                                          | Module Dependencies |
@@ -42,15 +74,15 @@ The default provider modules are optional and come with default implementations 
 
 ## Setup
 
-See the below guides to learn how to add `Tezos Swift SDK` into your project.
+See the below guides to learn how to add the Tezos Swift SDK into your project.
 
 ### SPM
 
-To add `Tezos Swift SDK` with [the Swift Package Manager](https://swift.org/package-manager/), add the `Tezos Swift SDK` package dependency:
+To add the Tezos Swift SDK with [the Swift Package Manager](https://swift.org/package-manager/), add the Tezos Swift SDK package dependency:
 
 #### Xcode
 
-Open the `Add Package Dependency` window (as described in [the official guide](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app)) and enter the `Tezos Swift SDK` GitHub repository URL:
+Open the `Add Package Dependency` window (as described in [the official guide](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app)) and enter the Tezos Swift SDK GitHub repository URL:
 ```
 https://github.com/airgap-it/tezos-swift-sdk
 ```
@@ -63,4 +95,7 @@ Add the following dependency in your `Package.swift` file:
 .package(url: "https://github.com/airgap-it/tezos-swift-sdk", from: "x.y.z")
 ```
 
+## Documentation
 
+A high level guide on how to use the library can be found in the [docs](https://github.com/airgap-it/tezos-swift-sdk/tree/main/Docs).
+<!--To try out the library in action, see the [samples](https://github.com/airgap-it/tezos-kotlin-sdk/tree/main/samples).-->
