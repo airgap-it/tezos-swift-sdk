@@ -22,7 +22,7 @@ public protocol BigMapHandler {
 public extension BigMapHandler {
     func get(
         forKey key: Micheline,
-        configuredWith configuration: BigMapGetConfiguration
+        configuredWith configuration: BigMapGetConfiguration = .init()
     ) async throws -> ContractStorageEntry? {
         let chains = ChainsClient(parentURL: nodeURL, http: URLSessionHTTP())
         

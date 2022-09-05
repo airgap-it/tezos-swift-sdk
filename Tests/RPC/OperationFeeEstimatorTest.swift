@@ -56,12 +56,12 @@ class OperationFeeEstimatorTest: XCTestCase {
                         balanceUpdates: [
                             .contract(.init(
                                 contract: .implicit(.tz1(try .init(base58: "tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb"))),
-                                change: -1000,
+                                change: "-1000",
                                 origin: .block
                             )),
                             .contract(.init(
                                 contract: .implicit(.tz1(try .init(base58: "tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb"))),
-                                change: 1000,
+                                change: "1000",
                                 origin: .block
                             ))
                         ],
@@ -115,12 +115,12 @@ class OperationFeeEstimatorTest: XCTestCase {
                         balanceUpdates: [
                             .contract(.init(
                                 contract: .implicit(.tz1(try .init(base58: "tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb"))),
-                                change: -1000,
+                                change: "-1000",
                                 origin: .block
                             )),
                             .contract(.init(
                                 contract: .implicit(.tz1(try .init(base58: "tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb"))),
-                                change: 1000,
+                                change: "1000",
                                 origin: .block
                             ))
                         ],
@@ -182,12 +182,12 @@ class OperationFeeEstimatorTest: XCTestCase {
                         balanceUpdates: [
                             .contract(.init(
                                 contract: .implicit(.tz1(try .init(base58: "tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb"))),
-                                change: -1000,
+                                change: "-1000",
                                 origin: .block
                             )),
                             .contract(.init(
                                 contract: .implicit(.tz1(try .init(base58: "tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb"))),
-                                change: 1000,
+                                change: "1000",
                                 origin: .block
                             ))
                         ],
@@ -209,12 +209,12 @@ class OperationFeeEstimatorTest: XCTestCase {
                     balanceUpdates: [
                         .contract(.init(
                             contract: .implicit(.tz1(try .init(base58: "tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb"))),
-                            change: -600,
+                            change: "-600",
                             origin: .block
                         )),
                         .contract(.init(
                             contract: .implicit(.tz1(try .init(base58: "tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb"))),
-                            change: 600,
+                            change: "600",
                             origin: .block
                         ))
                     ],
@@ -222,12 +222,12 @@ class OperationFeeEstimatorTest: XCTestCase {
                         balanceUpdates: [
                             .contract(.init(
                                 contract: .implicit(.tz1(try .init(base58: "tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb"))),
-                                change: -1000,
+                                change: "-1000",
                                 origin: .block
                             )),
                             .contract(.init(
                                 contract: .implicit(.tz1(try .init(base58: "tz1gru9Tsz1X7GaYnsKR2YeGJLTVm4NwMhvb"))),
-                                change: 1000,
+                                change: "1000",
                                 origin: .block
                             ))
                         ],

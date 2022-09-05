@@ -11,28 +11,18 @@ import TezosCore
 import TezosMichelson
 import TezosOperation
 
-public struct TezosRPC<
-    ShellRPC: ShellSimplifiedRPC,
-    ActiveRPC: ActiveSimplifiedRPC,
-    ChainsRPC: Chains,
-    InjectionRPC: Injection,
-    FeeEstimatorRPC: FeeEstimator
->: ShellSimplifiedRPC, ActiveSimplifiedRPC, FeeEstimator where FeeEstimatorRPC.FeeApplicable == TezosOperation {
-    private let shell: ShellRPC
-    private let active: ActiveRPC
+public typealias TezosRPC = RPC<URLSessionHTTP>
+
+public struct RPC<HTTPClient: HTTP>: ShellSimplifiedRPC, ActiveSimplifiedRPC, FeeEstimator {
+    private let shell: ShellSimplifiedRPCClient<ChainsClient<HTTPClient>, InjectionClient<HTTPClient>>
+    private let active: ActiveSimplifiedRPCClient<ChainsClient<HTTPClient>>
     
-    public let chains: ChainsRPC
-    public let injection: InjectionRPC
+    public let chains: ChainsClient<HTTPClient>
+    public let injection: InjectionClient<HTTPClient>
     
-    private let feeEstimator: FeeEstimatorRPC
+    private let feeEstimator: OperationFeeEstimator<ChainsClient<HTTPClient>>
     
-    public static func create(nodeURL: URL) -> TezosRPC<
-        ShellSimplifiedRPCClient<ChainsClient<URLSessionHTTP>, InjectionClient<URLSessionHTTP>>,
-        ActiveSimplifiedRPCClient<ChainsClient<URLSessionHTTP>>,
-        ChainsClient<URLSessionHTTP>,
-        InjectionClient<URLSessionHTTP>,
-        OperationFeeEstimator<ChainsClient<URLSessionHTTP>>
-    >{
+    public static func create(nodeURL: URL) -> RPC<URLSessionHTTP> {
         let http = URLSessionHTTP()
         
         let chains = ChainsClient(parentURL: nodeURL, http: http)
@@ -47,7 +37,13 @@ public struct TezosRPC<
         )
     }
     
-    init(shell: ShellRPC, active: ActiveRPC, chains: ChainsRPC, injection: InjectionRPC, feeEstimator: FeeEstimatorRPC) {
+    init(
+        shell: ShellSimplifiedRPCClient<ChainsClient<HTTPClient>, InjectionClient<HTTPClient>>,
+        active: ActiveSimplifiedRPCClient<ChainsClient<HTTPClient>>,
+        chains: ChainsClient<HTTPClient>,
+        injection: InjectionClient<HTTPClient>,
+        feeEstimator: OperationFeeEstimator<ChainsClient<HTTPClient>>
+    ) {
         self.shell = shell
         self.active = active
         self.chains = chains

@@ -118,7 +118,7 @@ extension Address {
     public enum Originated: OriginatedAddressProtocol, EncodedGroup {
         public typealias `Protocol` = OriginatedAddressProtocol
         
-        case contract(ContractHash)
+        case kt1(ContractHash)
         
         public static func isValid(string: String) -> Bool {
             ContractHash.isValid(string: string)
@@ -130,14 +130,14 @@ extension Address {
         
         public var base58: String {
             switch self {
-            case .contract(let contractHash):
+            case .kt1(let contractHash):
                 return contractHash.base58
             }
         }
         
         public init(base58: String) throws {
             if let contract = try? ContractHash(base58: base58) {
-                self = .contract(contract)
+                self = .kt1(contract)
             } else {
                 throw TezosError.invalidValue("Invalid originated address base58 encoded value (\(base58).")
             }

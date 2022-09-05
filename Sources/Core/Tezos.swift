@@ -5,7 +5,9 @@
 //  Created by Julia Samol on 14.06.22.
 //
 
-public struct Tezos<CP: CryptoProvider> {
+// TODO: Add configurable modules
+
+struct Tezos<CP: CryptoProvider> {
     public let context: Context<CP>
 }
 
@@ -13,7 +15,7 @@ public struct Tezos<CP: CryptoProvider> {
 
 extension Tezos {
     
-    public struct Context<CP: CryptoProvider> {
+    struct Context<CP: CryptoProvider> {
         public let crypto: Crypto<CP>
         
         init(cryptoProvider: CP) {
@@ -24,13 +26,13 @@ extension Tezos {
 
 // MARK: Module
 
-public protocol TezosModule {
+protocol TezosModule {
     associatedtype Builder: TezosModuleBuilder where Builder.T == Self
     
     static var builder: Builder { get }
 }
 
-public protocol TezosModuleBuilder {
+protocol TezosModuleBuilder {
     associatedtype T: TezosModule
     
     func build() throws -> T
