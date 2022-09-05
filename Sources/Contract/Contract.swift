@@ -12,6 +12,12 @@ import TezosMichelson
 import TezosOperation
 import TezosRPC
 
+public typealias TezosContract = Contract<
+    BlockClient<URLSessionHTTP>,
+    BlockContextContractsContractClient<URLSessionHTTP>,
+    OperationFeeEstimator<ChainsClient<URLSessionHTTP>>
+>
+
 public class Contract<
     BlockRPC: Block,
     ContractRPC: BlockContextContractsContract,
@@ -58,7 +64,7 @@ public class Contract<
     private lazy var entrypointsCached: Cached<[String: Micheline]> = .init{ [unowned self] in
         try await self.contract.entrypoints.get(configuredWith: .init(headers: $0)).entrypoints.mapValues { try $0.normalized() }
     }
-    public func entrypoint(_ entrypoint: Entrypoint = .default) async -> ContractEntrypoint<BlockRPC, FeeEstimatorRPC> {
+    public func entrypoint(_ entrypoint: Entrypoint = .default) -> ContractEntrypoint<BlockRPC, FeeEstimatorRPC> {
         let entrypointsLazy: Cached<Micheline> = entrypointsCached.combine(with: codeCached).map {
             let (entrypoints, code) = $0
             
@@ -71,7 +77,7 @@ public class Contract<
             }
         }
         
-        return await .init(from: entrypointsLazy, entrypoint: entrypoint, contractAddress: address, block: block, feeEstimator: feeEstimator)
+        return .init(from: entrypointsLazy, entrypoint: entrypoint, contractAddress: address, block: block, feeEstimator: feeEstimator)
     }
     
     private lazy var codeCached: Cached<ContractCode> = .init { [unowned self] in

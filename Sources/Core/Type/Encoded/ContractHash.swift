@@ -24,6 +24,6 @@ public struct ContractHash: Address.Originated.`Protocol`, EncodedValue {
     }
     
     public func asOriginatedAddress() -> Address.Originated {
-        .contract(self)
+        .kt1(self)
     }
 }
