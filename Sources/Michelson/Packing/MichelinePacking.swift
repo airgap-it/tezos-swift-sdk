@@ -11,7 +11,7 @@ import TezosCore
 
 extension Micheline {
 
-    public init(fromPacked bytes: [UInt8], usingSchema schema: Micheline?) throws {
+    public init(fromPacked bytes: [UInt8], usingSchema schema: Micheline? = nil) throws {
         guard let tag = Tag(from: bytes) else {
             throw TezosError.invalidValue("Invalid Micheline packed bytes.")
         }
@@ -27,7 +27,7 @@ extension Micheline {
         }
     }
 
-    public func packToBytes(usingSchema schema: Micheline?) throws -> [UInt8] {
+    public func packToBytes(usingSchema schema: Micheline? = nil) throws -> [UInt8] {
         let prePacked: Micheline = try {
             if let schema = schema {
                 return try prePack(self, usingSchema: schema)
@@ -43,7 +43,7 @@ extension Micheline {
 // MARK: Micheline.Literal
 
 extension Micheline.Literal {
-    public init(fromPacked bytes: [UInt8], usingSchema schema: Micheline?) throws {
+    public init(fromPacked bytes: [UInt8], usingSchema schema: Micheline? = nil) throws {
         guard case let .literal(literal) = try Micheline(fromPacked: bytes, usingSchema: schema) else {
             throw TezosError.invalidValue("Invalid Micheline literal packed bytes.")
         }
@@ -51,7 +51,7 @@ extension Micheline.Literal {
         self = literal
     }
 
-    public func packToBytes(usingSchema schema: Micheline?) throws -> [UInt8] {
+    public func packToBytes(usingSchema schema: Micheline? = nil) throws -> [UInt8] {
         try Micheline.literal(self).packToBytes(usingSchema: schema)
     }
 }
@@ -59,7 +59,7 @@ extension Micheline.Literal {
 // MARK: Micheline.PrimitiveApplication
 
 extension Micheline.PrimitiveApplication {
-    public init(fromPacked bytes: [UInt8], usingSchema schema: Micheline?) throws {
+    public init(fromPacked bytes: [UInt8], usingSchema schema: Micheline? = nil) throws {
         guard case let .prim(primitiveApplication) = try Micheline(fromPacked: bytes, usingSchema: schema) else {
             throw TezosError.invalidValue("Invalid Micheline primitive application packed bytes.")
         }
@@ -67,7 +67,7 @@ extension Micheline.PrimitiveApplication {
         self = primitiveApplication
     }
 
-    public func packToBytes(usingSchema schema: Micheline?) throws -> [UInt8] {
+    public func packToBytes(usingSchema schema: Micheline? = nil) throws -> [UInt8] {
         try Micheline.prim(self).packToBytes(usingSchema: schema)
     }
     
@@ -77,7 +77,7 @@ extension Micheline.PrimitiveApplication {
 // MARK: Micheline.Sequence
 
 extension Micheline.Sequence {
-    public init(fromPacked bytes: [UInt8], usingSchema schema: Micheline?) throws {
+    public init(fromPacked bytes: [UInt8], usingSchema schema: Micheline? = nil) throws {
         guard case let .sequence(sequence) = try Micheline(fromPacked: bytes, usingSchema: schema) else {
             throw TezosError.invalidValue("Invalid Micheline sequence packed bytes.")
         }
@@ -85,7 +85,7 @@ extension Micheline.Sequence {
         self = sequence
     }
 
-    public func packToBytes(usingSchema schema: Micheline?) throws -> [UInt8] {
+    public func packToBytes(usingSchema schema: Micheline? = nil) throws -> [UInt8] {
         try Micheline.sequence(self).packToBytes(usingSchema: schema)
     }
     

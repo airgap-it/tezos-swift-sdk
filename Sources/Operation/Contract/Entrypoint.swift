@@ -145,4 +145,15 @@ public enum Entrypoint: Hashable, Codable {
             }
         }
     }
+    
+    // MARK: Codable
+    
+    public init(from decoder: Decoder) throws {
+        let value = try String(from: decoder)
+        self.init(from: value)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        try value.encode(to: encoder)
+    }
 }

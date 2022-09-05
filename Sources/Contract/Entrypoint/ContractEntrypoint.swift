@@ -18,14 +18,14 @@ public struct ContractEntrypoint<BlockRPC: Block, OperationFeeEstimator: FeeEsti
     
     private let block: BlockRPC
     private let feeEstimator: OperationFeeEstimator
-    
+   
     init(
         from code: Micheline.Lazy,
         entrypoint: Entrypoint,
         contractAddress: ContractHash,
         block: BlockRPC,
         feeEstimator: OperationFeeEstimator
-    ) async {
+    ) {
         self.entrypoint = entrypoint
         self.code = code
         self.contractAddress = contractAddress

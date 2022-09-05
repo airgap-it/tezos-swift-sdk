@@ -411,6 +411,17 @@ extension RPCOperation.Content {
             self.publicKey = publicKey
             self.metadata = metadata
         }
+        
+        enum CodingKeys: String, CodingKey {
+            case kind
+            case source
+            case fee
+            case counter
+            case gasLimit = "gas_limit"
+            case storageLimit = "storage_limit"
+            case publicKey = "public_key"
+            case metadata
+        }
     }
 }
 
@@ -451,6 +462,19 @@ extension RPCOperation.Content {
             self.destination = destination
             self.parameters = parameters
             self.metadata = metadata
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case kind
+            case source
+            case fee
+            case counter
+            case gasLimit = "gas_limit"
+            case storageLimit = "storage_limit"
+            case amount
+            case destination
+            case parameters
+            case metadata
         }
     }
 }
@@ -493,6 +517,19 @@ extension RPCOperation.Content {
             self.script = script
             self.metadata = metadata
         }
+        
+        enum CodingKeys: String, CodingKey {
+            case kind
+            case source
+            case fee
+            case counter
+            case gasLimit = "gas_limit"
+            case storageLimit = "storage_limit"
+            case balance
+            case delegate
+            case script
+            case metadata
+        }
     }
 }
 
@@ -528,6 +565,17 @@ extension RPCOperation.Content {
             self.delegate = delegate
             self.metadata = metadata
         }
+        
+        enum CodingKeys: String, CodingKey {
+            case kind
+            case source
+            case fee
+            case counter
+            case gasLimit = "gas_limit"
+            case storageLimit = "storage_limit"
+            case delegate
+            case metadata
+        }
     }
 }
             
@@ -562,6 +610,17 @@ extension RPCOperation.Content {
             self.storageLimit = storageLimit
             self.limit = limit
             self.metadata = metadata
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case kind
+            case source
+            case fee
+            case counter
+            case gasLimit = "gas_limit"
+            case storageLimit = "storage_limit"
+            case limit
+            case metadata
         }
     }
 }
@@ -612,6 +671,17 @@ extension RPCOperation.Content {
             self.storageLimit = storageLimit
             self.value = value
             self.metadata = metadata
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case kind
+            case source
+            case fee
+            case counter
+            case gasLimit = "gas_limit"
+            case storageLimit = "storage_limit"
+            case value
+            case metadata
         }
     }
 }

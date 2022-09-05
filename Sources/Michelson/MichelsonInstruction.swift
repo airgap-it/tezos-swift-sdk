@@ -248,8 +248,11 @@ extension Michelson {
                 }
             }
             
+            public init() {}
+            
             public init(args: [Michelson], annots: [Annotation]) throws {
                 try Self.validateArgs(args)
+                self.init()
             }
         }
 
@@ -564,8 +567,11 @@ extension Michelson {
                 }
             }
             
+            public init() {}
+            
             public init(args: [Michelson], annots: [Annotation]) throws {
                 try Self.validateArgs(args)
+                self.init()
             }
         }
 
@@ -1635,8 +1641,11 @@ extension Michelson {
                 }
             }
             
+            public init() {}
+            
             public init(args: [Michelson], annots: [Annotation]) throws {
                 try Self.validateArgs(args)
+                self.init()
             }
         }
 
@@ -1866,8 +1875,11 @@ extension Michelson {
                 }
             }
             
+            public init() {}
+            
             public init(args: [Michelson], annots: [Annotation]) throws {
                 try Self.validateArgs(args)
+                self.init()
             }
         }
 
@@ -1937,8 +1949,11 @@ extension Michelson {
                 }
             }
             
+            public init() {}
+            
             public init(args: [Michelson], annots: [Annotation]) throws {
                 try Self.validateArgs(args)
+                self.init()
             }
         }
 
@@ -2102,8 +2117,11 @@ extension Michelson {
                 }
             }
             
+            public init() {}
+            
             public init(args: [Michelson], annots: [Annotation]) throws {
                 try Self.validateArgs(args)
+                self.init()
             }
         }
 
@@ -3334,8 +3352,11 @@ extension Michelson {
                 }
             }
             
+            public init() {}
+            
             public init(args: [Michelson], annots: [Annotation]) throws {
                 try Self.validateArgs(args)
+                self.init()
             }
         }
 
@@ -3519,8 +3540,11 @@ extension Michelson {
                 }
             }
             
+            public init() {}
+            
             public init(args: [Michelson], annots: [Annotation]) throws {
                 try Self.validateArgs(args)
+                self.init()
             }
         }
 
@@ -4260,8 +4284,11 @@ extension Michelson {
                 }
             }
             
+            public init() {}
+            
             public init(args: [Michelson], annots: [Annotation]) throws {
                 try Self.validateArgs(args)
+                self.init()
             }
         }
 
@@ -4337,8 +4364,11 @@ extension Michelson {
                 }
             }
             
+            public init() {}
+            
             public init(args: [Michelson], annots: [Annotation]) throws {
                 try Self.validateArgs(args)
+                self.init()
             }
         }
 
@@ -4379,8 +4409,11 @@ extension Michelson {
                 }
             }
             
+            public init() {}
+            
             public init(args: [Michelson], annots: [Annotation]) throws {
                 try Self.validateArgs(args)
+                self.init()
             }
         }
 
@@ -4421,8 +4454,11 @@ extension Michelson {
                 }
             }
             
+            public init() {}
+            
             public init(args: [Michelson], annots: [Annotation]) throws {
                 try Self.validateArgs(args)
+                self.init()
             }
         }
 
