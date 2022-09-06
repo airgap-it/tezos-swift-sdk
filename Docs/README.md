@@ -45,8 +45,8 @@ or use one of the actual `struct`s that represent an address:
 import TezosCore
 
 let tz1Address = try Ed25519PublicKeyHash("tz1fJGtrdmckD3VkiDxqUEci5h4gGcvocw6e").asAddress()
-let tz2Address = try Secp256K1PublicKeyHash("tz1fJGtrdmckD3VkiDxqUEci5h4gGcvocw6e").asAddress()
-let tz3Address = try P256PublicKeyHash("tz1fJGtrdmckD3VkiDxqUEci5h4gGcvocw6e").asAddress()
+let tz2Address = try Secp256K1PublicKeyHash("tz2AjVPbMHdDF1XwHVhUrTg6ZvqY83AYhJEy").asAddress()
+let tz3Address = try P256PublicKeyHash("tz3Nk25g51knuzFZZz2DeA5PveaQYmCtV68B").asAddress()
 let kt1Address = try ContractHash("KT1HNqxFJxnmUcX8wF915wxxaAAU4ixDwWQ7").asAddress()
 ```
 
@@ -70,8 +70,8 @@ or use one of the actual `struct`s that represent an address:
 import TezosCore
 
 let tz1ImplicitAddress = try Ed25519PublicKeyHash(base58: "tz1fJGtrdmckD3VkiDxqUEci5h4gGcvocw6e").asImplicitAddress()
-let tz2ImplicitAddress = try Secp256K1PublicKeyHash(base58: "tz1fJGtrdmckD3VkiDxqUEci5h4gGcvocw6e").asImplicitAddress()
-let tz3ImplicitAddress = try P256PublicKeyHash(base58: "tz1fJGtrdmckD3VkiDxqUEci5h4gGcvocw6e").asImplicitAddress()
+let tz2ImplicitAddress = try Secp256K1PublicKeyHash(base58: "tz2AjVPbMHdDF1XwHVhUrTg6ZvqY83AYhJEy").asImplicitAddress()
+let tz3ImplicitAddress = try P256PublicKeyHash(base58: "tz3Nk25g51knuzFZZz2DeA5PveaQYmCtV68B").asImplicitAddress()
 ```
 
 `Address.Implicit` can also be easily transformed to `Address`:
@@ -652,10 +652,7 @@ let michelson: Michelson = .type(
 To convert values between the `Michelson` and `Micheline` types use the`init(from:)` constructors defined for both types:
 
 ```swift
-import it.airgap.tezos.michelson.MichelsonComparableType
-import it.airgap.tezos.michelson.MichelsonType
-import it.airgap.tezos.michelson.converter.toMicheline
-import it.airgap.tezos.michelson.converter.toMichelson
+import TezosMichelson
 
 let pair: Michelson = .type(
     .pair(try .init(
@@ -865,7 +862,7 @@ import TezosRPC
 let tezosRPC = TezosRPC<URLSessionHTTP>.create(nodeURL: URL(string: "https://testnet-tezos.giganode.io")!)
 
 let branch = try await tezosRPC.getBlock().hash
-let operation = TezosOperation(branch = branch)
+let operation = TezosOperation(branch: branch)
 let operationWithFee = try await tezosRPC.minFee(operation: operation)
 ```
 
