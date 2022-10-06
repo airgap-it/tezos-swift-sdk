@@ -66,7 +66,7 @@ class OperationFeeEstimatorTest: XCTestCase {
                             ))
                         ],
                         consumedGas: "1421",
-                        consumedMilligas: "1420040"
+                        consumedMilligas: "1421040"
                     ))
                 )
             ))
@@ -125,7 +125,7 @@ class OperationFeeEstimatorTest: XCTestCase {
                             ))
                         ],
                         consumedGas: "1421",
-                        consumedMilligas: "1420040"
+                        consumedMilligas: "1421040"
                     ))
                 )
             ))
@@ -192,7 +192,7 @@ class OperationFeeEstimatorTest: XCTestCase {
                             ))
                         ],
                         consumedGas: "1421",
-                        consumedMilligas: "1420040"
+                        consumedMilligas: "1421040"
                     ))
                 )
             )),
@@ -232,7 +232,7 @@ class OperationFeeEstimatorTest: XCTestCase {
                             ))
                         ],
                         consumedGas: "1421",
-                        consumedMilligas: "1420040"
+                        consumedMilligas: "1421040"
                     ))
                 )
             ))
