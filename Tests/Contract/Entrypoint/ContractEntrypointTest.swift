@@ -32,7 +32,7 @@ class ContractEntrypointTest: XCTestCase {
         let feeEstimator = OperationFeeEstimatorMock()
         
         for testCase in testCases {
-            let contractEntrypoint = await ContractEntrypoint(
+            let contractEntrypoint = ContractEntrypoint(
                 from: .init { _ in testCase.type },
                 entrypoint: .init(from: testCase.name),
                 contractAddress: testCase.contractAddress,
@@ -73,7 +73,7 @@ class ContractEntrypointTest: XCTestCase {
         let feeEstimator = OperationFeeEstimatorMock()
         
         for testCase in testCases {
-            let contractEntrypoint = await ContractEntrypoint(
+            let contractEntrypoint = ContractEntrypoint(
                 from: .init { _ in testCase.type },
                 entrypoint: .init(from: testCase.name),
                 contractAddress: testCase.contractAddress,
