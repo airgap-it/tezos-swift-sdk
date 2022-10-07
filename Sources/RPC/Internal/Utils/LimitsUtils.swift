@@ -126,8 +126,8 @@ extension RPCOperationResult {
     }
     
     private func consumedGasBigUInt() throws -> BigUInt {
-        if let consumedGas = consumedGas {
-            return try .init(consumedGas)
+        if let consumedGas = consumedMilligas {
+            return try .init(consumedGas) / 1000
         } else {
             return .zero
         }
